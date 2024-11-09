@@ -3,11 +3,9 @@ import { Search } from "@/components/searchs";
 
 const Homepage = () => {
   return (
-    <div className=" relative  overflow-hidden">
+    <div className=" relative  ">
       <BannerSlider />
-      <div>
-        <Search />
-      </div>
+      <Search />
     </div>
   );
 };

@@ -174,3 +174,81 @@ export const size = [
         value: JSON.stringify(["gte", 500]),
     },
 ];
+export const  pricePost =[
+    {
+        id:1,
+        label:"Giá/m²",
+        value:"sqm"
+    },
+    {
+        id:2,
+        label:"VND",
+        value:"vnd",
+    },
+    {
+        id:3,
+        label:"Thỏa thuận",
+        value:"nego"
+    }
+
+]
+export const  interior =[
+    {
+        id:1,
+        label:"Đầy đủ",
+        value:"full"
+    },
+    {
+        id:2,
+        label:"Một phần",
+        value:"partial",
+    },
+    {
+        id:3,
+        label:"Không nội thất",
+        value:"none"
+    }
+
+]
+export const directions = [
+    {
+      id: 1,
+      label: "Đông - Bắc",
+      value: "east-north"
+    },
+    {
+      id: 2,
+      label: "Tây - Nam",
+      value: "west-south"
+    },
+    {
+      id: 3,
+      label: "Đông - Nam",
+      value: "east-south"
+    },
+    {
+      id: 4,
+      label: "Tây - Bắc",
+      value: "west-north"
+    },
+    {
+      id: 5,
+      label: "Đông",
+      value: "east"
+    },
+    {
+      id: 6,
+      label: "Tây",
+      value: "west"
+    },
+    {
+      id: 7,
+      label: "Nam",
+      value: "south"
+    },
+    {
+      id: 8,
+      label: "Bắc",
+      value: "north"
+    }
+  ];

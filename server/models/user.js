@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     balance: DataTypes.BIGINT,
     score: DataTypes.INTEGER,
     resetPwToken: DataTypes.STRING,
-    avatar: DataTypes.STRING,
     resetPwExpiry: DataTypes.DATE,
+    avatar: DataTypes.STRING,
     idPricing: DataTypes.INTEGER,
 
 

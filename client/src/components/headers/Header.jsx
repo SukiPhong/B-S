@@ -44,7 +44,7 @@ const Header = () => {
     toast.info("Logout was successful");
   };
   return (
-    <div className="h-24 p-4 flex items-center shadow gap-2 justify-between">
+    <div className="h-20 p-4 flex items-center shadow gap-2 justify-between">
       <div className="flex items-center gap-6">
         <Link
           to="/"
@@ -65,7 +65,7 @@ const Header = () => {
                       {el.subs.map((sub) => (
                         <NavigationMenuLink
                           className={cn(naviItemCn)}
-                          key={el.pathname}
+                          key={sub.pathname}
                         >
                           {sub.name}
                         </NavigationMenuLink>
@@ -137,8 +137,8 @@ const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         )}
-        <Button size="lg" variant="outline">
-          Đăng tin
+        <Button size="lg" variant="outline" asChild>
+          <Link to={menu[2].subs[0].path}>Tin đăng</Link>
         </Button>
       </div>
     </div>

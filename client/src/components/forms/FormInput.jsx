@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import PropTypes from "prop-types";
 import { resetOutline } from "@/lib/classname";
 import { cn } from "@/lib/utils";
-const FormInput = ({ form, label, name, type = "text", readOnly = false }) => {
+const FormInput = ({ form, label, name, type = "text", readOnly = false ,placeholder }) => {
   return (
     <FormField
       name={name}
@@ -25,6 +25,7 @@ const FormInput = ({ form, label, name, type = "text", readOnly = false }) => {
               )}
               type={type}
               {...field}
+              placeholder={placeholder}
             />
           </FormControl>
           <FormMessage />

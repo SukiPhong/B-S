@@ -1,10 +1,12 @@
 const asyncHandler = require('express-async-handler');
+const sendMail =require ('./../utils/sendMail')
 const db = require('../models')
-
+const  crypto = require ('crypto');
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
 const { AccessToken, RefreshToken } = require('../middleware/verify_Token');
 const bcrypt = require('bcryptjs/dist/bcrypt');
+const  token_Email  = require('../utils/tokenEmail');
 
 const AuthController = {
 
@@ -41,11 +43,7 @@ const AuthController = {
         const user = await db.User.findOne({ where: { email } })
         let token = null;
         if (user)
-            // token = jwt.sign(
-            //     { userId: user.id },
-            //     process.env.SECRET_KEY_JWT,
-            //     { expiresIn: "1d" }
-            // );
+           
             token = AccessToken(user.id)
 
 
@@ -91,16 +89,14 @@ const AuthController = {
 
         const isPasswordValid = bcrypt.compareSync(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ success: false, message: "Invalid password" });
+            return res.status(401).json({ success: false, message: "Invalid password " });
         }
 
         const token = AccessToken(user.id)
         const PwToken = RefreshToken(user.id)
-        user.resetPwToken = PwToken
-        const response = await db.User.update({ resetPwToken: PwToken, resetPwExpiry: new Date() }, {
-            where: { id: user.id }, attributes: {
-                exclude: ['password', 'resetPwExpiry', 'resetPwToken']
-            }
+        const PwExpiry= jwt.decode(PwToken).exp 
+        const response = await db.User.update({ resetPwToken: PwToken, resetPwExpiry:PwExpiry  }, {
+            where: { id: user.id },
         },)
         // await db.User.update({resetPwToken: PwToken}, { where: { id: user.id } })
         return res.status(200).json({
@@ -109,6 +105,59 @@ const AuthController = {
             AccessToken: token
         })
     }),
+    ForgotPassword:asyncHandler(async(req,res) => { 
+        const { email } = req.params
+        const user = await db.User.findOne({ where: { email } })
+        if(!user) throw new Error("Email not set login")
+        const RfToken = await token_Email(user)
+    console.log(RfToken)
+        const html = ` Please click the link below to reset your password of you account. 
+        <a href=${process.env.CLIENT_URL}/reset-password/${RfToken}>Click here</a>`
+
+        const data = {
+            email,
+            html,
+        }
+        const response = await sendMail(data);
+       
+        return res.status(200).json({
+            success: response ? true : false,    
+            message:  response ? "Password reset request sent. Check your email ":"Invalid or expired code. Please try again",
+            user
+        })
+        
+     }),
+       // Controller ResetPassword
+ResetPassword: asyncHandler(async (req, res) => {
+    const { password, token } = req.body;
+    const passwordResetToken = crypto.createHash('sha256').update(token).digest('hex');
+    
+    const user = await db.User.findOne({
+        where: {
+            resetPwToken: passwordResetToken,
+            resetPwExpiry: { [Op.gte]: Date.now() }
+        }
+    });
+    
+    if (!user) throw new Error("Token không hợp lệ hoặc đã hết hạn");
+    const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+    
+ 
+    await db.sequelize.query(
+        'UPDATE "Users" SET password = :password, "resetPwToken" = NULL, "resetPwExpiry" = NULL WHERE id = :id',
+        {
+            replacements: { password: hashedPassword, id: user.id },
+            type: db.Sequelize.QueryTypes.UPDATE
+        }
+    );
+    return res.status(200).json({
+        success: true,
+        message: "Reset mật khẩu thành công",
+    });
+}),
+
+    
+
 }
 
 module.exports = AuthController;

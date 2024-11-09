@@ -48,7 +48,7 @@ const Personal = () => {
   }, [me]);
 
   return (
-    <div className="w-[700px] max-w-full m-auto">
+    <div className="w-[700px] max-w-full m-auto ">
       <Section title="Thông tin cá nhân">
         <Form {...form}>
           <form className="grid grid-cols-10">

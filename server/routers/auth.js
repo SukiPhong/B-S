@@ -21,5 +21,7 @@ router.post('/login', validationDTO(Joi.object({
     phone: PhoneDTO,
     password: PasswordDTO,
 }).xor('email', 'phone')), AuthController.login)
+router.post('/forgot/:email',AuthController.ForgotPassword)
+router.post('/reset-password', AuthController.ResetPassword)
 
 module.exports = router

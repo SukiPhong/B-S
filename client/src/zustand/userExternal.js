@@ -1,10 +1,10 @@
-import { apiGetProvinces } from '@/apis/external'
+import { apiGetDistrictsById, apiGetProvinces } from '@/apis/external'
 import { create } from 'zustand'
 
 const userExternal = create((set) => ({
 
     provinces: [],
-
+  
     getProvinces: async () => {
         const response = await apiGetProvinces()
 
@@ -15,8 +15,6 @@ const userExternal = create((set) => ({
             return set(() => ({ provinces: [] }))
         }
     },
-    // logout: () => set(() => ({ token: null, me: null })),
-
 
 }),)
 export default userExternal

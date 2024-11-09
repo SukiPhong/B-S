@@ -5,6 +5,7 @@ import {
   PublicLayout,
   RentProperty,
   SoldProperty,
+  ResetPassword
 } from "./pages/publics";
 import Homepage from "./pages/publics/Homepage";
 import {
@@ -31,6 +32,7 @@ const routes = [
           { path: pathnames.public.news, element: <News /> },
           { path: pathnames.public.rentProperty, element: <RentProperty /> },
           { path: pathnames.public.soldProperty, element: <SoldProperty /> },
+          { path:pathnames.public.resetPassword, element: <ResetPassword/>}
         ],
       },
       {

@@ -16,11 +16,11 @@ const UserLayOut = () => {
   return (
     <div>
       <Header />
-      <div className="flex h-[calc(100vh-96px)] bg-stone-100  ">
-        <div className="w-[256px]  h-full flex-none">
+      <div className="flex h-[calc(100vh-80px)] bg-stone-100   ">
+        <div className="w-[256px]  h-full flex-none ">
           <UseSlideBar />
         </div>
-        <div className="flex-auto py-6">
+        <div className="flex-auto ">
           <Outlet />
         </div>
       </div>

@@ -5,6 +5,7 @@ export const pathnames = {
         news: '/tin-tuc',
         rentProperty: '/nha-dat-cho-thue',
         soldProperty: '/nha-dat-ban',
+        resetPassword:'/reset-password/:token'
     },
     users: {
         layout: '/thanh-vien/',

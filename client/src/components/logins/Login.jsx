@@ -4,7 +4,7 @@ import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "../forms";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { apiGetCredentialsFromAccessToken } from "@/apis/external";
 import { apiCheckNewUser, apiLogin, apiRegister } from "@/apis/auth";
@@ -12,7 +12,34 @@ import SetUpPassword from "./SetUpPassword";
 import useMeStore from "@/zustand/useMeStore";
 import PropTypes from "prop-types";
 import { toast } from "sonner";
-const formSchema = z.object({
+import { Eye, EyeOff } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import ForgotPassword from "./ForgotPassword";
+
+// Schema cho Đăng nhập
+const loginSchema = z.object({
+  emailOrPhone: z
+    .string()
+    .min(2, {
+      message: "Email hoặc số điện thoại phải có ít nhất 2 ký tự.",
+    })
+    .refine(
+      (val) => {
+        return (
+          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || /^[0-9]{10}$/.test(val)
+        );
+      },
+      {
+        message: "Email không hợp lệ hoặc số điện thoại phải có 10 chữ số.",
+      }
+    ),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+});
+
+// Schema cho Đăng ký
+const registerSchema = z.object({
   emailOrPhone: z
     .string()
     .min(2, {
@@ -37,21 +64,27 @@ const formSchema = z.object({
 });
 
 const Login = ({ onClose }) => {
+  const [variant, setVariant] = useState("SIGNIN");
+  const [isSetUpPassword, setIsSetUpPassword] = useState(false);
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isShowForgotPassword, setIsShowForgotPassword] = useState(false);
+  const { setGoogleData, setToken } = useMeStore();
+  const location = useLocation();
+  // Sử dụng schema dựa trên variant
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(variant === "SIGNUP" ? registerSchema : loginSchema),
     defaultValues: {
       emailOrPhone: "",
       password: "",
       fullname: "",
     },
   });
-  const [variant, setVariant] = useState("SIGNIN");
-  const [isSetUpPassword, setIsSetUpPassword] = useState(false);
-  const { setGoogleData, setToken } = useMeStore();
+
   const toggleVariant = () => {
-    if (variant === "SIGNIN") setVariant("SIGNUP");
-    else setVariant("SIGNIN");
+    setVariant(variant === "SIGNIN" ? "SIGNUP" : "SIGNIN");
+    console.log(location);
   };
+
   const handleSignInGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       const response = await apiGetCredentialsFromAccessToken(
@@ -78,39 +111,49 @@ const Login = ({ onClose }) => {
       console.log(error), toast.error("Login failed");
     },
   });
+
   const handleRegister = async (value) => {
-    const { emailOrPhone, fullname, password } = value;
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone);
+    try {
+      const { emailOrPhone, fullname, password } = value;
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone);
 
-    const dataToSend = {
-      ...(isEmail ? { email: emailOrPhone } : { phone: emailOrPhone }),
-      fullname,
-      password,
-    };
+      const dataToSend = {
+        ...(isEmail ? { email: emailOrPhone } : { phone: emailOrPhone }),
+        fullname,
+        password,
+      };
 
-    const response = await apiRegister(dataToSend);
-    if (response.data.success === true) {
-      toast.success(response.data.message);
-      setVariant("SIGNIN");
-    } else toast.error(response.data.message);
+      const response = await apiRegister(dataToSend);
+      if (response.data.success === true) {
+        toast.success(response.data.message);
+        setVariant("SIGNIN");
+      } else toast.error(response.data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
+
   const handleLogin = async ({ emailOrPhone, password }) => {
-    console.log(1);
-    console.log({ emailOrPhone, password });
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone);
+    try {
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone);
 
-    const dataToSend = {
-      ...(isEmail ? { email: emailOrPhone } : { phone: emailOrPhone }),
-
-      password,
-    };
-    const response = await apiLogin(dataToSend);
-    if (response.data.success === true) {
-      toast.success(response.data.message);
-      setToken(response.data.AccessToken);
-      onClose();
-    } else toast.error(response.data.message);
+      const dataToSend = {
+        ...(isEmail ? { email: emailOrPhone } : { phone: emailOrPhone }),
+        password,
+      };
+      const response = await apiLogin(dataToSend);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setToken(response.data.AccessToken);
+        onClose();
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
+
   return (
     <div className="grid grid-cols-10">
       <div className="col-span-4 flex items-center justify-center ">
@@ -120,7 +163,7 @@ const Login = ({ onClose }) => {
           className="w-64 h-64 object-cover mr-5"
         />
       </div>
-      {!isSetUpPassword && (
+      {!isSetUpPassword && !isShowForgotPassword && (
         <div className="col-span-6 ">
           <p className="font-bold text-base">Xin chào bạn</p>
           <p className="font-bold text-2xl">
@@ -130,7 +173,7 @@ const Login = ({ onClose }) => {
           </p>
           <Form {...form}>
             <form
-              className="my-6 space-y-4 "
+              className="my-6 space-y-3 "
               onSubmit={form.handleSubmit(
                 variant === "SIGNUP" ? handleRegister : handleLogin
               )}
@@ -143,18 +186,48 @@ const Login = ({ onClose }) => {
               {variant === "SIGNUP" && (
                 <FormInput form={form} name="fullname" label="Tên đầy đủ" />
               )}
-              <FormInput
-                form={form}
-                name="password"
-                label="Mật khẩu"
-                type="password"
-              />
+              <div className="relative">
+                <FormInput
+                  form={form}
+                  name="password"
+                  label="Mật khẩu"
+                  type={isShowPassword ? "text" : "password"} // Toggle password type
+                  className="relative"
+                />
 
+                {isShowPassword ? (
+                  <Eye
+                    size={14}
+                    className="absolute inset-y-0 right-2 top-10  flex items-center hover:cursor-pointer"
+                    onClick={() => {
+                      setIsShowPassword((prev) => !prev);
+                    }}
+                  />
+                ) : (
+                  <EyeOff
+                    size={14}
+                    className="absolute inset-y-0 right-2 top-10 flex   items-center hover:cursor-pointer"
+                    onClick={() => {
+                      setIsShowPassword((prev) => !prev);
+                    }}
+                  />
+                )}
+              </div>
               {variant === "SIGNIN" ? (
-                <Button className="w-full relative top-2">Đăng nhập</Button>
+                <span
+                  className="text-xs underline  text-red-500 flex justify-end  hover:cursor-pointer"
+                  onClick={() => {
+                    setIsShowForgotPassword((prev) => !prev);
+                  }}
+                >
+                  Quên mật khẩu
+                </span>
               ) : (
-                <Button className="w-full relative top-2">Đăng ký</Button>
+                <div className="bottom-2"></div>
               )}
+              <Button className="w-full relative ">
+                {variant === "SIGNIN" ? "Đăng nhập" : "Đăng ký"}
+              </Button>
             </form>
           </Form>
           <div className="w-full h-6 flex items-center relative mb-1">
@@ -196,11 +269,18 @@ const Login = ({ onClose }) => {
         </div>
       )}
       {isSetUpPassword && <SetUpPassword onClose={onClose} />}
+      {isShowForgotPassword && (
+        <ForgotPassword
+          onClose={onClose}
+          setIsShowForgotPassword={setIsShowForgotPassword}
+        />
+      )}
     </div>
   );
 };
 
 export default Login;
-Login.prototype = {
+
+Login.propTypes = {
   onClose: PropTypes.func.isRequired,
 };

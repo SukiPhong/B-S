@@ -8,6 +8,7 @@ import useMeStore from "@/zustand/useMeStore";
 import { apiSignInWithGoogle } from "@/apis/auth";
 import { toast } from "sonner";
 import PropTypes from "prop-types";
+import { useLocation } from "react-router-dom";
 const formSchema = z
   .object({
     password: z.string().min(8, { message: "Mật khẩu phải ít nhất 8 ký tự." }),
@@ -23,6 +24,8 @@ const formSchema = z
     { message: "Mật khẩu không trùng nhau", path: ["confirmPassword"] }
   );
 const SetUpPassword = ({ onClose }) => {
+  const location = useLocation();
+
   const { googleData, setToken } = useMeStore();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -67,7 +70,11 @@ const SetUpPassword = ({ onClose }) => {
             label="Xác nhận mật khẩu"
             type="password"
           />
-          <Button className="w-full relative top-2" type="submit">
+          <Button
+            className="w-full relative top-2"
+            type="submit"
+            onClick={console.log(location)}
+          >
             Xác nhận
           </Button>
         </form>

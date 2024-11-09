@@ -18,3 +18,13 @@ export const apiLogin = (data) => axios({
     url: endpoints.auth.login,
     data,
 })
+export const apiForgotPw = (email) =>axios({
+    method:'post',
+    url: endpoints.auth.forgotPw + email
+    
+})
+export const apiResetPw = (data) =>axios({
+    method:'post',
+    url:endpoints.auth.resetPw,
+    data,
+})

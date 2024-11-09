@@ -19,7 +19,7 @@ const Search = () => {
   const [isShowProven, setIsShowProven] = useState(false);
   return (
     <div className="absolute left-10 right-10 top-0 bottom-10 text-slate-50 flex items-center justify-center">
-      <div className="  w-[945px] max-w-[90%]">
+      <div className="w-[945px] max-w-[90%]">
         <Tabs
           className="space-y-0"
           onValueChange={(value) => setActiveTab(value)}
@@ -47,7 +47,7 @@ const Search = () => {
                   setIsShowProven((prev) => !prev);
                 }}
                 className={cn(
-                  "flex items-center justify-between bg-slate-50 rounded-md  px-[6px] py-1 relative",
+                  "flex items-center justify-between bg-slate-50 rounded-md  px-[6px] py-1 relative ",
                   isShowProven && "rounded-b-none "
                 )}
               >
