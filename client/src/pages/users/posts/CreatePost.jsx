@@ -1,25 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Address } from "@/components/posts";
-import { FormInput } from "@/components/forms";
 import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
-import { Form } from "@/components/ui/form";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp, Minus, Plus, Sparkles } from "lucide-react";
+
+import {  Minus, Plus, Sparkles } from "lucide-react";
 import CollapsiblePostSection from "@/components/posts/CollapsiblePostSection";
 import { directions, interior, postRentTypes, postSoldTypes, postTypes, pricePost } from "@/lib/contants";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { resetOutline } from "@/lib/classname";
+import useMeStore from "@/zustand/useMeStore";
+;
 
 // Adjust imports accordingly
 
+
 const CreatePost = () => {
+  const {me} = useMeStore()
   const [showAddressSelector, setShowAddressSelector] = useState(true);
   const [formData, setFormData] = useState({
     title: "",
@@ -42,7 +44,6 @@ const CreatePost = () => {
     status: "",
     expiredDate: "",
   });
-  
   const [openSections, setOpenSections] = useState({
     propertyType: true,
     address: true,
@@ -51,22 +52,25 @@ const CreatePost = () => {
     contact: true,
     description: true,
   });
-
+  // useEffect(() => { 
+  //   if(me.phoneVerified !== true )
+  //  })
   const toggleSection = (section) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
-
+  
   const form = useForm({
     defaultValues: formData,
   });
-
-  const handleInputChange = (name, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
   
+  const handleInputChange = (name, value) => {
+      if(value ==='nego')
+        setFormData((prev) => ({...prev,price: 0,}))
+    setFormData((prev) => ({
+        ...prev,
+        [name]: value,                                       
+    }));
+};
   const handleAddressSelect = (addressData) => {
     setFormData((prev) => ({
       ...prev,
@@ -78,16 +82,15 @@ const CreatePost = () => {
     setShowAddressSelector(false);
   };
 
-  const handleSubmit = (data) => {
-    // if using react-hook-form
-    console.log("Form submitted:", data);
-  };
   const handleNumberChange = (field, increment) => {
     setFormData(prev => ({
       ...prev,
       [field]: increment ? prev[field] + 1 : Math.max(0, prev[field] - 1)
     }))
   }
+  const handleSubmit = (data) => {
+    console.log( data);
+  };
   const renderSectionSummary = (section) => {
     if (openSections[section]) return null;
 
@@ -105,16 +108,17 @@ const CreatePost = () => {
     }
   };
  
-  console.log(formData)
   return (
     <div className="max-w-2xl mx-auto h-auto overflow-auto">
-      {/* <h2 className="text-2xl font-bold flex justify-center py-2 font-mono ">
+      <h2 className="text-2xl font-bold flex justify-center py-2 font-mono ">
         {showAddressSelector ? "Địa chỉ thuê nhà" : "Thông tin cần có"}
-      </h2> */}
+      </h2>
 
       {showAddressSelector ? (
         <div className="max-w-xl  mx-auto"><Address onAddressSelect={handleAddressSelect} /></div>
       ) : (
+        <ScrollArea  className="w-auto h-[500px]">
+
         <div className="flex flex-col">
           <div className="flex-1 ">
             <div className="max-w-3xl mx-auto px-4 py-4">
@@ -199,12 +203,13 @@ const CreatePost = () => {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2">
                     <Label>Mức giá</Label>
-                    <Input
+                     <Input
                       value={formData.price}
-                      onChange={(e) => handleInputChange("price", e.target.value)}
-                      readOnly={formData.priceUnits ==="nego"}
-                      className={formData.priceUnits==="nego" ? "bg-slate-100 cursor-not-allowed":""}
-                    />
+                    onChange={(e) => handleInputChange("price", e.target.value)}
+                    readOnly={formData.priceUnits ==="nego"}
+                    className={formData.priceUnits==="nego" ? "bg-slate-100 cursor-not-allowed":""}
+                  />
+                    
                   </div>
                   <div>
                     <Label>Đơn vị</Label>
@@ -228,7 +233,9 @@ const CreatePost = () => {
               optional
             >
               <div className="space-y-4">
-               <div>
+              
+
+               {formData.propertyCategory !=="Đất nền" && <><div>
                   <Label>Nội thất</Label>
                   <Select onValueChange={(value) => handleInputChange("interior", value)}>
                     <SelectTrigger>
@@ -240,8 +247,7 @@ const CreatePost = () => {
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div className="flex justify-around gap-4 ">
+                 <div className="flex justify-around gap-4 ">
                   <div className="flex-col space-y-2">
                     <Label >Số phòng ngủ</Label>
                     <div className="flex items-center gap-2">
@@ -282,7 +288,39 @@ const CreatePost = () => {
                       </Button>
                     </div>
                   </div>
-                </div>
+                    {formData.propertyCategory !=="Căn hộ chung cư" &&
+                    <div className="flex-col space-y-2">
+                    <Label>Số Tầng</Label>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleNumberChange("floor", false)}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="w-12 text-center">{formData.floor} </span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleNumberChange("floor", true)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>}
+                  
+                </div><div>
+                  <Label>Hướng ban công</Label>
+                  <Select onValueChange={(value) => handleInputChange("direction", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn hướng nhà" />
+                    </SelectTrigger>
+                    <SelectContent>
+                    {directions.map(e => <SelectItem key={e.id} value={e.value}>{e.label}</SelectItem> )}
+                    </SelectContent>
+                  </Select>
+                </div></>}
 
                 <div>
                   <Label>Hướng nhà</Label>
@@ -297,6 +335,7 @@ const CreatePost = () => {
                 </div>
                 </div>
             </CollapsiblePostSection>
+           {/* info  */}
             <CollapsiblePostSection
               title="Thông tin liên hệ"
               isOpen={openSections.contact}
@@ -304,9 +343,9 @@ const CreatePost = () => {
               summary={renderSectionSummary('contact')}
             >
               <div className="space-y-4">
-                <Input value={formData.contactName} readOnly className="bg-gray-50" />
-                <Input value={formData.contactEmail} readOnly className="bg-gray-50" />
-                <Input value={formData.contactPhone} readOnly className="bg-gray-50" />
+                <Input value={me.fullname} readOnly className="bg-gray-50" />
+                <Input value={me.email} readOnly className="bg-gray-50" />
+                <Input value={me.phone} readOnly className="bg-gray-50" />
               </div>
             </CollapsiblePostSection>
             <CollapsiblePostSection
@@ -360,6 +399,7 @@ const CreatePost = () => {
             </div>
           </div>
         </div>
+        </ScrollArea>
       )}
 
       {!showAddressSelector && (
