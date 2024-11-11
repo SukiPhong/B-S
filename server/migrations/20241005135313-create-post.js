@@ -78,6 +78,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
+      isDraft:{
+        type:Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       ListingType: {
         type: Sequelize.ENUM,
         values: enumData.listingTypes

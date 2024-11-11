@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     bathroom: DataTypes.INTEGER,
     bedroom: DataTypes.INTEGER,
     isFurniture: DataTypes.BOOLEAN,
+    isDraft:DataTypes.BOOLEAN,
     ListingType: {
       type: DataTypes.ENUM,
       values: enumData.listingTypes

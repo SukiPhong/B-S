@@ -11,10 +11,10 @@ const CollapsiblePostSection = ({
   summary,
   optional = false,
 }) => (
-  <Collapsible open={isOpen} onOpenChange={onToggle} className="space-y-4  p-4 border-2 border-slate-300 rounded-xl">
+  <Collapsible open={isOpen} onOpenChange={onToggle} className="space-y-2  p-4 border-2 border-slate-600  bg-white rounded-xl">
     <CollapsibleTrigger className="flex justify-between items-center w-full">
       <div className="flex items-center gap-2">
-        <h3 className="text-lg font-medium">{title}</h3>
+        <h3 className="text-lg font-xs">{title}</h3>
         {optional && <span className="text-sm text-gray-500">(không bắt buộc)</span>}
       </div>
       {isOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}

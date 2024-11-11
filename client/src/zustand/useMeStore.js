@@ -6,19 +6,27 @@ const useMeStore = create(persist((set, get) => ({
     token: null,
     me: null,
     googleData: null,
-    setToken: (token) => set(() => ({ token })),
+    
+    setToken: (token) => set(() => ({ token ,  })),
     setMe: (me) => set(() => ({ me })),
     setGoogleData: (data) => set(() => ({ googleData: data })),
     isAuthenticated: () => get().token !== null,
     getCurrent: async () => {
+       
+       try {
         const response = await apiGetCurrent()
+    
         if (response.status === 200) {
-
+            
             return set(() => ({ me: response.data.data }))
         }
         else {
             return set(() => ({ me: null, token: null }))
         }
+       } catch (error) {
+         console.log(error)
+          return set(() => ({ me: null, token: null }))
+       }
     },
     logout: () => set(() => ({ token: null, me: null })),
 
@@ -30,6 +38,6 @@ const useMeStore = create(persist((set, get) => ({
             Object.entries(state).filter(([key]) => key === 'token' || key === 'me')
         )
 
-    //{token: null, me: null}
+   
 }))
 export default useMeStore

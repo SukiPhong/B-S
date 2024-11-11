@@ -7,7 +7,6 @@ import { Info } from "lucide-react";
 
 const UseBox = () => {
   const { me } = useMeStore();
-  console.log(generalDefaultAvatar(me.fullname));
   return (
     <div className="p-4 flex items-center gap-2">
       <div className="relative">
