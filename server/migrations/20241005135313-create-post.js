@@ -15,6 +15,7 @@ module.exports = {
       idPost: {
         type: Sequelize.STRING,
         allowNull: false,
+        defaultValue: Sequelize.literal( 'gen_random_uuid()' )
       },
       title: {
         type: Sequelize.STRING,
