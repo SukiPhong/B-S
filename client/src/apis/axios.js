@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_URL,
+baseURL: import.meta.env.VITE_SERVER_URL,// http://localhost:5100/api/v1
 });
 axiosInstance.interceptors.request.use((config) => {
   const store = window.localStorage.getItem("BDSv1/me");
@@ -23,11 +23,24 @@ export const endpoints = {
     signInWithGoogle: "/auth/googleLogin",
     register: "/auth/register",
     login: "/auth/login",
-    forgotPw:"auth/forgot/",
-    resetPw:"auth/reset-password/"
+    forgotPw:"/auth/forgot/",
+    resetPw:"/auth/reset-password/"
+    
   },
   user: {
-    getCurrent: "user/Current",
+    getCurrent: "/user/Current",
+    updatePassword:"/user/updatePassword",
+    updatePatchUser:"/user/updatePatchUser"
+  },
+  payment:{
+     getUrlVnPay:'/payment/create_payment_url',
+     returnPayment:'/payment/payment_return',
+     getHistory:'/payment/getHistory'
+  },
+  post:{
+    createPost:'/posts/',
+    getPosts:'/posts/',
+    deletePost:'/posts/'
   },
   external: {
     getProvinces:

@@ -24,7 +24,6 @@ const formSchema = z
     { message: "Mật khẩu không trùng nhau", path: ["confirmPassword"] }
   );
 const SetUpPassword = ({ onClose }) => {
-  const location = useLocation();
 
   const { googleData, setToken } = useMeStore();
   const form = useForm({
@@ -33,7 +32,7 @@ const SetUpPassword = ({ onClose }) => {
       password: "",
       confirmPassword: "",
     },
-    mode: "onChange",
+    mode: "onSubmit",
   });
   const onSubmit = async (value) => {
     if (!googleData) return alert("Toasty Error");
@@ -73,7 +72,6 @@ const SetUpPassword = ({ onClose }) => {
           <Button
             className="w-full relative top-2"
             type="submit"
-            onClick={console.log(location)}
           >
             Xác nhận
           </Button>
@@ -84,6 +82,6 @@ const SetUpPassword = ({ onClose }) => {
 };
 
 export default SetUpPassword;
-SetUpPassword.prototype = {
+SetUpPassword.Prototype = {
   onClose: PropTypes.func.isRequired,
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-const Image = ({ src, fallbackSrc, alt, ...props }) => {
+const Image = ({ src, fallbackSrc, alt}) => {
   const [imgDefault, setImgDefault] = useState(src);
   useEffect(() => {
     if (src) setImgDefault(src);

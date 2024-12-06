@@ -5,3 +5,17 @@ export const apiGetCurrent = () => {
         url: endpoints.user.getCurrent
     })
 }
+export const apiUpdatePassword = (data) => { 
+    return axios({
+        method:'patch',
+        url: endpoints.user.updatePassword,
+        data
+    })
+ }
+ export const apiUpdatePatchUser = (data) => { 
+    return axios({
+        method:'patch',
+        url: endpoints.user.updatePatchUser,
+        data
+    })
+ }

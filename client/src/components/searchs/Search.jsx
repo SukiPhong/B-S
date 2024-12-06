@@ -14,11 +14,11 @@ import { cn } from "@/lib/utils";
 
 import PopoverRange from "./PopoverRange";
 import PopoverCheckBox from "./PopoverCheckBox";
-const Search = () => {
+const Search = ({check=false}) => {
   const [activeTab, setActiveTab] = useState("Cho thuê");
   const [isShowProven, setIsShowProven] = useState(false);
   return (
-    <div className="absolute left-10 right-10 top-0 bottom-10 text-slate-50 flex items-center justify-center">
+    <div className={` ${check ?'w-auto h-[auto] mt-4':"absolute top-16"} left-10 right-10  text-slate-50 flex items-center justify-center`}>
       <div className="w-[945px] max-w-[90%]">
         <Tabs
           className="space-y-0"

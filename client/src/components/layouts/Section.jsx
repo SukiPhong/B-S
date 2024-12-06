@@ -5,7 +5,7 @@ const Section = ({ title, children, className, isBack, onBack }) => {
   return (
     <div
       className={cn(
-        "rounded-md bg-white space-y-6 border p-6 border-slate-200",
+        "rounded-md bg-white space-y-6 border p-3 border-slate-200",
         className
       )}
     >

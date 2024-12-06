@@ -58,7 +58,9 @@ const Header = () => {
               <Fragment key={el.id}>
                 {el.hasSub && (
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="pr-[10px] ">
+                    <NavigationMenuTrigger className="pr-[10px] 
+                    "
+                    >
                       {el.name}
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="p-2 grid grid-cols-2 min-w-80    ">

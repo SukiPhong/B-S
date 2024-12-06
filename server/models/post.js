@@ -1,9 +1,7 @@
-'use strict';
-const { enumData } = require('../utils/Constants');
+"use strict";
+const { enumData } = require("../utils/Constants");
 
-const {
-  Model
-} = require('sequelize');
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Post extends Model {
     /**
@@ -15,50 +13,56 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Post.init({
-    idPost: DataTypes.STRING,
-    title: DataTypes.STRING,
-    address: DataTypes.STRING,
-    province: DataTypes.STRING,
-    district: DataTypes.STRING,
-    ward: DataTypes.STRING,
-    price: DataTypes.BIGINT,
-    priceUnits: DataTypes.BIGINT,
-    size: DataTypes.INTEGER,
-    avgStar: DataTypes.FLOAT,
-    description: DataTypes.TEXT,
-    floor: DataTypes.INTEGER,
-    bathroom: DataTypes.INTEGER,
-    bedroom: DataTypes.INTEGER,
-    isFurniture: DataTypes.BOOLEAN,
-    isDraft:DataTypes.BOOLEAN,
-    ListingType: {
-      type: DataTypes.ENUM,
-      values: enumData.listingTypes
+  Post.init(
+    {
+      idPost: DataTypes.STRING,
+      title: DataTypes.STRING,
+      address: DataTypes.STRING,
+      province: DataTypes.STRING,
+      district: DataTypes.STRING,
+      ward: DataTypes.STRING,
+      price: DataTypes.BIGINT,
+      priceUnits: DataTypes.STRING,
+      size: DataTypes.INTEGER,
+      avgStar: DataTypes.FLOAT,
+      description: DataTypes.TEXT,
+      floor: DataTypes.INTEGER,
+      bathroom: DataTypes.INTEGER,
+      bedroom: DataTypes.INTEGER,
+      interior: {
+        type:DataTypes.ENUM,
+        values:enumData.interiors
+      },
+      ListingType: {
+        type: DataTypes.ENUM,
+        values: enumData.listingTypes,
+      },
+      properType: {
+        type: DataTypes.ENUM,
+        values: enumData.propertyTypes,
+      },
+      direction: {
+        type: DataTypes.ENUM,
+        values: enumData.directions,
+      },
+      balonDirection: {
+        type: DataTypes.ENUM,
+        values: enumData.directions,
+      },
+      verified: DataTypes.BOOLEAN,
+      expiredDate: DataTypes.DATE,
+      expireBoost: DataTypes.DATE,
+      images: DataTypes.ARRAY(DataTypes.STRING),
+      status: {
+        type: DataTypes.ENUM,
+       values: enumData.statusPost,
+      },
+      idUser: DataTypes.INTEGER,
     },
-    properType: {
-      type: DataTypes.ENUM,
-      values: enumData.propertyTypes
-    },
-    direction: {
-      type: DataTypes.ENUM,
-      values: enumData.directions
-    },
-    balonDirection: {
-      type: DataTypes.ENUM,
-      values: enumData.directions
-    },
-    verified: DataTypes.BOOLEAN,
-    expiredDate: DataTypes.DATE,
-    expireBoost: DataTypes.DATE,
-    status: {
-      type: DataTypes.ENUM,
-      values: enumData.postStatus
-    },
-    idUser: DataTypes.INTEGER,
-  }, {
-    sequelize,
-    modelName: 'Post',
-  });
+    {
+      sequelize,
+      modelName: "Post",
+    }
+  );
   return Post;
 };

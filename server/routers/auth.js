@@ -12,13 +12,11 @@ router.post('/googleLogin', AuthController.loginWithGoogle)
 router.get('/check-user/:email', AuthController.checkUserFromEmail)
 router.post('/register', validationDTO(Joi.object({
     email: EmailDTO,
-    phone: PhoneDTO,
     password: PasswordDTO,
     fullname: stringReq,
 }).xor('email', 'phone')), AuthController.register);
 router.post('/login', validationDTO(Joi.object({
     email: EmailDTO,
-    phone: PhoneDTO,
     password: PasswordDTO,
 }).xor('email', 'phone')), AuthController.login)
 router.post('/forgot/:email',AuthController.ForgotPassword)

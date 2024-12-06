@@ -1,2 +1,6 @@
  npx sequelize-cli model:generate --name Pricing --attributes firstName:string,lastName:string,email:string
  npx sequelize-cli db:migrate
+
+
+
+ npx sequelize-cli seed:generate --name user

@@ -40,7 +40,8 @@ const PopoverRange = ({ name, label, _name, options = [] }) => {
 
   return (
     <div>
-      <Popover>
+      <Popover
+      >
         <PopoverTrigger
           ref={triggerRef}
           className="w-full border rounded-md py-2 px-4 text-center"
@@ -53,7 +54,7 @@ const PopoverRange = ({ name, label, _name, options = [] }) => {
         >
           <div className="p-3 flex font-bold items-center justify-center border-b">
             <p>{label}</p> {/* Title of popover */}
-            <Button className="absolute right-1 top-1 " variant="transparent">
+            <Button className="absolute right-1 top-1 " variant="transparent" >
               <X size={16} />
             </Button>
           </div>

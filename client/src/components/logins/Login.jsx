@@ -13,26 +13,18 @@ import useMeStore from "@/zustand/useMeStore";
 import PropTypes from "prop-types";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
-import { useLocation } from "react-router-dom";
 import ForgotPassword from "./ForgotPassword";
 
 // Schema cho Đăng nhập
 const loginSchema = z.object({
-  emailOrPhone: z
+  email: z
     .string()
     .min(2, {
-      message: "Email hoặc số điện thoại phải có ít nhất 2 ký tự.",
+      message: "Email phải có ít nhất 2 ký tự.",
     })
-    .refine(
-      (val) => {
-        return (
-          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || /^[0-9]{10}$/.test(val)
-        );
-      },
-      {
-        message: "Email không hợp lệ hoặc số điện thoại phải có 10 chữ số.",
-      }
-    ),
+    .refine((val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
+      message: "Email không hợp lệ.",
+    }),
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
@@ -40,21 +32,15 @@ const loginSchema = z.object({
 
 // Schema cho Đăng ký
 const registerSchema = z.object({
-  emailOrPhone: z
+  email: z
     .string()
     .min(2, {
-      message: "Email hoặc số điện thoại phải có ít nhất 2 ký tự.",
+      message: "Email phải có ít nhất 2 ký tự.",
     })
-    .refine(
-      (val) => {
-        return (
-          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || /^[0-9]{10}$/.test(val)
-        );
-      },
-      {
-        message: "Email không hợp lệ hoặc số điện thoại phải có 10 chữ số.",
-      }
-    ),
+    .refine((val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
+      message: "Email không hợp lệ.",
+    }),
+
   fullname: z.string().min(1, {
     message: "Trường này là bắt buộc",
   }),
@@ -69,12 +55,11 @@ const Login = ({ onClose }) => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowForgotPassword, setIsShowForgotPassword] = useState(false);
   const { setGoogleData, setToken } = useMeStore();
-  const location = useLocation();
   // Sử dụng schema dựa trên variant
   const form = useForm({
     resolver: zodResolver(variant === "SIGNUP" ? registerSchema : loginSchema),
     defaultValues: {
-      emailOrPhone: "",
+      email: "",
       password: "",
       fullname: "",
     },
@@ -82,7 +67,6 @@ const Login = ({ onClose }) => {
 
   const toggleVariant = () => {
     setVariant(variant === "SIGNIN" ? "SIGNUP" : "SIGNIN");
-    console.log(location);
   };
 
   const handleSignInGoogle = useGoogleLogin({
@@ -114,16 +98,8 @@ const Login = ({ onClose }) => {
 
   const handleRegister = async (value) => {
     try {
-      const { emailOrPhone, fullname, password } = value;
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone);
-
-      const dataToSend = {
-        ...(isEmail ? { email: emailOrPhone } : { phone: emailOrPhone }),
-        fullname,
-        password,
-      };
-
-      const response = await apiRegister(dataToSend);
+      console.log(value);
+      const response = await apiRegister(value);
       if (response.data.success === true) {
         toast.success(response.data.message);
         setVariant("SIGNIN");
@@ -133,14 +109,13 @@ const Login = ({ onClose }) => {
     }
   };
 
-  const handleLogin = async ({ emailOrPhone, password }) => {
+  const handleLogin = async ({ email, password }) => {
     try {
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone);
-
       const dataToSend = {
-        ...(isEmail ? { email: emailOrPhone } : { phone: emailOrPhone }),
+        email,
         password,
       };
+      console.log(dataToSend)
       const response = await apiLogin(dataToSend);
       if (response.data.success) {
         toast.success(response.data.message);
@@ -178,11 +153,7 @@ const Login = ({ onClose }) => {
                 variant === "SIGNUP" ? handleRegister : handleLogin
               )}
             >
-              <FormInput
-                form={form}
-                name="emailOrPhone"
-                label="Email hoặc số điện thoại"
-              />
+              <FormInput form={form} name="email" label="Email " />
               {variant === "SIGNUP" && (
                 <FormInput form={form} name="fullname" label="Tên đầy đủ" />
               )}

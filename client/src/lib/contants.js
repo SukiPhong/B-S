@@ -1,3 +1,10 @@
+import {
+    QrCode,
+    CreditCard,
+    Wallet,
+    Building2,
+    CreditCardIcon,
+  } from "lucide-react";
 import slugify from "slugify";
 
 export const postTypes = [
@@ -252,3 +259,71 @@ export const directions = [
       value: "north"
     }
   ];
+ export  const pricingOptionsOfPost = [
+    { days: 5, pricePerDay: 3269, label: "10 ngày" },
+    { days: 10, pricePerDay: 2972, label: "5 ngày" },
+    { days: 15, pricePerDay: 2675, label: "15 ngày" },
+    { days: 30, pricePerDay: 2378, label: "30 ngày" },
+  ];
+  export const mockPaymentHistory = [
+    {
+      id: '1',
+      date: '2023-11-15',
+      amount: 500000,
+      description: 'Thanh toán hóa đơn điện tháng 11',
+      status: 'Thành công'
+    },
+    {
+      id: '2',
+      date: '2023-10-20',
+      amount: 1000000,
+      description: 'Nạp tiền vào ví điện tử',
+      status: 'Thành công'
+    },
+    {
+      id: '3',
+      date: '2023-09-05',
+      amount: 750000,
+      description: 'Thanh toán dịch vụ internet',
+      status: 'Đang xử lý'
+    },
+    {
+      id: '4',
+      date: '2023-08-30',
+      amount: 2000000,
+      description: 'Chuyển khoản ngân hàng',
+      status: 'Thành công'
+    },
+    {
+      id: '5',
+      date: '2023-07-12',
+      amount: 300000,
+      description: 'Mua sắm trực tuyến',
+      status: 'Thành công'
+    },
+     {
+      id: '6',
+      date: '2023-07-12',
+      amount: 330000,
+      description: 'Mua sắm trực tuyến',
+      status: 'Thất bại'
+    }
+  ];
+  //   100.000 nghin   200.000 nghin  500.000 nghin  1tr dong 2tr 10tr
+export  const quickAmounts = [
+    { amount: 100000, id: 1 },
+    { amount: 200000, id: 2 },
+    { amount: 500000, id: 3 },
+    { amount: 1000000, id: 4 },
+    { amount: 2000000, id: 5 },
+    { amount: 5000000, id: 6 },
+  ];
+export const historyPaymentLabel=[
+    {label:"Mã giao dịch",id:0},
+    {label:"Ngày", id:1},
+    {label:"Mô tả", id:2},
+    {label:"Số tiền", id:3},
+    {label:"Trạng thái", id:4},
+    {label:"Thời gian", id:5}
+
+]

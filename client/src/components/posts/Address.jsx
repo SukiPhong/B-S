@@ -4,7 +4,7 @@ import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 import { apiGetDistrictsById, apiGetWardsById } from '@/apis/external';
 import userExternal from '@/zustand/userExternal';
 
@@ -12,6 +12,7 @@ import userExternal from '@/zustand/userExternal';
 const Address = ({ onAddressSelect }) => {
     const [districtsData, setDistrictsData] = useState([])
     const [wardsData, setWardsData] = useState([])
+    const [toggleButton, setToggleButton] = useState(false)
     const [address, setAddress] = useState({
       province: "",
       district: "",
@@ -39,8 +40,15 @@ const Address = ({ onAddressSelect }) => {
       const selectedWard = wardsData.find(w => w.idCommune === value)
       setAddress(prev => ({ ...prev, ward: selectedWard.name }))
     }
-  
-    const handleConfirm = () => {
+    
+     useEffect(() => {
+      if( address.province && address.district && address.ward)
+        setToggleButton(true)
+     
+     }, [address.ward])
+     
+    const handleConfirm = (e) => {
+      e.preventDefault(); 
       if (!address.province || !address.district || !address.ward)  return 
       const fullAddress = [
         address?.street,
@@ -53,7 +61,7 @@ const Address = ({ onAddressSelect }) => {
     }
   
     return (
-      <div className="space-y-4 py-4  bg-slate-100 p-2 rounded-md">
+      <div className="space-y-4   bg-slate-100 p-2 rounded-md border-[1px] border-main "  >
         <div className="space-y-2">
           <Label htmlFor="province">Tỉnh/Thành</Label>
           <Select onValueChange={handleProvinceChange}>
@@ -109,13 +117,14 @@ const Address = ({ onAddressSelect }) => {
           <Input
             id="street"
             value={address.street}
+            disabled={!address.ward}
             onChange={(e) => setAddress(prev => ({ ...prev, street: e.target.value }))}
             placeholder="Nhập số nhà, tên đường"
           />
         </div>
   
        <div className='w-full   flex'>
-       <Button onClick={handleConfirm} className="flex w-[130px] ml-auto justify-end">Xác nhận địa chỉ</Button>
+       <Button onClick={handleConfirm} className="flex w-[80px] ml-auto justify-end" variant={toggleButton ? "default" :"unClick"}>Tiếp tục</Button>
        </div>
        
       </div>
@@ -125,6 +134,6 @@ const Address = ({ onAddressSelect }) => {
   }
 
 export default Address
-Address.PropTypes= {
-  onAddressSelect: PropTypes.func.isRequired
-}
+Address.propTypes = {
+  onAddressSelect: PropTypes.func
+};

@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import UpdatePassword from "./UpdatePassword";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const formSchema = z.object({
   email: z.string().optional(),
@@ -34,7 +36,6 @@ const Personal = () => {
     },
     resolver: zodResolver(formSchema),
   });
-
   useEffect(() => {
     if (!me) throw new Error("No personal");
     form.reset({
@@ -46,10 +47,10 @@ const Personal = () => {
       score: me.score || 0,
     });
   }, [me]);
-
   return (
     <div className="w-[700px] max-w-full m-auto ">
-      <Section title="Thông tin cá nhân">
+     <ScrollArea className="w-auto h-[550px]">
+     <Section title="Thông tin cá nhân">
         <Form {...form}>
           <form className="grid grid-cols-10">
             <div className="col-span-6 space-y-3">
@@ -62,7 +63,7 @@ const Personal = () => {
               <FormInput
                 form={form}
                 label="Số điện thoại"
-                name="phone "
+                name="phone"
                 readOnly={true}
               />
               <FormInput
@@ -117,6 +118,8 @@ const Personal = () => {
           </form>
         </Form>
       </Section>
+      <UpdatePassword/>
+     </ScrollArea>
     </div>
   );
 };

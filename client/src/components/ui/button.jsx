@@ -23,6 +23,8 @@ const buttonVariants = cva(
         link: "text-stone-900 underline-offset-4 hover:underline dark:text-stone-50",
         transparent:
           "bg-transparent hover:bg-transparent text-main  hover:underline",
+        unClick:
+        " bg-transparent  hover:bg-transparent text-dark hover:cursor-not-allowed"
       },
       size: {
         default: "h-10 px-4 py-2",

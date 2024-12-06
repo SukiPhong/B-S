@@ -14,8 +14,8 @@ module.exports = {
       },
       idPost: {
         type: Sequelize.STRING,
+        defaultValue: Sequelize.literal( 'gen_random_uuid()' ),
         allowNull: false,
-        defaultValue: Sequelize.literal( 'gen_random_uuid()' )
       },
       title: {
         type: Sequelize.STRING,
@@ -42,8 +42,7 @@ module.exports = {
         allowNull: false
       },
       priceUnits: {
-        type: Sequelize.BIGINT,
-        defaultValue: 0,
+        type: Sequelize.STRING,
         allowNull: false
       },
       size: {
@@ -66,26 +65,26 @@ module.exports = {
       floor: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
+        allowNull:true
       },
       bathroom: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
+        allowNull:true
       },
       bedroom: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
+        allowNull:true
       },
-      isFurniture: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
-      isDraft:{
-        type:Sequelize.BOOLEAN,
-        defaultValue: false,
+      interior: {
+        type: Sequelize.ENUM,
+        values: enumData.interiors
       },
       ListingType: {
         type: Sequelize.ENUM,
         values: enumData.listingTypes
+        
       },
       properType: {
         type: Sequelize.ENUM,
@@ -93,11 +92,13 @@ module.exports = {
       },
       direction: {
         type: Sequelize.ENUM,
-        values: enumData.directions
+        values: enumData.directions,
+     
       },
       balonDirection: {
         type: Sequelize.ENUM,
-        values: enumData.directions
+        values: enumData.directions,
+      
       },
       verified: {
         type: Sequelize.BOOLEAN,
@@ -105,7 +106,7 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM,
-        values: enumData.postStatus
+        values: enumData.statusPost,
       },
       expiredDate: {
         type: Sequelize.DATE,
@@ -114,6 +115,19 @@ module.exports = {
       expireBoost: {
         type: Sequelize.DATE
       },
+      images:{
+        type: Sequelize.ARRAY(Sequelize.STRING),
+      },
+      // images:{
+      //   type:Sequelize.TEXT,
+      //   get(){
+      //     const rawValue =this.getDataValue('images')
+      //     return rawValue ?JSON.parse(rawValue) : []
+      //   },
+      //   set(arrayImages){
+      //     this.setDataValue("images", JSON.stringify(arrayImages))
+      //   }
+      // }
       idUser: {
         type: Sequelize.INTEGER,
         references: {

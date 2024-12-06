@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import PropTypes from "prop-types";
 import { resetOutline } from "@/lib/classname";
 import { cn } from "@/lib/utils";
-const FormInput = ({ form, label, name, type = "text", readOnly = false ,placeholder }) => {
+
+const FormInput = ({ form, label, name, type = "text", readOnly = false, placeholder, required = false }) => {
   return (
     <FormField
       name={name}
@@ -36,12 +37,15 @@ const FormInput = ({ form, label, name, type = "text", readOnly = false ,placeho
 };
 
 export default FormInput;
+
 FormInput.propTypes = {
   form: PropTypes.shape({
     control: PropTypes.any.isRequired,
-  }),
+  }), 
   label: PropTypes.string,
   readOnly: PropTypes.bool,
   name: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(["text", "password"]),
+  type: PropTypes.oneOf(["text", "password", "number"]),
+  placeholder: PropTypes.string,
+  required: PropTypes.bool,
 };
