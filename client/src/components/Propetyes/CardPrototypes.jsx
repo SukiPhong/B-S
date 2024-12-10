@@ -13,7 +13,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const { setSearch } = useSearchStore();
-  const gridCols = me?.rPricing?.priority >= 3 ? "grid-cols-10" : "grid-cols-8";
+ const gridCols = me?.rPricing?.priority >= 3 ? "grid-cols-10" : "grid-cols-8";
   useEffect(() => {
     const fetchPrototypes = async (params) => {
       const response = await apiGetPrototypes({
@@ -56,8 +56,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-10 gap-3 mb-4">
-       <div className='col-'>
+      <div className="grid grid-cols-10 gap-3 mb-4 ">
        {properties?.rows?.map((property) => (
           <PropertyCard
             key={property.id}
@@ -66,7 +65,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
             onRemove={handleRemove}
           />
         ))}
-       </div>
+       
       </div>
       {properties?.rows?.length > 0 && (
         <PaginationComponent
