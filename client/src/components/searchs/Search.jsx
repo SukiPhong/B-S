@@ -11,20 +11,48 @@ import { Search as SearchIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import SearchProven from "./SearchProven";
 import { cn } from "@/lib/utils";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 import PopoverRange from "./PopoverRange";
 import PopoverCheckBox from "./PopoverCheckBox";
-const Search = ({check=false}) => {
+import { resetOutline } from "@/lib/classname";
+import { createSearchParams, useNavigate } from "react-router-dom";
+import { pathnames } from "@/lib/pathname";
+const Search = ({ check, noShowSearchProven = false }) => {
   const [activeTab, setActiveTab] = useState("Cho thuê");
   const [isShowProven, setIsShowProven] = useState(false);
+  const [searchTitle, setSearchTitle] = useState("");
+  const  navigate  = useNavigate();
+  const onSubmit = () => {
+    setIsShowProven(true);
+    const params = new Object();
+    params.title = searchTitle;
+    navigate({
+      pathname:
+       `${ activeTab === "Cho thuê"
+        ? pathnames.public.rentProperty
+        : pathnames.public.soldProperty}`,
+      search: createSearchParams( params ).toString(),
+    });
+    
+    // Thực hiện logic tìm kiếm tại đây
+  };
+  const handleCitySelect = (cityName) => {
+    setSearchTitle(cityName); // Cập nhật giá trị input khi chọn thành phố
+    setIsShowProven(false); // Đóng popup sau khi chọn thành phố
+  };
   return (
-    <div className={` ${check ?'w-auto h-[auto] mt-4':"absolute top-16"} left-10 right-10  text-slate-50 flex items-center justify-center`}>
+    <div
+      className={` ${
+        check ? "w-auto h-[auto] mt-4" : "absolute top-16"
+      } left-10 right-10  text-slate-50 flex items-center justify-center`}
+    >
       <div className="w-[945px] max-w-[90%]">
         <Tabs
           className="space-y-0"
           onValueChange={(value) => setActiveTab(value)}
           value={activeTab}
         >
+          {/* này là bán với cho thuê */}
           <TabsList className="rounded-b-none  bg-black/60 p-0 ">
             {postTypes.map((el) => (
               <TabsTrigger
@@ -36,6 +64,7 @@ const Search = ({check=false}) => {
               </TabsTrigger>
             ))}
           </TabsList>
+          {/* phần này là nội dung search */}
           {postTypes.map((el) => (
             <TabsContent
               className="bg-black/60 rounded-md rounded-tl-none p-4 space-y-4 text-sm"
@@ -53,14 +82,25 @@ const Search = ({check=false}) => {
               >
                 <p className="text-sm flex items-center gap-2 font-semibold text-slate-900">
                   <SearchIcon size={24} color="#222222" />
-                  <span>Trên toàn quốc</span>
                 </p>
-                <Button>Tìm kiếm</Button>
-                {isShowProven && (
+                <input
+                  type="text"
+                  placeholder="trên toàn quốc (địa chỉ)"
+                  value={searchTitle}
+                  onChange={(e) => setSearchTitle(e.target.value)}
+                  className={cn(
+                    resetOutline,
+                    "w-full bg-slate-50 border-x-0 border-gray-300 rounded-y-sm  px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 transition"
+                  )}
+                />
+
+                <Button onClick={onSubmit}>Tìm kiếm</Button>
+                {!noShowSearchProven && isShowProven && (
                   <SearchProven
                     onClose={() => {
                       setIsShowProven(false);
                     }}
+                    onCitySelect={handleCitySelect}
                   />
                 )}
               </div>
@@ -103,6 +143,6 @@ const Search = ({check=false}) => {
 };
 
 export default Search;
-Search.prototype={
-  check: PropTypes.bool
-}
+Search.prototype = {
+  check: PropTypes.bool,
+};

@@ -8,7 +8,7 @@ const PropertyLayout = ({ children, title }) => {
   return (
     <div className="w-[945px] mx-auto">
       <div className="relative h-[180px]">
-        <Search check={true} />
+        <Search check={true} noShowSearchProven={true} />
       </div>
       <div className="w-[850px] mx-auto">
         <div className="flex flex-col gap-2 py-4 border-b border-slate-400">

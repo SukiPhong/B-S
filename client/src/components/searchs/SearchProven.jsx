@@ -3,9 +3,12 @@ import { provenPost } from "@/lib/contants";
 import { X } from "lucide-react";
 import PropTypes from "prop-types";
 import userExternal from "@/zustand/userExternal";
-const SearchProven = ({ onClose }) => {
+const SearchProven = ({ onClose,onCitySelect }) => {
   const { provinces } = userExternal();
-
+const handleCitySelect = (cityName) => {
+    onCitySelect(cityName); // Gọi hàm onCitySelect để cập nhật giá trị
+    onClose(); // Đóng popup sau khi chọn thành phố
+  };
   return (
     <div className="absolute right-0 left-0 top-full  max-h-[340px]   py-2 overflow-auto  rounded-md rounded-t-none bg-slate-50 text-slate-600">
       <div className="flex items-center  px-6 py-2 border-b border-input justify-between">
@@ -50,6 +53,7 @@ const SearchProven = ({ onClose }) => {
               <p
                 key={el.idProvince}
                 className="text-slate-800  font-semibold cursor-pointer hover:underline     hover:text-primary "
+                 onClick={() => handleCitySelect(el.name)}
               >
                 {el.name}
               </p>
@@ -64,4 +68,5 @@ const SearchProven = ({ onClose }) => {
 export default SearchProven;
 SearchProven.prototype = {
   onClose: PropTypes.func.isRequired,
+  onCitySelect: PropTypes.func
 };
