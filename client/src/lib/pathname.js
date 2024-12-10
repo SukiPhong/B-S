@@ -7,9 +7,9 @@ export const pathnames = {
     soldProperty: "/nha-dat-ban",
     resetPassword: "/reset-password/:token",
     Property_Detail: "/detail",
-    Property_Detail__ID: "/detail/:pid",
+    Property_Detail__ID: "/detail/:idPost",
     Property_Edit: "/edit",
-    Property_Edit__ID: "/edit/:pid",
+    Property_Edit__ID: "/edit/:idPost",
   },
   users: {
     layout: "/thanh-vien/",

@@ -8,11 +8,16 @@ export const apiCreatePost = (data) => {
  }
  export const apiGetPrototypes = (params) =>(axios({
     method:"get",
-    url: endpoints.post.getPosts,
+    url: endpoints.post.Post,
     params
  }))
  export const apiDeletePostId = (pid) =>(axios({
     method:"delete",
-    url: endpoints.post.deletePost +{pid},
+    url: endpoints.post.Post +{pid},
    
  }))
+ export const apiGetPrototypesDetail = (idPost) =>(
+   axios({
+   method:"get",
+   url: endpoints.post.Post+idPost,
+}))

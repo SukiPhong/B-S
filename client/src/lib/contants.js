@@ -9,7 +9,7 @@ import slugify from "slugify";
 
 export const postTypes = [
     "Cho thuê",
-    "\u00A0\u00A0Bán\u00A0\u00A0"
+    "Bán"
 ].map((el, idx) => ({ id: idx, label: el, value: el }))
 export const postSoldTypes = [
     "Căn hộ chung cư",
@@ -265,7 +265,7 @@ export const directions = [
     { days: 15, pricePerDay: 2675, label: "15 ngày" },
     { days: 30, pricePerDay: 2378, label: "30 ngày" },
   ];
-  export const mockPaymentHistory = [
+  export const mockPaymentHistory = [   
     {
       id: '1',
       date: '2023-11-15',

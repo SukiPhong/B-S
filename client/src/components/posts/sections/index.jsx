@@ -1,8 +1,0 @@
-export {default as PropertyTypeSection} from './PropertyTypeSection'
-export { default as AddressSection} from './AddressSection'
-export { default as MainInfoSection} from './MainInfoSection'
-export { default as AdditionalInfoSection} from './AdditionalInfoSection'
-export { default as DescriptionSection} from './DescriptionSection'
-export { default as PricingDateSection} from './PricingDateSection'
-export { default as ContactSection} from './ContactSection'
-export { default as ImageUploadSection} from './ImageUploadSection'

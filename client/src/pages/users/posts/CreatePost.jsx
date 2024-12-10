@@ -15,7 +15,7 @@ import {
   MainInfoSection,
   PricingDateSection,
   PropertyTypeSection,
-} from "@/components/posts/sections";
+} from "@/components/posts/index";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "./postSchema";
 import { toast } from "sonner";

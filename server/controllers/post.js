@@ -13,7 +13,8 @@ const PostController = {
     });
   }),
   GetPosts: asyncHandler(async (req, res) => {
-    const { limit, title, page, fields, soft, ...query } = req.query;
+    const { limit, title, page, fields, soft,properType,status ,...query } = req.query;
+    console.log(properType)
     const options = {};
     //limit fields
     if (fields) {
@@ -33,6 +34,14 @@ const PostController = {
         `%${title.toLocaleLowerCase()}%`
       );
     }
+    if (properType) {
+      const types = properType.split(","); // Tách danh sách giá trị bằng dấu phẩy
+      query.properType = { [Sequelize.Op.in]: types }; // Sử dụng toán tử IN
+    }
+    if (status) {
+      const types = status.split(",");
+      query.status = { [Sequelize.Op.notIn]: types }; // Sử dụng toán tử IN
+    }
 
     query.expiredDate = { [Sequelize.Op.gt]: new Date() };
 
@@ -46,6 +55,13 @@ const PostController = {
 
       options.order = order;
     }
+    options.include = [
+      {
+        model: db.User,
+        as: "rUser",
+        attributes: ["fullname", "avatar", "phone"],
+      },
+    ];
 
     if (!limit) {
       const response = await db.Post.findAll({ where: query, ...options });
@@ -58,7 +74,7 @@ const PostController = {
 
     //pagination
 
-    const offset = (page && +page > 1 ? +page - 1 : 0 ) * limit;
+    const offset = (page && +page > 1 ? +page - 1 : 0) * limit;
     if (offset) options.offset = offset;
     options.limit = +limit;
     const response = await db.Post.findAndCountAll({
@@ -71,6 +87,24 @@ const PostController = {
       data: response
         ? { ...response, limit: +limit, page: +page ? +page : 1 }
         : null,
+    });
+  }),
+  getPostDetail: asyncHandler(async (req, res) => {
+    const { idPost } = req.params;
+    console.log(idPost);
+    const response = await db.Post.findOne({
+      where: { idPost },
+      include: [
+        {
+          model: db.User,
+          as: "rUser",
+          attributes: ["fullname", "avatar", "phone", "email"],
+        },
+      ],
+    });
+    return res.json({
+      success: Boolean(response) ? true : false,
+      data: response,
     });
   }),
 };

@@ -20,6 +20,6 @@ const Customtooltip = ({ trigger, content }) => {
 
 export default Customtooltip;
 Customtooltip.propTypes = {
-  trigger: PropTypes.object.isRequired,
-  content: PropTypes.node.isRequired,
+  trigger: PropTypes.object,
+  content: PropTypes.node,
 };

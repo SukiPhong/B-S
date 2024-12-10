@@ -12,7 +12,8 @@ import usePagination from "@/hook/usePagination";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createSearchParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
-const PaginationComponent = ({ total, currentPage, limit }) => {
+import { toast } from "sonner";
+const PaginationComponent = ({ total, currentPage, limit  }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const paginationArray = usePagination({
@@ -27,7 +28,6 @@ const PaginationComponent = ({ total, currentPage, limit }) => {
       search: createSearchParams({ page: number }).toString(),
     });
   };
-  console.log(paginationArray );
   return (
     <div>
       <Pagination>

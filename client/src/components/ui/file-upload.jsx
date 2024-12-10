@@ -5,7 +5,7 @@ import { Input } from "./input";
 import { buttonVariants } from "./button";
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
-import { apiUploadImages } from "@/apis/beyond";
+import { apiUploadImages } from "@/apis/external";
 import { ConditionRendering } from "../layouts";
 
 const FileUploaderContext = createContext(null);

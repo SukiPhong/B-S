@@ -4,3 +4,4 @@
 
 
  npx sequelize-cli seed:generate --name user
+//Lola_Kuhlman97@gmail.com 123456Phong1

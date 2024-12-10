@@ -11,13 +11,16 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { pathnames } from "./../../lib/pathname";
 import { Checkbox } from "../ui/checkbox";
-const PopoverCheckBox = ({ label, options = {}, name }) => {
+import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
+const PopoverCheckBox = ({ label, options = {}, name, activeTab }) => {
   const triggerRef = useRef(null); // Ref to the popover trigger
-  const [withContent, setWithContent] = useState(0); // Width of popover content
+  const [withContent, setWithContent] = useState(0);
+  const navigate = useNavigate();
   const form = useForm({
     defaultValues: {
-      [name]: [""],
+      [name]: [null],
     },
+    mode: "onChange",
   });
   // Use effect to get width of  popover trigger
   useEffect(() => {
@@ -26,6 +29,22 @@ const PopoverCheckBox = ({ label, options = {}, name }) => {
       setWithContent(width.width); // set width for  popover content
     }
   }, []);
+
+  const onSubmit = (data) => {
+    const updatedData = data[name].slice(1);
+    const params = new Object();
+    if (updatedData?.length) {
+      params.properType = updatedData.join(",");
+    }
+    navigate({
+      pathname: `${
+        activeTab === "Cho thuê"
+          ? pathnames.public.rentProperty
+          : pathnames.public.soldProperty
+      }`,
+      search: createSearchParams(params).toString(),
+    });
+  };
   return (
     <Popover>
       <PopoverTrigger
@@ -44,48 +63,52 @@ const PopoverCheckBox = ({ label, options = {}, name }) => {
             <X size={16} />
           </Button>
         </div>
-        <div className="p-2 space-y-4 max-h-[250px] overflow-y-auto">
-          <Form {...form}>
-            <FormField
-              name={name}
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="py-5">
-                  {options.map((el) => (
-                    <FormField
-                      className="flex items-center justify-between"
-                      key={el.id}
-                      name={name}
-                      control={form.control}
-                      render={() => (
-                        <FormItem className="flex items-center justify-between">
-                          <FormLabel>{el.label}</FormLabel>
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(el.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, el.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== el.id
-                                      )
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                </FormItem>
-              )}
-            />
-          </Form>
-        </div>
-        <div className="flex items-center justify-end border-t px-2 pb-2 h-[57px]">
-          <Button variant="default">Áp dụng</Button>
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="p-2 space-y-4 max-h-[250px] overflow-y-auto">
+              <FormField
+                name={name}
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="py-5">
+                    {options.map((el) => (
+                      <FormField
+                        className="flex items-center justify-between"
+                        key={el.id}
+                        name={name}
+                        control={form.control}
+                        render={() => (
+                          <FormItem className="flex items-center justify-between">
+                            <FormLabel>{el.label}</FormLabel>
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(el.label)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([...field.value, el.label])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          (value) => value !== el.label
+                                        )
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-end border-t px-2 pb-2 h-[57px]">
+              <Button variant="default" type="submit">
+                Áp dụng
+              </Button>
+            </div>
+          </form>
+        </Form>
       </PopoverContent>
     </Popover>
   );
@@ -95,4 +118,6 @@ export default PopoverCheckBox;
 PopoverCheckBox.propTypes = {
   label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
+  name: PropTypes.string.isRequired,
+  activeTab: PropTypes.string.isRequired,
 };

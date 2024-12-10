@@ -11,7 +11,7 @@ import { Search as SearchIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import SearchProven from "./SearchProven";
 import { cn } from "@/lib/utils";
-
+import PropTypes from 'prop-types'
 import PopoverRange from "./PopoverRange";
 import PopoverCheckBox from "./PopoverCheckBox";
 const Search = ({check=false}) => {
@@ -28,7 +28,7 @@ const Search = ({check=false}) => {
           <TabsList className="rounded-b-none  bg-black/60 p-0 ">
             {postTypes.map((el) => (
               <TabsTrigger
-                className="data-[state=active]:bg-main data-[state=active]:text-slate-50 h-full bg-slate-200 text-slate-950  first:rounded-tl-md last:rounded-tr-md rounded-b-none  "
+                className="data-[state=active]:bg-main data-[state=active]:text-slate-50 h-full w-[80px] bg-slate-200 text-slate-950  first:rounded-tl-md last:rounded-tr-md rounded-b-none  "
                 value={el.value}
                 key={el.id}
               >
@@ -91,6 +91,7 @@ const Search = ({check=false}) => {
                           label: el.name,
                         }))
                   }
+                  activeTab={activeTab}
                 />
               </div>
             </TabsContent>
@@ -102,3 +103,6 @@ const Search = ({check=false}) => {
 };
 
 export default Search;
+Search.prototype={
+  check: PropTypes.bool
+}

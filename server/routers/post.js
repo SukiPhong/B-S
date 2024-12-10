@@ -5,7 +5,7 @@ const {stringReq,  numberReq,} = require ('../utils/joi')
 const validationDTO = require('../middleware/validation')
 const Joi = require("joi")
 router.post('/',verify.verifyToken, PostController.CreatePost)
-router.get("/",verify.verifyToken,PostController.GetPosts)
-
+router.get("/",PostController.GetPosts)
+router.get('/:idPost',PostController.getPostDetail)
 
 module.exports = router

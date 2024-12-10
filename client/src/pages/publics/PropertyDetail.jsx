@@ -1,8 +1,9 @@
+import PropertiesDetail from '@/components/Propetyes/PropertiesDetail'
 import React from 'react'
 
 const PropertyDetail = () => {
   return (
-    <div>PropertyDetail</div>
+    <div><PropertiesDetail/></div>
   )
 }
 

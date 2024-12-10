@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -32,16 +32,31 @@ import menu from "./menu";
 import { LogOut } from "lucide-react";
 
 import { toast } from "sonner";
+import { pathnames } from "@/lib/pathname";
+import useSearchStore from "@/zustand/useSearchStore";
 
 const Header = () => {
   const [isShowDialog, setIsShowDialog] = useState(false);
   const { logout, me } = useMeStore();
+  const navigate = useNavigate();
+  const {setSearch} = useSearchStore()
   const onClose = useCallback(() => {
     setIsShowDialog(false);
   });
   const handleLogout = () => {
     logout();
     toast.info("Logout was successful");
+  };
+  const handleRedirect = (pathname, subName) => {
+    if (subName) {
+      setSearch("properType", subName); // Cập nhật trạng thái properType
+    } else {
+      setSearch("properType", ""); // Xóa trạng thái nếu không có subName
+    }
+    const searchParams = subName
+      ? `?${createSearchParams({ properType: subName }).toString()}`
+      : "";
+    navigate(`${pathname}${searchParams}`);
   };
   return (
     <div className="h-20 p-4 flex items-center shadow gap-2 justify-between">
@@ -58,8 +73,11 @@ const Header = () => {
               <Fragment key={el.id}>
                 {el.hasSub && (
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="pr-[10px] 
-                    "
+                    <NavigationMenuTrigger
+                      className="pr-[10px]"
+                      onClick={() => {
+                        handleRedirect(el.pathname);
+                      }}
                     >
                       {el.name}
                     </NavigationMenuTrigger>
@@ -68,6 +86,10 @@ const Header = () => {
                         <NavigationMenuLink
                           className={cn(naviItemCn)}
                           key={sub.pathname}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleRedirect(el.pathname, sub.name);
+                          }}
                         >
                           {sub.name}
                         </NavigationMenuLink>

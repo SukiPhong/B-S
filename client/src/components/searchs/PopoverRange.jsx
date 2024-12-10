@@ -37,11 +37,12 @@ const PopoverRange = ({ name, label, _name, options = [] }) => {
       setWithContent(width.width); // set width for  popover content
     }
   }, []);
-
+  const onSubmit =(data)=>{
+    
+  }
   return (
     <div>
-      <Popover
-      >
+      <Popover>
         <PopoverTrigger
           ref={triggerRef}
           className="w-full border rounded-md py-2 px-4 text-center"
@@ -54,74 +55,77 @@ const PopoverRange = ({ name, label, _name, options = [] }) => {
         >
           <div className="p-3 flex font-bold items-center justify-center border-b">
             <p>{label}</p> {/* Title of popover */}
-            <Button className="absolute right-1 top-1 " variant="transparent" >
+            <Button className="absolute right-1 top-1 " variant="transparent">
               <X size={16} />
             </Button>
           </div>
-          <div className="p-2 space-y-4 max-h-[250px] overflow-y-auto">
-            <div className="flex items-center justify-center gap-4">
-              <div className="flex flex-col items-center">
-                <p className="font-bold text-xs mb-2">{`${label} thấp nhất`}</p>
-                <Input placeholder="Từ" className="w-[90px]" />
-              </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="p-2 space-y-4 max-h-[250px] overflow-y-auto">
+                <div className="flex items-center justify-center gap-4">
+                  <div className="flex flex-col items-center">
+                    <p className="font-bold text-xs mb-2">{`${label} thấp nhất`}</p>
+                    <Input placeholder="Từ" className="w-[90px]" />
+                  </div>
 
-              <div className="flex flex-col items-center mt-6">
-                <MoveRight size={16} />
-              </div>
+                  <div className="flex flex-col items-center mt-6">
+                    <MoveRight size={16} />
+                  </div>
 
-              <div className="flex flex-col items-center">
-                <p className="font-bold text-xs mb-2">{`${label} cao nhất`}</p>
-                <Input placeholder="Đến" className="w-[90px]" />
-              </div>
-            </div>
-            <Form {...form}>
-              <FormField
-                name={name}
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="py-3">
-                    <Slider
-                      onValueChange={(val) => form.setValue(name, val)}
-                      value={field.value}
-                      max={100}
-                      min={0}
-                      step={1}
-                    />
-                  </FormItem>
-                )}
-              />
+                  <div className="flex flex-col items-center">
+                    <p className="font-bold text-xs mb-2">{`${label} cao nhất`}</p>
+                    <Input placeholder="Đến" className="w-[90px]" />
+                  </div>
+                </div>
 
-              <FormField
-                name={_name}
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="py-5">
-                    <FormControl>
-                      <RadioGroup
+                <FormField
+                  name={name}
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="py-3">
+                      <Slider
+                        onValueChange={(val) => form.setValue(name, val)}
                         value={field.value}
-                        onValueChange={field.onChange} // Update value radio group in form
-                      >
-                        {options.map((el) => (
-                          <FormItem
-                            className="flex items-center justify-between"
-                            key={el.id}
-                          >
-                            <FormLabel>{el.label}</FormLabel>
-                            <FormControl>
-                              <RadioGroupItem value={el.value} />
-                            </FormControl>
-                          </FormItem>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </Form>
-          </div>
-          <div className="flex items-center justify-end border-t px-2 pb-2 h-[57px]">
-            <Button variant="default">Áp dụng</Button>
-          </div>
+                        max={100}
+                        min={0}
+                        step={1}
+                      />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name={_name}
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="py-5">
+                      <FormControl>
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange} // Update value radio group in form
+                        >
+                          {options.map((el) => (
+                            <FormItem
+                              className="flex items-center justify-between"
+                              key={el.id}
+                            >
+                              <FormLabel>{el.label}</FormLabel>
+                              <FormControl>
+                                <RadioGroupItem value={el.value} />
+                              </FormControl>
+                            </FormItem>
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex items-center justify-end border-t px-2 pb-2 h-[57px]">
+                <Button variant="default"type="submit">Áp dụng</Button>
+              </div>
+            </form>
+          </Form>
         </PopoverContent>
       </Popover>
     </div>

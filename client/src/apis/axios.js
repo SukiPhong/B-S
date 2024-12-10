@@ -38,9 +38,7 @@ export const endpoints = {
      getHistory:'/payment/getHistory'
   },
   post:{
-    createPost:'/posts/',
-    getPosts:'/posts/',
-    deletePost:'/posts/'
+    Post:'/posts/',// create  get detail delete
   },
   external: {
     getProvinces:
@@ -49,5 +47,8 @@ export const endpoints = {
       "https://vietnam-administrative-division-json-server-swart.vercel.app/district/?idProvince=",
     getWardsById:
       "https://vietnam-administrative-division-json-server-swart.vercel.app/commune/?idDistrict=",  
+  },
+  cloudinary: {
+    Cloudinary:`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload`
   },
 };
