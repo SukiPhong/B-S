@@ -3,6 +3,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 import useMeStore from "./zustand/useMeStore";
 import userExternal from "./zustand/userExternal";
+import useWishlistStore from "./zustand/useWishList";
+import { Footer } from "./components/footer";
 
 const App = () => {
   const { token, getCurrent } = useMeStore();
@@ -11,12 +13,15 @@ const App = () => {
     getProvinces();
   }, []);
   useEffect(() => {
-    if (token) getCurrent();
+    if (token) {
+      getCurrent();
+    }
   }, [token]);
   return (
     <main>
       <Outlet />
       <Toaster position="top-center" expand={false} richColors />
+    
     </main>
   );
 };

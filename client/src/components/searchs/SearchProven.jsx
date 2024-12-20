@@ -1,16 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { provenPost } from "@/lib/contants";
+import userExternal from "@/zustand/userExternal";
 import { X } from "lucide-react";
 import PropTypes from "prop-types";
-import userExternal from "@/zustand/userExternal";
+
 const SearchProven = ({ onClose,onCitySelect }) => {
   const { provinces } = userExternal();
+  
 const handleCitySelect = (cityName) => {
     onCitySelect(cityName); // Gọi hàm onCitySelect để cập nhật giá trị
     onClose(); // Đóng popup sau khi chọn thành phố
   };
   return (
-    <div className="absolute right-0 left-0 top-full  max-h-[340px]   py-2 overflow-auto  rounded-md rounded-t-none bg-slate-50 text-slate-600">
+    <div className="absolute z-999 right-0 left-0 top-full  max-h-[240px]   py-2 overflow-auto  rounded-md rounded-t-none bg-slate-50 text-slate-600">
       <div className="flex items-center  px-6 py-2 border-b border-input justify-between">
         <p className="text-slate-600 font-bold text-sm">
           Bạn muốn tìm bất động sản ở tình thành nào
@@ -28,7 +30,7 @@ const handleCitySelect = (cityName) => {
         <div className="space-y-4">
           <p>Các thành phố nỗi bật</p>
           <div className="flex items-center justify-around rounded-md gap-4">
-            {provenPost.map((el) => (
+            {provenPost?.map((el) => (
               <div
                 key={el.id}
                 className="aspect-[3/2] group relative rounded-md overflow-hidden flex-1"
@@ -49,7 +51,7 @@ const handleCitySelect = (cityName) => {
         <div className="space-y-10 ">
           <p>Tất cả tỉnh thành</p>
           <div className="grid grid-cols-6 gap-6  ">
-            {provinces.map((el) => (
+            {provinces?.map((el) => (
               <p
                 key={el.idProvince}
                 className="text-slate-800  font-semibold cursor-pointer hover:underline     hover:text-primary "

@@ -18,7 +18,7 @@ const UseBox = () => {
     prevMeRef.current = me;
   }, [me]);
   return (
-    <div className="p-4 flex items-center gap-2">
+    <div className="p-4 flex flex-col lg:flex-row items-center gap-2">
       <div className="relative">
         <Image
           className="w-14 h-14 object-cover  "

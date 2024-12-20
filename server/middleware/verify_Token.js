@@ -10,7 +10,7 @@ const verifyToken = asyncHandler(async (req, res, next) => {
                 return res.status(401).json({
                     success: false,
                     message: "Token is not valid",
-
+                    err: err
                 })
             }
             req.user = user;
@@ -35,9 +35,9 @@ const verifyTokenAdmin = asyncHandler(async (req, res, next) => {
         })
     next();
 })
-const AccessToken = (userId) => {
+const AccessToken = (userId,Role) => {
     return jwt.sign(
-        { userId },
+        { userId ,Role},
         process.env.SECRET_KEY_JWT,
         { expiresIn: "1d" }
     );
@@ -54,5 +54,5 @@ module.exports = {
     verifyTokenAdmin,
     verifyToken,
     AccessToken,
-    RefreshToken
+    RefreshToken,
 }

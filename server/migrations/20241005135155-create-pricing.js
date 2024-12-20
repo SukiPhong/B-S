@@ -40,6 +40,12 @@ module.exports = {
       imgUrl: {
         type: Sequelize.STRING
       },
+      recommended:{
+        type:Sequelize.BOOLEAN
+      },
+      features:{
+        type:Sequelize.TEXT
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

@@ -16,17 +16,17 @@ const BannerSlider = () => {
       api?.scrollNext();
     }, 3000);
   };
-  // useEffect(() => {
-  //   if (!api) return;
-  //   startAutoScroll();
+  useEffect(() => {
+    if (!api) return;
+    startAutoScroll();
 
-  //   return () => {
-  //     if (intervalRef.current) clearInterval(intervalRef.);
-  //   };
-  // }, [api]);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [api]);
 
   return (
-    <div className="w-full h-1/3">
+    <div className="w-full h-1/3 ">
       <Carousel
         setApi={setApi}
         opts={{
@@ -34,7 +34,7 @@ const BannerSlider = () => {
         }}
       >
         <CarouselContent>
-          {Banner.map((el) => (
+          {Banner?.map((el) => (
             <CarouselItem key={el.id}>
               <img
                 src={el.imgUrlBanner}

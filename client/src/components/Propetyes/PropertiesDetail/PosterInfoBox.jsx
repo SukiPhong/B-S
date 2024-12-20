@@ -16,6 +16,7 @@ import { Image } from "@/components/layouts";
 import { formatPhoneNumber } from "@/lib/fn";
 import useMeStore from "@/zustand/useMeStore";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
   const [showFullPhone, setShowFullPhone] = useState(false);
@@ -45,7 +46,7 @@ const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
             </p>
           </div>
         </div>
-  
+
         {/* Nút bên phải */}
         <Button
           size="sm"
@@ -81,10 +82,7 @@ const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
               {formatPhoneNumber(phone, showFullPhone)}
             </p>
           </div>
-          <Button
-            className="w-full"
-            onClick={handleShowPhone}
-          >
+          <Button className="w-full" onClick={handleShowPhone}>
             <Phone className="mr-2 h-4 w-4" />
             Hiển số
           </Button>
@@ -92,9 +90,15 @@ const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
             <Mail className="mr-2 h-4 w-4" />
             Gửi email
           </Button>
-          <Button className="w-full">
-            <MessageCircle className="mr-2 h-4 w-4" />
-            Chat qua Zalo
+          <Button className="w-full flex">
+            <Link
+              to={`https://chat.zalo.me/?phone=${phone}`}
+              target="_blank"
+              className="flex justify-center"
+            >
+              <MessageCircle className="mr-2 h-4 w-4" />
+              Chat qua Zalo
+            </Link>
           </Button>
         </CardContent>
       </Card>

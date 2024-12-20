@@ -19,3 +19,10 @@ export const apiGetHistory = () =>
     method: "get",
     url: endpoints.payment.getHistory,
   });
+  export const apiGetHistorys = (params) =>
+    axios({
+      method: "get",
+      url: endpoints.payment.getHistorys,
+      params
+    });
+  

@@ -57,7 +57,14 @@ module.exports = {
         },
         defaultValue: 1
       },
-
+      Role:{
+        type: Sequelize.BOOLEAN,
+        defaultValue:false
+      },
+      packageExprideday:{
+        type:Sequelize.DATE,
+        defaultValue:null
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

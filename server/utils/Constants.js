@@ -64,6 +64,8 @@ module.exports = {
       imgUrl: "/svg/bronze.svg",
       createdAt: new Date(),
       updatedAt: new Date(),
+      features:
+        "Đăng tin cơ bản,Hiển thị vị trí trên bản đồ,Tin đăng thứ 2,Hỗ trợ cơ bản 24/7",
     },
     {
       name: "Bạc",
@@ -77,6 +79,8 @@ module.exports = {
       imgUrl: "/svg/silver.svg",
       createdAt: new Date(),
       updatedAt: new Date(),
+      features:
+        "Tất cả tính năng gói Đồng ,AI hỗ trợ ,viết tin đăng,Ưu tiên hiển thị tin,Phân tích số liệu cơ bản",
     },
     {
       name: "Vàng",
@@ -90,6 +94,9 @@ module.exports = {
       imgUrl: "/svg/gold.svg",
       createdAt: new Date(),
       updatedAt: new Date(),
+      features:
+        "Tất cả tính năng gói Bạc ,Hiển thị thông tin người đăng ,Thông tin chi tiết trên bản đồ,Phân tích chuyên sâu ,Hỗ trợ ưu tiên 24/7",
+      recommended: true,
     },
     {
       name: "Kim Cương",
@@ -103,9 +110,11 @@ module.exports = {
       imgUrl: "/svg/diamond.svg",
       createdAt: new Date(),
       updatedAt: new Date(),
+      features:
+        "Tất cả tính năng gói Vàng,Vị trí hiển thị tốt nhất,Công cụ phân tích cao cấp,Hỗ trợ VIP 24/7,Tùy chỉnh thông tin hiển thị,Báo cáo chi tiết hàng tháng ",
     },
   ],
-  users: Array.from([...Array(10).keys()]).map(() => ({
+  users: Array.from([...Array(10).keys()]).map((_, idx, array) => ({
     fullname: faker.person.fullName(),
     phone: "0" + faker.string.numeric(9),
     email: faker.internet.email({
@@ -116,6 +125,7 @@ module.exports = {
     idPricing: faker.number.int({ min: 1, max: 5 }),
     balance: faker.number.int({ min: 0, max: 5000000 }),
     score: faker.number.int({ min: 0, max: 2000000 }),
+    Role: idx === array.length - 1, // Chỉ số cuối cùng sẽ là true
     updatedAt: new Date(),
     createdAt: new Date(),
   })),
@@ -178,25 +188,27 @@ module.exports = {
     verified: faker.datatype.boolean(),
     expiredDate: faker.date.future(),
     expireBoost: faker.date.future(),
-    images: Array.from({ length: faker.number.int({ max: 7, min: 3 }) }).map(() => {
-      // Tạo danh mục ngẫu nhiên để tăng tính đa dạng hình ảnh
-      const category = faker.helpers.arrayElement([
-        "nature",
-        "architecture",
-        "business",
-        "people",
-        "animals",
-        "technology",
-        "fashion",
-        "food",
-        "nightlife",
-      ]);
-      return `${faker.image.urlLoremFlickr({
-        category,
-        width: 600,
-        height: 400,
-      })}?random=${faker.string.numeric(10)}`;
-    }),
+    images: Array.from({ length: faker.number.int({ max: 7, min: 3 }) }).map(
+      () => {
+        // Tạo danh mục ngẫu nhiên để tăng tính đa dạng hình ảnh
+        const category = faker.helpers.arrayElement([
+          "nature",
+          "architecture",
+          "business",
+          "people",
+          "animals",
+          "technology",
+          "fashion",
+          "food",
+          "nightlife",
+        ]);
+        return `${faker.image.urlLoremFlickr({
+          category,
+          width: 600,
+          height: 400,
+        })}?random=${faker.string.numeric(10)}`;
+      }
+    ),
     status: faker.helpers.arrayElement([
       "Chờ duyệt",
       "Còn trống",

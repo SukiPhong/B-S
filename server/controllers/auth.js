@@ -30,7 +30,7 @@ const AuthController = {
     //     process.env.SECRET_KEY_JWT,
     //     { expiresIn: "1d" }
     // );
-    const token = AccessToken(userId);
+    const token = AccessToken(userId,Role=false);
     return res.json({
       success: true,
       message: "Login successful",
@@ -92,7 +92,7 @@ const AuthController = {
         .json({ success: false, message: "Invalid password " });
     }
 
-    const token = AccessToken(user.id);
+    const token = AccessToken(user.id,user.Role);
     const PwToken = RefreshToken(user.id);
     const PwExpiry = jwt.decode(PwToken).exp;
     const response = await db.User.update(

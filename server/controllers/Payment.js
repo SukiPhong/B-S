@@ -3,6 +3,7 @@ const CryptoJS = require("crypto-js");
 const QueryString = require("qs");
 const asyncHandler = require("express-async-handler");
 const db = require("../models");
+const { Op } = require("sequelize");
 const Payment = {
   createPaymentUrl: asyncHandler((req, res) => {
     var ipAddr =
@@ -56,10 +57,10 @@ const Payment = {
   }),
 
   returnPayMent: asyncHandler(async (req, res) => {
-     const { vnp_Params } = req.body;
-   
-    const { userId} = req.user
-    
+    const { vnp_Params } = req.body;
+
+    const { userId } = req.user;
+
     let {
       vnp_TxnRef,
       vnp_Amount,
@@ -74,7 +75,7 @@ const Payment = {
       vnp_OrderInfo,
       vnp_TransactionNo,
     } = vnp_Params;
-     
+
     if (
       !vnp_SecureHash ||
       !vnp_TxnRef ||
@@ -82,7 +83,7 @@ const Payment = {
       !vnp_ResponseCode ||
       !vnp_TmnCode
     ) {
-     throw new Error("Missing Input");
+      throw new Error("Missing Input");
     }
     let secureHash = vnp_SecureHash;
     let tmnCode = process.env.VNP_TMN_CODE || "";
@@ -96,35 +97,67 @@ const Payment = {
       return 2;
     }
     vnp_Amount = (vnp_Amount * 1) / 100;
-     vnp_Params["vnp_Amount"] =vnp_Amount
+    vnp_Params["vnp_Amount"] = vnp_Amount;
+
     // Insert History
     const response = await db.HistoryPayment.create({
-      transactionId:vnp_Params[vnp_BankTranNo],
-      data:vnp_Params,
-      idUser:userId
+      transactionId: vnp_Params[vnp_BankTranNo],
+      data: vnp_Params,
+      TYPE: "VNPAY",
+      idUser: userId,
     });
     return res.json({
       success: true,
-      message: '1',
-      amount: vnp_Amount
+      message: "1",
+      amount: vnp_Amount,
     });
   }),
-  getHistory : asyncHandler(async (req,res) => {
-      const {userId} = req.user
-      const response = await  db.HistoryPayment.findAll({
-        where:{idUser:userId},
-      }) 
-      return res.json({
-        success: response ? true : false,
-        message: response ? "Call api success" : "failed",
-        data:response
-      })
-   }),
-   getHistorys: asyncHandler(async (req,res) =>{
-    const {userId} = req.user
-    
-    return res.json({})
-   })
+  getHistory: asyncHandler(async (req, res) => {
+    const { userId } = req.user;
+    const response = await db.HistoryPayment.findAll({
+      where: { idUser: userId },
+    });
+    return res.json({
+      success: response ? true : false,
+      message: response ? "Call api success" : "failed",
+      data: response,
+    });
+  }),
+  getHistorys: asyncHandler(async (req, res) => {
+    const { Role } = req.user;
+    const { limit, page, fullname } = req.query;
+    console.log(limit, page,fullname);
+    if (!Role)
+      return res
+        .status(400)
+        .json({ success: false, message: "Bạn không có quyền truy cập" });
+        const whereCondition = fullname   
+        ? {  
+            '$rUser.fullname$': {  
+                [Op.like]: `%${fullname}%`, // LIKE for partial matches  
+            },  
+        }  
+        : {};
+    const response = await db.HistoryPayment.findAndCountAll({
+      limit: +limit,
+      offset: (page && +page > 1 ? +page - 1 : 0) * limit,
+      include: [
+        {
+          model: db.User,
+          as: "rUser",
+          attributes: ["email", "phone", "fullname"],
+        },
+      ],
+      where: whereCondition
+    });
+    return res.json({
+      success: Boolean(response) ? true : false,
+      message: Boolean(response)
+        ? "Lấy dữ liệu thành công"
+        : "Lấy dữ liệu thất bại",
+      data: { ...response, limit: +limit, page: +page ? +page : 1 },
+    });
+  }),
 };
 module.exports = Payment;
 function sortObject(obj) {

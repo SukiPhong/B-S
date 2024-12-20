@@ -3,7 +3,7 @@ import NavMenu from "./NavMenu";
 
 const UseSlideBar = () => {
   return (
-    <div className="w-full h-full bg-white">
+    <div className="w-2/3 lg:w-full h-full bg-white">
       <UseBox />
       <NavMenu />
     </div>

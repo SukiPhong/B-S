@@ -1,9 +1,11 @@
+import { changePriceToString } from "./fn";
+
 export const getStatusColor = (status) => {
   const statusColors = {
-    'Đang cập nhật': 'bg-orange-500',
-    'đã bàn giao': 'bg-green-500',
-    'Còn trống': 'bg-blue-500',
-    'default': 'bg-gray-500'
+    'Đang cập nhật': 'bg-[#0C5776]',
+    'đã bàn giao': 'bg-[#2C99AE]',
+    'Còn trống': 'bg-blue-400',
+    'default': 'bg-[#BCFEFD]'
   };
   return statusColors[status] || statusColors.default;
 };
@@ -14,5 +16,5 @@ export const formatPrice = (price, priceUnits) => {
   }
   return Number(price) === 0
     ? "Liên hệ"
-    : `${Number(price).toLocaleString()}${priceUnits === 'Giá/m²' ? '/m²' : 'VND'}`;
+    : `${changePriceToString(String(price))}${priceUnits === 'Giá/m²' ? '/m²' : '\n VND'}`;
 };

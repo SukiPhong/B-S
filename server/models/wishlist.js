@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Wishlist.belongsTo(models.Post,{foreignKey:"idPost",as:'rPost'})
     }
   }
   Wishlist.init({

@@ -25,14 +25,15 @@ const PaginationComponent = ({ total, currentPage, limit  }) => {
   const handleChangePage = (number) => {
     navigate({
       pathname: location.pathname,
-      search: createSearchParams({ page: number }).toString(),
+      search: createSearchParams({ page: +number }).toString(),
     });
   };
+  console.log(paginationArray)
   return (
     <div>
       <Pagination>
         <PaginationContent>
-          {paginationArray.length > 1 && (
+          {paginationArray?.length > 1 && (
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => handleChangePage(Math.max(1, currentPage - 1))}
@@ -41,7 +42,7 @@ const PaginationComponent = ({ total, currentPage, limit  }) => {
               />
             </PaginationItem>
           )}
-          {paginationArray.map((page, index) => (
+          {paginationArray?.map((page, index) => (
             <PaginationItem key={index}>
               {page === "..." && typeof page !== "number" ? (
                 <PaginationEllipsis />
@@ -55,7 +56,7 @@ const PaginationComponent = ({ total, currentPage, limit  }) => {
               )}
             </PaginationItem>
           ))}
-          {paginationArray.length > 1 && (
+          {paginationArray?.length > 1 && (
             <PaginationItem>
               <PaginationNext
                 onClick={() =>

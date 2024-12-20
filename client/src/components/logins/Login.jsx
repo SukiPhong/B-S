@@ -98,7 +98,6 @@ const Login = ({ onClose }) => {
 
   const handleRegister = async (value) => {
     try {
-      console.log(value);
       const response = await apiRegister(value);
       if (response.data.success === true) {
         toast.success(response.data.message);
@@ -115,7 +114,6 @@ const Login = ({ onClose }) => {
         email,
         password,
       };
-      console.log(dataToSend)
       const response = await apiLogin(dataToSend);
       if (response.data.success) {
         toast.success(response.data.message);

@@ -19,6 +19,9 @@ module.exports = {
           key: 'id'
         }
       },
+      TYPE:{
+        type:Sequelize.STRING,
+      },
       data:{
         type: Sequelize.JSONB,
 

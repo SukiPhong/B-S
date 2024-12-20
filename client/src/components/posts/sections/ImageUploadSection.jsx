@@ -20,6 +20,11 @@ const ImageUploadSection = ({ form, onToggle, isOpen, title }) => {
     maxSize: 1 * 1024 * 1024,
   };
 
+  useEffect(() => {
+    // Initialize files state with existing images from form
+    const existingImages = form.getValues("images") || [];
+    setFiles(existingImages.map(url => ({ url })));
+  }, [form]);
   const handleFileChange = (newFiles) => {
     setFiles(newFiles);
 

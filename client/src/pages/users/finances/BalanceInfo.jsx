@@ -1,6 +1,9 @@
 import { apiVnPayReturn } from "@/apis/payment";
-import { sortObject } from "@/lib/fn";
+import { Section } from "@/components/layouts";
+import InfoCard from "@/components/layouts/InfoCard";
+import { numberToCurrencyText, sortObject } from "@/lib/fn";
 import useMeStore from "@/zustand/useMeStore";
+import { Building } from "lucide-react";
 import { useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -45,7 +48,33 @@ const BalanceInfo = () => {
   const removeUrlParams = () => {
     window.history.replaceState(null, document.title, window.location.pathname);
   };
-  return <div>BalanceInfo</div>;
+  return (
+    <div>
+      <Section title={"Số dư của bạn"} className="w-2/3 mx-auto  h-full  mt-20">
+        <div className="grid grid-cols-6 h-32">
+          <div className="col-span-2">
+            <div className="flex-col pl-4 space-y-2 border-r-4 ">
+              <span className="flex font-semibold underline">Tài khoản </span>
+              <span className="flex text-main font-roboto">
+                {(+me.balance).toLocaleString()} nghìn đồng
+              </span>
+              <span className="text-xs capitalize">
+                {numberToCurrencyText(+me.balance)}
+              </span>
+            </div>
+          </div>
+          <div className="col-span-4 font-semibold pl-4">
+            <span>3 giao dịch gần đây nhất của bạn là:</span>
+            <img
+              src="/png/placeholder.png?height=40&width=40"
+              alt=""
+              className="w-14 h-14"
+            />
+          </div>
+        </div>
+      </Section>
+    </div>
+  );
 };
 
 export default BalanceInfo;

@@ -27,8 +27,9 @@ module.exports = (sequelize, DataTypes) => {
     requireScoreNextLevel: DataTypes.INTEGER,
     price: DataTypes.BIGINT,
     expiredDay: DataTypes.INTEGER,
-    imgUrl: DataTypes.STRING
-
+    imgUrl: DataTypes.STRING,
+    recommended:DataTypes.BOOLEAN,
+    features:DataTypes.TEXT,  
   }, {
     sequelize,
     modelName: 'Pricing',

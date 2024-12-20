@@ -7,20 +7,25 @@ import { Button } from '../ui/button';
 import PropTypes from "prop-types";
 import { apiGetDistrictsById, apiGetWardsById } from '@/apis/external';
 import userExternal from '@/zustand/userExternal';
+import useMeStore from '@/zustand/useMeStore';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { pathnames } from '@/lib/pathname';
 
 
 const Address = ({ onAddressSelect }) => {
     const [districtsData, setDistrictsData] = useState([])
     const [wardsData, setWardsData] = useState([])
     const [toggleButton, setToggleButton] = useState(false)
+    
     const [address, setAddress] = useState({
       province: "",
       district: "",
       ward: "",
       street: ""
     })
-    const {provinces,} = userExternal()
-
+    const {provinces} = userExternal()
+    
     const handleProvinceChange = async (Pid) => {
       const selectedProvince = provinces.find(p => p.idProvince === Pid)
       setAddress({ province: selectedProvince.name, district: "", ward: "", street: "" })
@@ -69,7 +74,7 @@ const Address = ({ onAddressSelect }) => {
               <SelectValue placeholder="Chọn tỉnh/thành" />
             </SelectTrigger>
             <SelectContent>
-              {provinces.map((e) => (
+              {provinces?.map((e) => (
                 <SelectItem key={e.idProvince
                 } value={e.
                   idProvince}>{e.name}</SelectItem>
@@ -82,13 +87,13 @@ const Address = ({ onAddressSelect }) => {
           <Label htmlFor="district">Quận/Huyện</Label>
           <Select 
             onValueChange={handleDistrictChange}
-            disabled={!address.province}
+            disabled={!address?.province}
           >
             <SelectTrigger id="district">
               <SelectValue placeholder="Chọn quận/huyện" />
             </SelectTrigger>
             <SelectContent>
-              {districtsData.map((e) => (
+              {districtsData?.map((e) => (
                 <SelectItem key={e.idDistrict} value={e.idDistrict}>{e.name}</SelectItem>
               ))}
             </SelectContent>
@@ -105,7 +110,7 @@ const Address = ({ onAddressSelect }) => {
               <SelectValue placeholder="Chọn phường/xã" />
             </SelectTrigger>
             <SelectContent>
-              {wardsData.map((e) => (
+              {wardsData?.map((e) => (
                 <SelectItem key={e.idCommune} value={e.idCommune}>{e.name}</SelectItem>
               ))}
             </SelectContent>

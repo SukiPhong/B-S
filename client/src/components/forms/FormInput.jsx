@@ -26,6 +26,7 @@ const FormInput = ({ form, label, name, type = "text", readOnly = false, placeho
               )}
               type={type}
               {...field}
+              
               placeholder={placeholder}
             />
           </FormControl>

@@ -11,13 +11,12 @@ const usePagination = ({
     const pageSize = +limit; // số lượng item 1 trang
     const pageNumber = Math.ceil(total / pageSize); // tổng số trang
     const totalPageItems = 5 + sibling * 2;
-    // pageSize:10  pageNumber:7  totalPageItems:5
 
     if (pageNumber < totalPageItems) {
       return renderRangeNumber(1, pageNumber);
     }
     const isShowPageInLeft = currentPage - sibling > 3;
-    const isShowPageInRight = currentPage + sibling < pageNumber - 2;
+    const isShowPageInRight = currentPage + sibling <= pageNumber - 2;
 
     if (isShowPageInLeft && !isShowPageInRight) {
       const rightStart = pageNumber - 2 - sibling * 2;

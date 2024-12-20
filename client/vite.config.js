@@ -1,13 +1,13 @@
-import path from "path-browserify"; // Thay thế module path gốc bằng path-browserify
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import path from "path"
+import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
 
+const __dirname = path.resolve(path.dirname(('')))
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve("./src"),
-      "path": "path-browserify", // Alias path vào path-browserify
+      "@": path.resolve(__dirname, "./src"),
     },
   },
-});
+})

@@ -3,7 +3,7 @@ import { DetailItems, ImagesPropertiesDetail, PosterInfoBox } from ".";
 import { Card, CardContent } from "../ui/card";
 import { useParams } from "react-router-dom";
 import { apiGetPrototypesDetail } from "@/apis/post";
-import { changePriceToString } from "@/lib/fn";
+import { changePriceToString, description } from "@/lib/fn";
 import {
   Bath,
   Bed,
@@ -16,28 +16,34 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Map } from "../map";
+import WishListItem from './../Wishlist/WishListItem';
 
 
 
 const PropertiesDetail = () => {
   const { idPost } = useParams();
+  const [isLoading, setIsLoading] = useState(true)
   const [detailPrototypes, setDetailPrototypes] = useState("");
   useEffect(() => {
+    
     const fetchPrototypesDetail = async () => {
       const response = await apiGetPrototypesDetail(idPost);
       if (response.data.success === true) {
         setDetailPrototypes(response.data.data);
+        setIsLoading(false);
       }
     };
     fetchPrototypesDetail();
+    window.scrollTo(0, 0);
   }, [idPost]);
-   console.log()
+  console.log(detailPrototypes)
+  if(isLoading) return <div className="flex justify-center items-center">Loading...</div>
   return (
-    <div className="mx-auto w-[calc(100%-500px)] p-4 flex ">
-      <div className="w-[70%] flex-col top-4">
+    <div className="mx-auto w-[calc(100%-500px)] p-4 flex">
+      <div className="w-[70%] flex-col top-4 bg-slate-100">
         <ImagesPropertiesDetail images={detailPrototypes?.images} />
         <div>
-          <Card>
+          <Card className="border-t-0 border-b-0">
             <CardContent className="p-6">
               <div className="space-y-4">
                 <h1 className="text-2xl font-semibold ">
@@ -68,7 +74,7 @@ const PropertiesDetail = () => {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Phòng ngủ</p>
-                    <p className="font-semibold">1 PN</p>
+                    <p className="font-semibold">{detailPrototypes.bedroom} PN</p>
                   </div>
 
                   
@@ -80,9 +86,7 @@ const PropertiesDetail = () => {
                     <Button variant="ghost" size="icon" className="flex-1">
                       <Flag size={20} />
                     </Button>
-                    <Button variant="ghost" size="icon" className="flex-1">
-                      <Heart size={20} />
-                    </Button>
+                  <WishListItem id={detailPrototypes.id}/>
                   </div>
                </div>
               </div>
@@ -99,7 +103,7 @@ const PropertiesDetail = () => {
 
           {/* Property Details */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-6 border-t-0 border-b-0">
               <h2 className="text-xl font-semibold mb-4">Thông tin chi tiết</h2>
               <div className="grid grid-cols-2">
                 {[
@@ -141,7 +145,7 @@ const PropertiesDetail = () => {
             </CardContent>
           </Card>
           {/* Map */}
-          <Card>
+          <Card className="border-t-0 border-b-0">
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">Vị trí trên bản đồ</h2>
               <div className="aspect-video w-full  rounded-lg flex items-center justify-center">
@@ -150,6 +154,11 @@ const PropertiesDetail = () => {
             </CardContent>
           </Card>
         </div>
+        <div className=" w-full h-32 py-4 px-2">
+        <p className="text-xs font-roboto">
+          {description(detailPrototypes.title,detailPrototypes.id,detailPrototypes.rUser.fullname)}
+        </p>
+      </div>
       </div>
       <div className="w-[30%] h-[535px] sticky top-4 p-2">
         <PosterInfoBox
@@ -158,6 +167,7 @@ const PropertiesDetail = () => {
         phone={detailPrototypes?.rUser?.phone}
         />
       </div>
+     
     </div>
   );
 };

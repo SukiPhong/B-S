@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       User.belongsTo(models.Pricing, { foreignKey: "idPricing", as: 'rPricing' });
+     // User.hasMany(models.Post,{foreignKey:'idUser',onDelete:'CASCADE'})
     }
   }
   User.init({
@@ -32,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
     resetPwExpiry: DataTypes.DATE,
     avatar: DataTypes.STRING,
     idPricing: DataTypes.INTEGER,
-
+    Role:DataTypes.BOOLEAN,
+    packageExprideday:DataTypes.DATE
 
   }, {
     sequelize,

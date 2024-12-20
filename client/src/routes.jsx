@@ -1,3 +1,4 @@
+import { element } from "prop-types";
 import App from "./App";
 import { pathnames } from "./lib/pathname";
 import {
@@ -9,6 +10,7 @@ import {
   PropertyDetail
 } from "./pages/publics";
 import Homepage from "./pages/publics/Homepage";
+import WishlistPage from "./pages/publics/WishlistPage";
 import {
   BalanceInfo,
   CreatePost,
@@ -19,10 +21,11 @@ import {
   UserLayOut,
   ChangePhone,
   ChangeEmail,
-  HistoryPayment
+  HistoryPayment,
+  ManagerPostDraft
 } from "./pages/users";
+import {  AdminLayout, Dashboard, ManagerHistoryPaymentPage, ManagerPostPage, ManagerPricing, ManagerUsersPage, PendingPostsPage } from "./pages/admins";
 
-import ManagerPostDraft from "./pages/users/posts/ManagerPostDraft";
 
 const routes = [
   {
@@ -37,6 +40,7 @@ const routes = [
           { path: pathnames.public.news, element: <News /> },
           { path: pathnames.public.rentProperty, element: <RentProperty /> },
           { path: pathnames.public.soldProperty, element: <SoldProperty /> },
+          { path: pathnames.public.Wishlist, element: <WishlistPage /> },
           { path:pathnames.public.resetPassword, element: <ResetPassword/>},
           {path:pathnames.public.Property_Detail__ID, element:<PropertyDetail/>}
         ],
@@ -57,6 +61,20 @@ const routes = [
           { path: pathnames.users.paymentHistory, element: <HistoryPayment /> },
         ],
       },
+      {
+        path:pathnames.admin.layout,
+        element:<AdminLayout/>,
+        children:[
+          { path: pathnames.admin.dashBoard, element: <Dashboard /> },
+       
+          { path: pathnames.admin.approvePost, element: <PendingPostsPage /> },
+          { path: pathnames.admin.managerUsers, element: <ManagerUsersPage /> },
+          { path: pathnames.admin.managerPosts, element: <ManagerPostPage /> },
+          { path: pathnames.admin.historyPayment, element: <ManagerHistoryPaymentPage /> },
+          { path: pathnames.admin.Pricing, element: <ManagerPricing /> },
+       
+        ]
+      }
     ],
   },
 ];

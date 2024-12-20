@@ -17,36 +17,54 @@ import PopoverCheckBox from "./PopoverCheckBox";
 import { resetOutline } from "@/lib/classname";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import { pathnames } from "@/lib/pathname";
+import useSearchStore from "@/zustand/useSearchStore";
 const Search = ({ check, noShowSearchProven = false }) => {
   const [activeTab, setActiveTab] = useState("Cho thuê");
   const [isShowProven, setIsShowProven] = useState(false);
-  const [searchTitle, setSearchTitle] = useState("");
-  const  navigate  = useNavigate();
+  const [isPriceOpen, setIsPriceOpen] = useState(false);
+  const [isSizeOpen, setIsSizeOpen] = useState(false);
+  const { searchData, setSearchData } = useSearchStore();
+  const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
+  
+  const navigate = useNavigate();
   const onSubmit = () => {
     setIsShowProven(true);
     const params = new Object();
-    params.title = searchTitle;
+    if (searchData.title) {
+      params.title = searchData.title;
+    }
+    if (searchData.properType) {
+      params.properType = searchData.properType;
+    }
+    if(searchData.price){
+      params.price = searchData.price;
+    }
+    if(searchData.size){
+      params.size = searchData.size;
+    }
     navigate({
-      pathname:
-       `${ activeTab === "Cho thuê"
-        ? pathnames.public.rentProperty
-        : pathnames.public.soldProperty}`,
-      search: createSearchParams( params ).toString(),
+      pathname: `${
+        activeTab === "Cho thuê"
+          ? pathnames.public.rentProperty
+          : pathnames.public.soldProperty
+      }`,
+      search: createSearchParams(params).toString(),
     });
-    
+   
     // Thực hiện logic tìm kiếm tại đây
   };
   const handleCitySelect = (cityName) => {
-    setSearchTitle(cityName); // Cập nhật giá trị input khi chọn thành phố
+    console.log(cityName)
+    setSearchData({ province: cityName }); // Cập nhật giá trị input khi chọn thành phố
     setIsShowProven(false); // Đóng popup sau khi chọn thành phố
   };
   return (
     <div
       className={` ${
-        check ? "w-auto h-[auto] mt-4" : "absolute top-16"
-      } left-10 right-10  text-slate-50 flex items-center justify-center`}
+        check ? "w-full h-auto mt-4 " : "absolute md:top-0 lg:top-16 left-10 right-10"
+      }   text-slate-50 flex items-center justify-center`}
     >
-      <div className="w-[945px] max-w-[90%]">
+      <div className={`w-[945px] ${check ?'max-w-[100%]':'max-w-[90%]'}`}>
         <Tabs
           className="space-y-0"
           onValueChange={(value) => setActiveTab(value)}
@@ -76,7 +94,7 @@ const Search = ({ check, noShowSearchProven = false }) => {
                   setIsShowProven((prev) => !prev);
                 }}
                 className={cn(
-                  "flex items-center justify-between bg-slate-50 rounded-md  px-[6px] py-1 relative ",
+                  "flex items-center justify-between bg-slate-50 rounded-md  px-[6px] py-1 relative   ",
                   isShowProven && "rounded-b-none "
                 )}
               >
@@ -86,8 +104,8 @@ const Search = ({ check, noShowSearchProven = false }) => {
                 <input
                   type="text"
                   placeholder="trên toàn quốc (địa chỉ)"
-                  value={searchTitle}
-                  onChange={(e) => setSearchTitle(e.target.value)}
+                  value={searchData.province}
+                  onChange={(e) => setSearchData({ title: e.target.value })}
                   className={cn(
                     resetOutline,
                     "w-full bg-slate-50 border-x-0 border-gray-300 rounded-y-sm  px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 transition"
@@ -110,16 +128,20 @@ const Search = ({ check, noShowSearchProven = false }) => {
                   label="Mức giá"
                   _name="_price"
                   options={price}
+                  isOpen={isPriceOpen}
+                  setIsOpen={setIsPriceOpen}
                 />
                 <PopoverRange
                   name="size"
                   label="Diện tích"
                   _name="_size"
                   options={size}
+                  isOpen={isSizeOpen}
+                  setIsOpen={setIsSizeOpen}
                 />
                 <PopoverCheckBox
                   label="Loại tin đăng"
-                  name="postTypes"
+                  name="properType"
                   options={
                     activeTab === "Cho thuê"
                       ? postRentTypes.map((el) => ({
@@ -131,7 +153,8 @@ const Search = ({ check, noShowSearchProven = false }) => {
                           label: el.name,
                         }))
                   }
-                  activeTab={activeTab}
+                  isOpen={isPropertyTypeOpen}
+                  setIsOpen={setIsPropertyTypeOpen}
                 />
               </div>
             </TabsContent>

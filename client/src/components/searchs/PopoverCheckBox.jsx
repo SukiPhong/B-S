@@ -12,13 +12,19 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { pathnames } from "./../../lib/pathname";
 import { Checkbox } from "../ui/checkbox";
 import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
-const PopoverCheckBox = ({ label, options = {}, name, activeTab }) => {
+import useSearchStore from "@/zustand/useSearchStore";
+const PopoverCheckBox = ({
+  label,
+  options = {},
+  name,
+  isOpen, setIsOpen
+}) => {
   const triggerRef = useRef(null); // Ref to the popover trigger
   const [withContent, setWithContent] = useState(0);
-  const navigate = useNavigate();
+  const { searchData, setSearchData } = useSearchStore()
   const form = useForm({
     defaultValues: {
-      [name]: [null],
+      [name]: searchData[name] || [null],
     },
     mode: "onChange",
   });
@@ -31,27 +37,25 @@ const PopoverCheckBox = ({ label, options = {}, name, activeTab }) => {
   }, []);
 
   const onSubmit = (data) => {
-    const updatedData = data[name].slice(1);
-    const params = new Object();
-    if (updatedData?.length) {
-      params.properType = updatedData.join(",");
+    console.log(data)
+    let updatedData = data[name]?.slice(1);
+    let dataLate= new Array()
+    if (updatedData?.length>1) {
+      dataLate = updatedData.join(",");
     }
-    navigate({
-      pathname: `${
-        activeTab === "Cho thuê"
-          ? pathnames.public.rentProperty
-          : pathnames.public.soldProperty
-      }`,
-      search: createSearchParams(params).toString(),
-    });
+    setSearchData({ [name]: dataLate });
+    setIsOpen(false);
   };
+
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger
         ref={triggerRef}
         className="w-full border rounded-md py-2 px-4 text-center"
       >
-        {label} {/*label popover trigger */}
+        {searchData?.properType?.length > 20
+          ? `${searchData?.properType.slice(0, 20)}...`
+          : searchData?.properType?.length ===0 ? label :searchData.properType|| label}
       </PopoverTrigger>
       <PopoverContent
         style={{ width: `${withContent}px` }} // Use calculated width
@@ -119,5 +123,6 @@ PopoverCheckBox.propTypes = {
   label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   name: PropTypes.string.isRequired,
-  activeTab: PropTypes.string.isRequired,
+  activeTab: PropTypes.string,
+  setDataSearch: PropTypes.func,
 };

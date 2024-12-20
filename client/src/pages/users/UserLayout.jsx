@@ -18,13 +18,12 @@ const UserLayOut = () => {
     <div>
       <Header />
       <div className="flex h-[calc(100vh-80px)] bg-stone-100   ">
-        <div className="w-[256px]  h-full flex-none ">
+        <div className="w-[164px] lg:w-[256px]  h-full flex-none ">
           <UseSlideBar />
         </div>
         <div className="flex-auto ">
-          <ScrollArea className='h-[400px] w-auto' >
-
-          <Outlet />
+          <ScrollArea className="h-full w-auto lg:h-[400px] ">
+            <Outlet />
           </ScrollArea>
         </div>
       </div>

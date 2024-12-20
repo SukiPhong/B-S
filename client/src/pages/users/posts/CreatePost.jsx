@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import useMeStore from "@/zustand/useMeStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConditionRendering } from "@/components/layouts";
 import {
   AdditionalInfoSection,
@@ -21,14 +21,22 @@ import { formSchema } from "./postSchema";
 import { toast } from "sonner";
 import { pricingOptionsOfPost } from "@/lib/contants";
 
-import { apiCreatePost } from "@/apis/post";
-import { useNavigate } from "react-router-dom";
+import { apiCreatePost, apiGetPrototypesDetail } from "@/apis/post";
+import { useLocation, useNavigate } from "react-router-dom";
+import { apiUpdatePatchPost } from "./../../../apis/post";
+import { path } from "path-browserify";
+import { pathnames } from "@/lib/pathname";
+import { Checkbox } from "@/components/ui/checkbox";
+import CheckBoxEditPost from "@/components/posts/CheckBoxEditPost";
+import { Label } from "@radix-ui/react-dropdown-menu";
 
 const CreatePost = () => {
   const [valueDay, setValueDay] = useState(0);
+  const navigate = useNavigate();
   const { me, setBalance, error } = useMeStore();
   const [showAddressSelector, setShowAddressSelector] = useState(true);
-  const navigate = useNavigate();
+  const location = useLocation();
+  const { editMode = false, idPost = null } = location.state || {};
   const [openSections, setOpenSections] = useState({
     properType: true,
     address: true,
@@ -64,10 +72,16 @@ const CreatePost = () => {
     },
     mode: "onSubmit",
   });
+   useEffect(() => {  
+        if (!me.phone || !me.phoneVerified) {
+      
+          toast.warning('Bạn cần phải xác nhận SĐT trước khi  tạo tin đăng')
+        navigate({ pathname: pathnames.users.layout + pathnames.users.updatePhone });
+        }
+       },[])
   const toggleSection = (section) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
-  form.watch("expiredDate");
   const handleAddressSelect = (addressData) => {
     form.setValue("address", addressData.fullAddress);
     form.setValue("province", addressData.province);
@@ -81,6 +95,22 @@ const CreatePost = () => {
     form.setValue("expiredDate", newExpiredDate);
   };
 
+  useEffect(() => {
+    const fetchPostDetail = async () => {
+      if (editMode && idPost) {
+        const response = await apiGetPrototypesDetail(idPost);
+        if (response.data.success) {
+          const postData = response.data.data;
+          console.log(postData);
+          setShowAddressSelector(false);
+          form.reset({ ...postData });
+          // setValueDay(response.data.data.valueDay || 0);
+        }
+      }
+    };
+
+    fetchPostDetail();
+  }, [editMode, idPost, form]);
   const onSubmit = async (data) => {
     if (!isFormValid(data)) {
       return toast.error(
@@ -89,7 +119,9 @@ const CreatePost = () => {
     }
     const fieldsToRemove = ["direction", "balonDirection"];
     const filteredData = filterEmptyFields(data, fieldsToRemove);
-
+    if (editMode) {
+      return updatePost(filteredData);
+    }
     filteredData.status = me.rPricing.priority > 3 ? "Còn trống" : "Chờ duyệt";
     const selectedOption = pricingOptionsOfPost.find(
       (option) => option.days === valueDay
@@ -100,33 +132,51 @@ const CreatePost = () => {
     if (totalCost === 0) {
       // setValue date  if  dont choose options  default   me.rPricing.expiredDay
       form.setValue("expiredDate", calculateNewExpirationDate(0));
-
-      newPost(filteredData);
-      return;
+      filteredData.expiredDate = calculateNewExpirationDate(0);
+      return  newPost(filteredData);
+      
     }
     const newBalance = +me.balance - +totalCost;
-      newPost(filteredData,newBalance) ;
+    newPost(filteredData, newBalance);
   };
 
-  const newPost = async (data,newBalance) => {
-    const { ListingType, ...payload } = data;
+  const newPost = async (data, newBalance) => {
+   // const { ListingType, ...payload } = data;
+   const {...payload} = data
     try {
       await apiCreatePost(payload);
       toast.success("Bài viết đã được tạo thành công!");
-      setBalance(newBalance)
-      //navigate("/");
+      setBalance(newBalance);
+
+      navigate({ pathname: pathnames.users.layout + pathnames.users.general });
     } catch (error) {
       toast.error("Lỗi khi tạo bài viết: " + error.message);
     }
   };
+  const updatePost = async (data) => {
+    try {
+      await apiUpdatePatchPost(data);
+      toast.success("Bài viết đã được cập nhật thành công!");
+      if (!me.admin) {
+        setBalance(data.balance);
+      }
+      navigate({
+        pathname: pathnames.users.layout + pathnames.users.managePost,
+      });
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật bài viết: " + error.message);
+    }
+  };
+
   const isFormValid = (data) => {
     return (
       data.title &&
-      data.images &&
+      data.images.length >= 1 &&
       data.priceUnits &&
       data.properType &&
       data.size &&
-      data.description
+      data.description &&
+      data.ListingType
     );
   };
   const calculateNewExpirationDate = (days) => {
@@ -156,9 +206,10 @@ const CreatePost = () => {
               <Address onAddressSelect={handleAddressSelect} />
             </div>
           </ConditionRendering>
+
           <ConditionRendering show={!showAddressSelector}>
             <h2 className="text-2xl font-bold flex justify-center py-2 font-mono">
-              Thông tin cần có
+              {editMode ? "Chỉnh sửa bài đăng" : "Tạo bài đăng mới"}
             </h2>
             <ScrollArea className="w-auto h-[500px]">
               <div className="flex flex-col">
@@ -214,6 +265,14 @@ const CreatePost = () => {
                         form={form}
                         handlePricingChange={handlePricingChange}
                       />
+                      {editMode && (
+                        <div className="w-full border rounded-md border-main  ">
+                          <Label className="font-roboto pl-4 pt-2 text-slate-600 ">
+                            Cập nhật trạng thái
+                          </Label>
+                          <CheckBoxEditPost form={form} />
+                        </div>
+                      )}
                       <div className="w-full h-[400px]"></div>
                     </div>
                   </div>
@@ -221,8 +280,23 @@ const CreatePost = () => {
               </div>
             </ScrollArea>
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t z-10">
-              <div className="max-w-6xl mx-auto px-4 py-4 flex justify-end">
-                <Button className="w-32">Xác nhận</Button>
+              <div className="max-w-6xl mx-auto px-4 py-4 flex justify-end gap-2">
+                {editMode && (
+                  <Button
+                    className="w-32 bg-orange-300"
+                    onClick={() => {
+                      navigate({
+                        pathname:
+                          pathnames.users.layout + pathnames.users.managePost,
+                      });
+                    }}
+                  >
+                    Quay lại
+                  </Button>
+                )}
+                <Button className="w-32 font-roboto">
+                  {editMode ? "Cập nhật" : "Tạo bài viết"}
+                </Button>
               </div>
             </div>
           </ConditionRendering>

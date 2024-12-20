@@ -30,15 +30,34 @@ export const endpoints = {
   user: {
     getCurrent: "/user/Current",
     updatePassword:"/user/updatePassword",
-    updatePatchUser:"/user/updatePatchUser"
+    updatePatchUser:"/user/updatePatchUser",
+    allUsers:'/user/',
+    newUser:'/user/NewUser',
+    upUserByAdmin:'/user/upUserByAdmin',
+    sendOTP:'/user/sendOTP',
+    verifyOTP:'/user/verifyOTP',
+     chartUser:'/user/chartUser'
+  },
+  pricing:{
+    getPricings:'/pricing/',
+    editPricing:'/pricing/'
   },
   payment:{
      getUrlVnPay:'/payment/create_payment_url',
      returnPayment:'/payment/payment_return',
-     getHistory:'/payment/getHistory'
+     getHistory:'/payment/getHistory',
+     getHistorys:'/payment/',
   },
   post:{
     Post:'/posts/',// create  get detail delete
+    approve:'/posts/approve/',
+    getFeature:'/posts/randomPost',
+    chartPost:'/posts/chart'
+  },
+  wishlist:{
+    get:'/wishlist/',
+    toggle:'/wishlist/toggle/',
+
   },
   external: {
     getProvinces:

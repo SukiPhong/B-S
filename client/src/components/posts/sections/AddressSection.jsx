@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { resetOutline } from "@/lib/classname";
 import PropTypes from 'prop-types'
+import { Map } from '@/components/map'
 const AddressSection = ({form,onToggle,isOpen,onAddressChange,title}) => {
   return (
     <CollapsiblePostSection
@@ -31,6 +32,9 @@ const AddressSection = ({form,onToggle,isOpen,onAddressChange,title}) => {
       >
         Thay đổi địa chỉ
       </Button>
+    </div>
+    <div className='w-full h-[210px]'>
+      <Map address={form.watch('address')}/>
     </div>
   </CollapsiblePostSection>
   )

@@ -327,3 +327,12 @@ export const historyPaymentLabel=[
     {label:"Thời gian", id:5}
 
 ]
+export const adminPendingTableLabel = [
+    { label: "STT", id:0 },
+    { label: "Tiêu đề", id: 1 },
+    { label: "Loại", id: 2 },
+    { label: "Địa điểm", id: 3 },
+    { label: "Mẫu", id: 4 },
+    { label: "Ngày tạo", id: 5 },
+    { label: "Hành động", id: 6 },
+  ];

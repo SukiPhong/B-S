@@ -12,15 +12,12 @@ const Map = ({ address, zoom = 10 }) => {
     const fetchCenter = async () => {
       if (address) {
         const response = await apiGetLongitudeAndLatitudeFromAddress(address);
-          console.log(response)
         if (response.status === 200 && response.data.features?.length > 0) {
-          console.log(1);
           setCenter([
             response.data.features[0]?.geometry?.coordinates[1], // latitude
             response.data.features[0]?.geometry?.coordinates[0], // longitude
           ]);
         } else {
-          console.log(123);
           getGeolocation();
         }
       } else {
