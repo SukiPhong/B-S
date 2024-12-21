@@ -16,17 +16,28 @@ export const sortObject = (obj) => {
   }
   return sorted;
 };
-export const changePriceToString = (String) => {
-  const number = parseInt(String, 10);
+export const changePriceToString = (price) => {
+  const number = parseInt(price, 10);
+
+  // Ensure the number is valid
+  if (isNaN(number)) {
+    return 'Invalid price';
+  }
+
+  // Convert to 'tỷ' for values >= 1 billion
   if (number >= Math.pow(10, 9)) {
     return `${(number / Math.pow(10, 9)).toFixed(2)} tỷ`;
-  } else if (number >= Math.pow(10, 6)) {
+  } 
+  // Convert to 'triệu' for values >= 1 million
+  else if (number >= Math.pow(10, 6)) {
     return `${(number / Math.pow(10, 6)).toFixed(2)} triệu`;
+  } 
+  // Convert to 'nghìn' for values >= 1 thousand (optional, if you want to handle this)
+  else if (number >= Math.pow(10, 3)) {
+    return `${(number / Math.pow(10, 3)).toFixed(1)} K`;
   }
-  // Kiểm tra giá trị nghìn (trên 1 nghìn)
-  // else if (number >= Math.pow(10, 3)) {
-  //   return `${(number / Math.pow(10, 3)).toFixed(1)} K`;
-  // }
+
+  // Return the number formatted as a string with commas
   return number.toLocaleString();
 };
 export const formatPhoneNumber = (phone, showFullPhone) => {

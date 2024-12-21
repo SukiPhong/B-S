@@ -42,16 +42,16 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
           toast.error("Không thể lấy dữ liệu.");
         }
       } catch (error) {
-        toast.error("Lỗi khi tải dữ liệu.");
+        toast.error(error.response.data.data.message);
       } finally {
         setIsLoading(false); // Stop loading once the API call is done or if it fails
       }
     };
 
-    if (searchParams.get("page") > properties?.count) {
-      searchParams.set("page", 1);
-      setSearchParams(searchParams);
-    }
+    // if (searchParams.get("page") > properties?.count) {
+    //   searchParams.set("page", 1);
+    //   setSearchParams(searchParams);
+    // }
 
     // if (!setLayout) {
     // }
@@ -63,14 +63,14 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
       ? (params.soft = selectedValue)
       : (params.soft = "-createdAt");
     params.ListingType = ListingType;
-
     if (params.price) params.price = searchParams.getAll("price");
     if (params.size) params.size = searchParams.getAll("size");
+ 
     const properType = searchParams.get("properType");
     setSearch("properType", properType || "");
     setSearch("rows", properties?.rows.length);
     fetchPrototypes(params);
-  }, [searchParams, selectedValue]);
+  }, [searchParams]);
   const handleRemove = useCallback(
     async (pid) => {
       try {

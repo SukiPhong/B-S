@@ -25,7 +25,7 @@ const Search = ({ check, noShowSearchProven = false }) => {
   const [isSizeOpen, setIsSizeOpen] = useState(false);
   const { searchData, setSearchData } = useSearchStore();
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
-  
+
   const navigate = useNavigate();
   const onSubmit = () => {
     setIsShowProven(true);
@@ -36,12 +36,13 @@ const Search = ({ check, noShowSearchProven = false }) => {
     if (searchData.properType) {
       params.properType = searchData.properType;
     }
-    if(searchData.price){
+    if (searchData.price) {
       params.price = searchData.price;
     }
-    if(searchData.size){
+    if (searchData.size) {
       params.size = searchData.size;
     }
+
     navigate({
       pathname: `${
         activeTab === "Cho thuê"
@@ -50,21 +51,22 @@ const Search = ({ check, noShowSearchProven = false }) => {
       }`,
       search: createSearchParams(params).toString(),
     });
-   
+
     // Thực hiện logic tìm kiếm tại đây
   };
   const handleCitySelect = (cityName) => {
-    console.log(cityName)
     setSearchData({ province: cityName }); // Cập nhật giá trị input khi chọn thành phố
     setIsShowProven(false); // Đóng popup sau khi chọn thành phố
   };
   return (
     <div
       className={` ${
-        check ? "w-full h-auto mt-4 " : "absolute md:top-0 lg:top-16 left-10 right-10"
+        check
+          ? "w-full h-auto mt-4 "
+          : "absolute md:top-0 lg:top-16 left-10 right-10"
       }   text-slate-50 flex items-center justify-center`}
     >
-      <div className={`w-[945px] ${check ?'max-w-[100%]':'max-w-[90%]'}`}>
+      <div className={`w-[945px] ${check ? "max-w-[100%]" : "max-w-[90%]"}`}>
         <Tabs
           className="space-y-0"
           onValueChange={(value) => setActiveTab(value)}

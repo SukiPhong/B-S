@@ -1,12 +1,10 @@
 const router = require('express').Router()
-const verify = require('../middleware/verify_Token')
+const verify = require("../middleware/verify_Token");
 const RatingControllers = require('../controllers/rating')
 
+router.post("/", verify.verifyToken,RatingControllers.createRating);
 router.get('/:idPost',RatingControllers.getRatingsForPost)
-
-router.use(verify.AccessToken)
-router.post('/',RatingControllers.createRating)
-router.delete('/:idPost',verify.verifyTokenAdmin,RatingControllers.deleteRating)
+router.delete('/:idPost',verify.verifyToken,verify.verifyTokenAdmin,RatingControllers.deleteRating)
 
 
 

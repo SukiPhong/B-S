@@ -46,13 +46,14 @@ const PostController = {
         `%${province.toLocaleLowerCase()}%`
       );
     }
+   
     if (price) {
       query.price = handleRangeFilter(price);
     }
     if (size) {
       query.size = handleRangeFilter(size);
     }
-
+    console.log(size)
     if (properType) {
       const types = properType.split(","); // Tách danh sách giá trị bằng dấu phẩy
       query.properType = { [Sequelize.Op.in]: types }; // Sử dụng toán tử IN

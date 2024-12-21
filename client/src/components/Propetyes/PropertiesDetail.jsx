@@ -18,6 +18,8 @@ import {
 import { Button } from "../ui/button";
 import { Map } from "../map";
 import WishListItem from './../Wishlist/WishListItem';
+import { RatingButton } from "../rating";
+
 
 
 
@@ -37,7 +39,6 @@ const PropertiesDetail = () => {
     fetchPrototypesDetail();
     window.scrollTo(0, 0);
   }, [idPost]);
-  console.log(detailPrototypes)
   if(isLoading) return <div className="flex justify-center items-center">Loading...</div>
   return (
     <div className="mx-auto w-[calc(100%-500px)] p-4 flex">
@@ -84,12 +85,7 @@ const PropertiesDetail = () => {
                     <Button variant="ghost" size="icon" className="flex-1">
                       <Share2 size={20} />
                     </Button>
-                    <Button variant="ghost" size="icon" className="flex-1">
-                      
-                      <Star size={20}  className="relative"/>
-                      <span className="absolute inset-0 text-xs font-bold">{detailPrototypes.avgStart}</span>
-                      
-                    </Button>
+                    <RatingButton avgStar={detailPrototypes.avgStar} idPost={detailPrototypes.id} />
                   <WishListItem id={detailPrototypes.id}/>
                   </div>
                </div>

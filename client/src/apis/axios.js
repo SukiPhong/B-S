@@ -59,6 +59,9 @@ export const endpoints = {
     toggle:'/wishlist/toggle/',
 
   },
+  rating:{
+    rating:'/ratings/',
+  },
   external: {
     getProvinces:
       "https://vietnam-administrative-division-json-server-swart.vercel.app/province",
