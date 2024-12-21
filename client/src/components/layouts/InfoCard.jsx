@@ -1,5 +1,6 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import PropTypes, { number } from 'prop-types'
 const InfoCard = ({title,number,cent,icon}) => {
   return (
     <div> <Card>
@@ -16,3 +17,9 @@ const InfoCard = ({title,number,cent,icon}) => {
 }
 
 export default InfoCard
+InfoCard.propTypes={
+  title:PropTypes.string.isRequired,
+  icon:PropTypes.node.isRequired,
+  number:PropTypes.oneOfType([PropTypes.string,PropTypes.number]),
+  cent:PropTypes.oneOfType([PropTypes.string,PropTypes.number])
+}

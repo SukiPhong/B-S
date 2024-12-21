@@ -13,6 +13,7 @@ import {
   Proportions,
   Share2,
   Sofa,
+  Star,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Map } from "../map";
@@ -84,7 +85,10 @@ const PropertiesDetail = () => {
                       <Share2 size={20} />
                     </Button>
                     <Button variant="ghost" size="icon" className="flex-1">
-                      <Flag size={20} />
+                      
+                      <Star size={20}  className="relative"/>
+                      <span className="absolute inset-0 text-xs font-bold">{detailPrototypes.avgStart}</span>
+                      
                     </Button>
                   <WishListItem id={detailPrototypes.id}/>
                   </div>

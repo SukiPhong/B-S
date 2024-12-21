@@ -11,7 +11,7 @@ import useMapStore from "@/zustand/useMapStore";
 import { toast } from "sonner";
 import { FilterCard } from ".";
 import { Switch } from "../ui/switch";
-import { Footer } from "../footer";
+import PropTypes from 'prop-types'
 
 const CardPrototypes = ({ setLayout, limit, ListingType }) => {
   const { showMap, toggleMap, resetDataMaps, setDataMaps } = useMapStore();
@@ -206,3 +206,8 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
 };
 
 export default CardPrototypes;
+CardPrototypes.propTypes={
+  setLayout:PropTypes.bool,
+  limit:PropTypes.string.isRequired,
+  ListingType:PropTypes.string.isRequired
+}

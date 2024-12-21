@@ -18,7 +18,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { apiEditPricing } from "@/apis/pricing";
-
+import PropTypes from 'prop-types'
 const EditPricingSheet = ({ pricing, onUpdate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [updatedPricing, setUpdatedPricing] = useState(pricing);
@@ -218,3 +218,7 @@ const EditPricingSheet = ({ pricing, onUpdate }) => {
 };
 
 export default EditPricingSheet;
+EditPricingSheet.protoType={
+  pricing:PropTypes.number,
+  onUpdate:PropTypes.func
+}

@@ -28,7 +28,6 @@ const PaginationComponent = ({ total, currentPage, limit  }) => {
       search: createSearchParams({ page: +number }).toString(),
     });
   };
-  console.log(paginationArray)
   return (
     <div>
       <Pagination>

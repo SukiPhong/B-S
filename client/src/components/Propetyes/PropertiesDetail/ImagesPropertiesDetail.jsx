@@ -2,6 +2,7 @@
   import { ChevronLeft, ChevronRight } from 'lucide-react'
   import React, { useState } from 'react'
   import PropTypes from 'prop-types'
+  
   const ImagesPropertiesDetail = ({images=[]}) => {
       const [currentImageIndex, setCurrentImageIndex] = useState(0)
       const nextImage = () => {
@@ -65,6 +66,6 @@
   }
 
   export default ImagesPropertiesDetail
-  ImagesPropertiesDetail.prototype={
-    images:PropTypes.array.isRequired
+  ImagesPropertiesDetail.propTypes={
+    images: PropTypes.array
   }

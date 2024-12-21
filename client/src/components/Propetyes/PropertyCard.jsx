@@ -25,7 +25,7 @@ import { formatPrice, getStatusColor } from "@/lib/propertyUtils";
 import { PosterInfoBox } from ".";
 import useMeStore from "@/zustand/useMeStore";
 import { WishListItem } from "../Wishlist";
-
+import PropTypes from 'prop-types'
 const PropertyCard = ({ property, setLayout, onRemove }) => {
   const { me } = useMeStore();
   const navigate = useNavigate();
@@ -176,3 +176,8 @@ const PropertyCard = ({ property, setLayout, onRemove }) => {
 };
 
 export default memo(PropertyCard);
+PropertyCard.propTypes={
+  onRemove: PropTypes.func.isRequired,
+  setLayout:PropTypes.bool,
+  property: PropTypes.object
+}

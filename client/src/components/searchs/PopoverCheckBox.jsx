@@ -37,7 +37,6 @@ const PopoverCheckBox = ({
   }, []);
 
   const onSubmit = (data) => {
-    console.log(data)
     let updatedData = data[name]?.slice(1);
     let dataLate= new Array()
     if (updatedData?.length>1) {

@@ -56,7 +56,6 @@ const PropertyLayout = ({ children, title }) => {
 PropertyLayout.propTypes = {
   children: PropTypes.node,
   title: PropTypes.string.isRequired,
-  showMap: PropTypes.bool.isRequired,
 };
 
 export default PropertyLayout;

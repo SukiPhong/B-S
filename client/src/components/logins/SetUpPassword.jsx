@@ -8,7 +8,6 @@ import useMeStore from "@/zustand/useMeStore";
 import { apiSignInWithGoogle } from "@/apis/auth";
 import { toast } from "sonner";
 import PropTypes from "prop-types";
-import { useLocation } from "react-router-dom";
 const formSchema = z
   .object({
     password: z.string().min(8, { message: "Mật khẩu phải ít nhất 8 ký tự." }),

@@ -3,7 +3,7 @@ import { ConditionRendering } from "../layouts";
 import { DollarSign, Grid2x2, LandPlot } from "lucide-react";
 import { formatPrice } from "@/lib/propertyUtils";
 import { Popup } from "react-leaflet";
-
+import PropTypes from 'prop-types'
 const Pin = ({ location }) => {
   const priority = location.priority;
 
@@ -58,3 +58,6 @@ const Pin = ({ location }) => {
 };
 
 export default Pin;
+Pin.propTypes={
+  location:PropTypes.node
+}

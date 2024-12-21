@@ -137,7 +137,7 @@ const UserController = {
       data: { ...response, limit: +limit, page: +page ? +page : 1 },
     });
   }),
-  deleteUser: asyncHandler(async (req, res) => {
+  deleteUser: async (req, res) => {
     const { Role } = req.user;
     const { uid } = req.params;
     if (!Role)
@@ -167,7 +167,7 @@ const UserController = {
         error: error.message,
       });
     }
-  }),
+  } ,
   NewUserByAdmin: asyncHandler(async (req, res) => {
     const { email, fullname, phone, password, idPricing, Role } = req.body;
     const existingUser = await db.User.findOne({ where: { email } });
@@ -349,36 +349,48 @@ const UserController = {
     }
 
     // Query to get user registrations
-    
-      // Query to get user registrations
-      const registrations = await db.User.findAll({
-        attributes: [
-          [db.sequelize.fn("DATE_PART", "month", db.sequelize.col("createdAt")), "month"],
-          [db.sequelize.fn("DATE_PART", "year", db.sequelize.col("createdAt")), "year"],
-          [db.sequelize.fn("COUNT", db.sequelize.col("id")), "userCount"],
-        ],
-        where: {
-          createdAt: { [Op.gte]: startDate },
-        },
-        group: [
-          db.sequelize.fn("DATE_PART", "year", db.sequelize.col("createdAt")),
+
+    // Query to get user registrations
+    const registrations = await db.User.findAll({
+      attributes: [
+        [
           db.sequelize.fn("DATE_PART", "month", db.sequelize.col("createdAt")),
+          "month",
         ],
-        order: [
-          [db.sequelize.fn("DATE_PART", "year", db.sequelize.col("createdAt")), "ASC"],
-          [db.sequelize.fn("DATE_PART", "month", db.sequelize.col("createdAt")), "ASC"],
+        [
+          db.sequelize.fn("DATE_PART", "year", db.sequelize.col("createdAt")),
+          "year",
         ],
-      })
+        [db.sequelize.fn("COUNT", db.sequelize.col("id")), "userCount"],
+      ],
+      where: {
+        createdAt: { [Op.gte]: startDate },
+      },
+      group: [
+        db.sequelize.fn("DATE_PART", "year", db.sequelize.col("createdAt")),
+        db.sequelize.fn("DATE_PART", "month", db.sequelize.col("createdAt")),
+      ],
+      order: [
+        [
+          db.sequelize.fn("DATE_PART", "year", db.sequelize.col("createdAt")),
+          "ASC",
+        ],
+        [
+          db.sequelize.fn("DATE_PART", "month", db.sequelize.col("createdAt")),
+          "ASC",
+        ],
+      ],
+    });
 
     // Check if there are no registrations
     if (!registrations.length) {
       return res.status(200).json([]);
     }
-   
+
     return res.status(200).json({
-      success:registrations?true:false,
-      data:registrations,
-      year:registrations[0].year
+      success: registrations ? true : false,
+      data: registrations,
+      year: registrations[0].year,
     });
   }),
 };

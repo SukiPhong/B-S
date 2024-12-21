@@ -7,7 +7,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FormInput } from "../forms";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import {
+  getAuth,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from "firebase/auth";
 import auth from "@/lib/firebase";
 import { apiForgotPw } from "@/apis/auth";
 import { toast } from "sonner";
@@ -16,7 +20,10 @@ const emailSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
 });
 const phoneSchema = z.object({
-  phone: z.string().min(10, "Số điện thoại phải có ít nhất 10 số").max(11, "Số điện thoại không được quá 11 số"),
+  phone: z
+    .string()
+    .min(10, "Số điện thoại phải có ít nhất 10 số")
+    .max(11, "Số điện thoại không được quá 11 số"),
 });
 
 const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
@@ -27,14 +34,14 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
     resolver: zodResolver(phoneSchema),
     defaultValues: { phone: "" },
   });
-  
+
   const emailForm = useForm({
     resolver: zodResolver(emailSchema),
     defaultValues: { email: "" },
   });
 
   // const handleCaptchaVerify = () => {
-  
+
   //   if (!window.recaptchaVerify) {
   //     window.recaptchaVerify = new RecaptchaVerifier(auth,
   //       "recaptcha-verifier",
@@ -43,7 +50,7 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
   //         callback: (response) => console.log("Captcha resolved:", response),
   //         "expired-callback": () => console.log("Captcha expired"),
   //       },
-        
+
   //     );
   //   }
   // };
@@ -55,7 +62,7 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
   //   signInWithPhoneNumber(auth, formatPhone, verifier)
   //     .then((confirmationResult) => {
   //       console.log("OTP sent:", confirmationResult);
-   
+
   //     })
   //     .catch((error) => {
   //       console.error("Error sending OTP:", error);
@@ -64,23 +71,20 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
 
   // const handlePhoneSubmit = (data) => {
   //   handleSendOTP(data.phone)
-    
+
   // };
-     const  handleEmailSubmit =async ({email}) =>{
-        try {
-          const response = await apiForgotPw(email).then(
-          
-          )
- 
-          if(response.status === 200)
-          {
-             toast.success(response.data.message)
-             onClose()
-          }else toast.error(response.data.message)
-        } catch (error) {
-          toast.error("Đã xảy ra lỗi, vui lòng thử lại sau! ");
-        }
-     }
+  const handleEmailSubmit = async ({ email }) => {
+    try {
+      const response = await apiForgotPw(email).then();
+
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        onClose();
+      } else toast.error(response.data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
   return (
     <div className="col-span-6 ">
       {/* <div id="recaptcha-verifier"></div> */}
@@ -92,9 +96,7 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
 
       {step === "phone" ? (
         <Form {...phoneForm}>
-          <form
-            className="py-4 space-y-4"
-          >
+          <form className="py-4 space-y-4">
             <FormInput
               form={phoneForm}
               name="phone"
@@ -105,7 +107,7 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
               Tiếp tục
             </Button>
           </form>
-        </Form> 
+        </Form>
       ) : step === "email" ? (
         <Form {...emailForm}>
           <form
@@ -158,7 +160,11 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
       )}
 
       {step !== "initial" && (
-        <Button onClick={() => setStep("initial")} className="w-full mt-4" type="button">
+        <Button
+          onClick={() => setStep("initial")}
+          className="w-full mt-4"
+          type="button"
+        >
           Quay lại
         </Button>
       )}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Checkbox } from '../ui/checkbox'
-
+import PropTypes from 'prop-types'
 
 const CheckBoxEditPost = ({form}) => {
   return (
@@ -41,3 +41,6 @@ const CheckBoxEditPost = ({form}) => {
 }
 
 export default CheckBoxEditPost
+CheckBoxEditPost.propTypes={
+  form:PropTypes.node.isRequired
+}

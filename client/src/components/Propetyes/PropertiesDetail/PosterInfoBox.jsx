@@ -17,7 +17,7 @@ import { formatPhoneNumber } from "@/lib/fn";
 import useMeStore from "@/zustand/useMeStore";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-
+import PropTypes from 'prop-types'
 const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
   const [showFullPhone, setShowFullPhone] = useState(false);
   const { me } = useMeStore();
@@ -114,3 +114,9 @@ const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
 };
 
 export default PosterInfoBox;
+PosterInfoBox.propTypes ={
+  avatar: PropTypes.string,
+  fullname:PropTypes.string,
+  phone: PropTypes.string,
+  isList:PropTypes.bool
+}

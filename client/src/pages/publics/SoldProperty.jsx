@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import React from 'react';
 import CardPrototypes from '@/components/Propetyes/CardPrototypes';
 import PropertyLayout from '@/components/layouts/PropertyLayout';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { MapPin, X } from 'lucide-react';
-import { Map } from '@/components/map';
-import useMapStore from '@/zustand/useMapStore';
-import { MapComponent } from '@/components/map/MapComponent ';
+
 
 
 const SoldProperty = () => {
-  const { showMap } = useMapStore();
+ 
   return (
     <PropertyLayout title="Bán"   >
         <CardPrototypes
