@@ -5,3 +5,36 @@
 
  npx sequelize-cli seed:generate --name user
 //Lola_Kuhlman97@gmail.com 123456Phong1
+ // const handleCaptchaVerify = () => {
+
+  //   if (!window.recaptchaVerify) {
+  //     window.recaptchaVerify = new RecaptchaVerifier(auth,
+  //       "recaptcha-verifier",
+  //       {
+  //         size: "invisible",
+  //         callback: (response) => console.log("Captcha resolved:", response),
+  //         "expired-callback": () => console.log("Captcha expired"),
+  //       },
+
+  //     );
+  //   }
+  // };
+
+  // const handleSendOTP = (data) => {
+  //   handleCaptchaVerify();
+  //   const verifier = window.recaptchaVerify;
+  //   const formatPhone = "+84" + data?.slice(1); // Adjust phone format
+  //   signInWithPhoneNumber(auth, formatPhone, verifier)
+  //     .then((confirmationResult) => {
+  //       console.log("OTP sent:", confirmationResult);
+
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error sending OTP:", error);
+  //     });
+  // };
+
+  // const handlePhoneSubmit = (data) => {
+  //   handleSendOTP(data.phone)
+
+  // };

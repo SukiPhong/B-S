@@ -7,12 +7,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FormInput } from "../forms";
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth";
-import auth from "@/lib/firebase";
 import { apiForgotPw } from "@/apis/auth";
 import { toast } from "sonner";
 
@@ -40,39 +34,7 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
     defaultValues: { email: "" },
   });
 
-  // const handleCaptchaVerify = () => {
-
-  //   if (!window.recaptchaVerify) {
-  //     window.recaptchaVerify = new RecaptchaVerifier(auth,
-  //       "recaptcha-verifier",
-  //       {
-  //         size: "invisible",
-  //         callback: (response) => console.log("Captcha resolved:", response),
-  //         "expired-callback": () => console.log("Captcha expired"),
-  //       },
-
-  //     );
-  //   }
-  // };
-
-  // const handleSendOTP = (data) => {
-  //   handleCaptchaVerify();
-  //   const verifier = window.recaptchaVerify;
-  //   const formatPhone = "+84" + data?.slice(1); // Adjust phone format
-  //   signInWithPhoneNumber(auth, formatPhone, verifier)
-  //     .then((confirmationResult) => {
-  //       console.log("OTP sent:", confirmationResult);
-
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error sending OTP:", error);
-  //     });
-  // };
-
-  // const handlePhoneSubmit = (data) => {
-  //   handleSendOTP(data.phone)
-
-  // };
+ 
   const handleEmailSubmit = async ({ email }) => {
     try {
       const response = await apiForgotPw(email).then();
