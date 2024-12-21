@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const app = express()
 app.use(cors({
     origin: process.env.CLIENT_URL,
-    method: ["POST", "PUT", "DELETE", "GET"]
+    method: ["POST", "PUT", "DELETE", "GET","PATCH"]
 }))
 connectDatabase()
 app.use(express.json({ limit: "5mb" }));
