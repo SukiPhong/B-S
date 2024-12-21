@@ -20,7 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Login } from "../Logins";
+
 import useMeStore from "@/zustand/useMeStore";
 import {
   DropdownMenu,
@@ -36,6 +36,7 @@ import useSearchStore from "@/zustand/useSearchStore";
 import { WishlistPopover } from "../Wishlist";
 import { pathnames } from "@/lib/pathname";
 import useWishlistStore from "@/zustand/useWishList";
+import { Login } from "../logins";
 
 const Header = () => {
   const [isShowDialog, setIsShowDialog] = useState(false);
