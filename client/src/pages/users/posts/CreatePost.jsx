@@ -73,6 +73,8 @@ const CreatePost = () => {
     mode: "onSubmit",
   });
    useEffect(() => {  
+        if(me.Role) return
+     
         if (!me.phone || !me.phoneVerified) {
       
           toast.warning('Bạn cần phải xác nhận SĐT trước khi  tạo tin đăng')
