@@ -40,13 +40,14 @@ export const apiWriteDescriptionWithChatGPT = (prompt) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.VITE_API_CHATGPT}`, // Ensure the API key is set correctly
+      Authorization: `Bearer ${import.meta.env.VITE_API_CHATGPT}`,
     },
-    url: import.meta.env.VITE_URL_CHATGPT,
+     url: import.meta.env.VITE_URL_CHATGPT,
     data: {
-      model: 'gpt-3.5-turbo',
-      prompt: prompt,
-      max_tokens: 150, // Limit response length, adjust as needed
+      model: "gpt-4o-mini",
+      // prompt: prompt,
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 200, // Limit response length, adjust as needed
     },
   });
 };

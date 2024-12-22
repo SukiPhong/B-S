@@ -65,7 +65,7 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
       features:
-        "Đăng tin cơ bản,Hiển thị vị trí trên bản đồ,Tin đăng thứ 2,Hỗ trợ cơ bản 24/7",
+        "Đăng tin cơ bản,Hiển thị vị trí trên bản đồ,Tin đăng thứ 2",
     },
     {
       name: "Bạc",
@@ -80,7 +80,7 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
       features:
-        "Tất cả tính năng gói Đồng ,AI hỗ trợ ,viết tin đăng,Ưu tiên hiển thị tin,Phân tích số liệu cơ bản",
+        "Tất cả tính năng gói Đồng ,AI hỗ trợ viết tin đăng, Ưu tiên hiển thị tin,Phân tích số liệu cơ bản, Hỗ trợ  24/7",
     },
     {
       name: "Vàng",

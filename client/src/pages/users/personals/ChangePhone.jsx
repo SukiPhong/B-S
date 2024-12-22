@@ -49,7 +49,7 @@ const ChangePhone = () => {
       const response = await apiSenOTPPhone(data);  
       if (response.data.success) {  
         setShowOtpDialog(true);  
-        toast.success(response.data.message);  
+        toast.success('OTP đã được gữi',response.data.message);  
         setIsVerifying(false);  
       } else {  
         toast.error(response.data.message);  

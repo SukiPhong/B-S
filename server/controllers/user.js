@@ -167,7 +167,7 @@ const UserController = {
         error: error.message,
       });
     }
-  } ,
+  },
   NewUserByAdmin: asyncHandler(async (req, res) => {
     const { email, fullname, phone, password, idPricing, Role } = req.body;
     const existingUser = await db.User.findOne({ where: { email } });
@@ -289,15 +289,16 @@ const UserController = {
         message: `Vui lòng đợi ${remainingTime} giây trước khi gửi lại OTP.`,
       });
     }
-    await Promise.all([
-      client.messages.create({
-        body: `Your OTP is: ${otp}`,
-        from: twilioPhone,
-        to: coverPhoneNumber,
-      }),
-      redisClient.setEx(phone, 600, otp.toString()), // OTP hết hạn sau 10 phút
-      redisClient.set(`otp_last_send:${phone}`, currentTime.toString()), // Lưu thời gian gửi OTP
-    ]);
+
+    await client.messages.create({
+      body: `Your OTP is: ${otp}`,
+      from: twilioPhone,
+      to: coverPhoneNumber,
+    }),
+      await Promise.all([
+        redisClient.setEx(phone, 600, otp.toString()), // OTP hết hạn sau 10 phút
+        redisClient.set(`otp_last_send:${phone}`, currentTime.toString()), // Lưu thời gian gửi OTP
+      ]);
     return res.json({
       success: true,
       messages: "OTP đã gữi tới máy bạn",
