@@ -20,7 +20,7 @@ import React from "react";
 const General = () => {
   const { me } = useMeStore();
   return (
-    <ScrollArea className="w-auto h-[580px]">
+    <ScrollArea className="w-auto h-[calc(100vh-80px)]">
       <div className="container mx-auto p-6 space-y-6 ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <CPN_Card

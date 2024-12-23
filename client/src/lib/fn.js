@@ -30,7 +30,7 @@ export const changePriceToString = (price) => {
   } 
   // Convert to 'triệu' for values >= 1 million
   else if (number >= Math.pow(10, 6)) {
-    return `${(number / Math.pow(10, 6)).toFixed(2)} triệu`;
+    return `${(number / Math.pow(10, 6)).toFixed(3)} triệu`;
   } 
   // Convert to 'nghìn' for values >= 1 thousand (optional, if you want to handle this)
   else if (number >= Math.pow(10, 3)) {

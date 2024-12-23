@@ -31,6 +31,7 @@ import {
 import { RefreshCcw } from "lucide-react";
 import { apiApprovePost, apiDeletePostId } from "@/apis/post";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { SkeletonCard } from "@/components/layouts";
 
 const PendingPostsPage = () => {
   const { fetchPosts, listPosts } = useProperty();
@@ -64,7 +65,7 @@ const PendingPostsPage = () => {
     navigate(`?${createSearchParams({ ...params, title: searchTerm })}`);
   };
 
-  if (!isLoading) return <div>Loading...</div>;
+  if (!isLoading) return <div><SkeletonCard  className='w-full h-full'/></div>;
 
   return (
     <div>
@@ -80,7 +81,7 @@ const PendingPostsPage = () => {
           Tìm kiếm
         </Button>
       </div>
-      <ScrollArea className='w-full h-[410px]'>
+      <ScrollArea className='w-full h-[calc(100vh-280px)]'>
       <Table>
         <TableHeader>
           <TableRow>

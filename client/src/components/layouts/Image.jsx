@@ -10,6 +10,7 @@ const Image = ({ src, fallbackSrc, alt}) => {
   return (
     <div>
       <img
+        loading="lazy"
         className="rounded-full"
         src={imgDefault}
         alt={alt}

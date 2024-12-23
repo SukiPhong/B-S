@@ -37,15 +37,14 @@ const PopoverCheckBox = ({
   }, []);
 
   const onSubmit = (data) => {
-    let updatedData = data[name]?.slice(1);
+    let updatedData = data[name][0]===null?data[name]?.slice(1):data[name];
     let dataLate= new Array()
-    if (updatedData?.length>1) {
+    if (updatedData?.length>=1) {
       dataLate = updatedData.join(",");
     }
     setSearchData({ [name]: dataLate });
     setIsOpen(false);
   };
-
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger

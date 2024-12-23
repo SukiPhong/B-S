@@ -9,17 +9,20 @@ import { Button } from "../ui/button";
 import { MapPin, X } from "lucide-react";
 import useMapStore from "@/zustand/useMapStore";
 import { toast } from "sonner";
-import { FilterCard } from ".";
+import { FilterCard, PosterInfoBox } from ".";
 import { Switch } from "../ui/switch";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
+import { SkeletonCard } from "../layouts";
+import useProperty from "@/zustand/useProperty";
 
 const CardPrototypes = ({ setLayout, limit, ListingType }) => {
   const { showMap, toggleMap, resetDataMaps, setDataMaps } = useMapStore();
+  const { setSearch, resetSearchData } = useSearchStore();
   const { me } = useMeStore();
+  const {setTotalPrototypes} = useProperty()
   const [properties, setProperties] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setSearch, resetSearchData } = useSearchStore();
   const [selectedValue, setSelectedValue] = useState("");
   const params = Object.fromEntries([...searchParams]);
   useEffect(() => {
@@ -38,6 +41,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
         if (response.data.success) {
           setProperties(response.data.data);
           setDataMaps(response.data.data.rows);
+           setTotalPrototypes(response.data.data.count)
         } else {
           toast.error("Không thể lấy dữ liệu.");
         }
@@ -62,15 +66,16 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
     params.soft = selectedValue
       ? (params.soft = selectedValue)
       : (params.soft = "-createdAt");
+      console.log(params.soft)
     params.ListingType = ListingType;
     if (params.price) params.price = searchParams.getAll("price");
     if (params.size) params.size = searchParams.getAll("size");
- 
+
     const properType = searchParams.get("properType");
     setSearch("properType", properType || "");
     setSearch("rows", properties?.rows.length);
     fetchPrototypes(params);
-  }, [searchParams]);
+  }, [searchParams,selectedValue,]);
   const handleRemove = useCallback(
     async (pid) => {
       try {
@@ -95,19 +100,28 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
     [params, setProperties]
   );
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        {Array(+limit)
+          .fill(null)
+          .map((_, index) => (
+            <SkeletonCard key={index} isHideSub={true} className="w-[70%]" />
+          ))}
+      </div>
+    );
   }
   if (properties?.rows?.length <= 0) {
     return (
       <div className="flex justify-center">
         <span className="text-xl font-bole font-roboto">
-          Không tìm thấy thông tin bạn cần vui lòng nhập thông tin khác
+        {setLayout?'không có bài viết':'  Không tìm thấy thông tin bạn cần vui lòng nhập thông tin khác'}
         </span>
       </div>
     );
   }
+
   return (
-    <div >
+    <div>
       <div
         className={`flex items-center justify-between py-2 border-t border-b ${
           setLayout && "mb-4"
@@ -168,30 +182,37 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
         </div>
       </div>
 
-      <div className={`${!setLayout&&'grid grid-cols-10'}`}>
-      <div className={`${!setLayout ?'col-span-7':'col-span-10'} grid grid-cols-10 gap-3 mb-4 mt-2  `}>
-      
-      {properties?.rows?.map((property) => (
-        
-        <PropertyCard
-          key={property.id}
-          property={property}
-          setLayout={setLayout}
-          onRemove={handleRemove}
-          className='bg-blue-400 w-full'
-        />
-        
-      ))}
-      
+      <div className={`${!setLayout && "grid grid-cols-10"}  `}>
+        <div
+          className={`
+          ${
+            !setLayout
+              ? !showMap
+                ? "col-span-7"
+                : "col-span-10 "
+              : "col-span-10"
+          } 
+          grid grid-cols-10 gap-3 mb-4 mt-2 flex-col h-auto
+        `}
+        >
+          {properties?.rows?.map((property) => (
+            <PropertyCard
+              key={property.id}
+              property={property}
+              setLayout={setLayout}
+              onRemove={handleRemove}
+            />
+          ))}
         </div>
-        {!setLayout && (
+        {!setLayout && !showMap && (
           <div className="col-span-3 pl-2">
             <FilterCard />
           </div>
         )}
+        
       </div>
       <div className="grid grid-cols-10 gap-3 mb-4">
-        <div className="col-span-7">
+        <div className="col-span-10">
           {properties?.rows?.length > 0 && (
             <PaginationComponent
               total={properties?.count}
@@ -206,8 +227,8 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
 };
 
 export default CardPrototypes;
-CardPrototypes.propTypes={
-  setLayout:PropTypes.bool,
-  limit:PropTypes.string.isRequired,
-  ListingType:PropTypes.string.isRequired
-}
+CardPrototypes.propTypes = {
+  setLayout: PropTypes.bool,
+  limit: PropTypes.string.isRequired,
+  ListingType: PropTypes.string.isRequired,
+};

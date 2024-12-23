@@ -5,3 +5,4 @@ export { default as Customtooltip } from "./Customtooltip";
 export { default as ConditionRendering } from "./ConditionRendering";
 export { default as Section } from "./Section";
 export { default as PropertyLayout } from "./PropertyLayout";
+export {default as  SkeletonCard} from './SkeletonCard';

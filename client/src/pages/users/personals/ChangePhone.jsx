@@ -21,6 +21,7 @@ import {
 import CustomOTPInput from "@/hook/useOTPinput";
 import { apiSenOTPPhone, apiVerifyOTP } from "@/apis/user";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const ChangePhone = () => {
   const [otpValue, setOtpValue] = useState("");
@@ -96,7 +97,7 @@ const ChangePhone = () => {
                 form={form}
               />
               <Button type="submit" className="mt-8">
-              {isLoading ? "Đang gửi OTP..." : "Gửi OTP"} 
+              {isLoading ?<Loader2 className="animate-spin"/> : "Gửi OTP"} 
               </Button>
             </div>
           </form>
@@ -124,7 +125,7 @@ const ChangePhone = () => {
               Hủy
             </Button>
             <Button onClick={handleVerifyOtp} disabled={otpValue.length !== 6}>
-            {isLoading ? "Đang xác nhận..." : "Xác nhận"}
+            {isLoading ? <Loader2 className="animate-spin"/> : "Xác nhận"}
             </Button>
           </DialogFooter>
         </DialogContent>

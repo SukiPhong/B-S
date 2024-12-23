@@ -2,12 +2,12 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../ui/button";
 import { Form } from "@/components/ui/form";
-import { Mail, Phone } from "lucide-react";
+import { Loader2, Mail, Phone } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FormInput } from "../forms";
-import { apiForgotPw } from "@/apis/auth";
+import { apiForgotPwEmail } from "@/apis/auth";
 import { toast } from "sonner";
 
 const emailSchema = z.object({
@@ -23,7 +23,7 @@ const phoneSchema = z.object({
 const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
   const [step, setStep] = useState("initial");
   const [isotp, setIsotp] = useState(false); // Track OTP display state
-
+  const [isLoading, setIsLoading] = useState(false)
   const phoneForm = useForm({
     resolver: zodResolver(phoneSchema),
     defaultValues: { phone: "" },
@@ -34,17 +34,31 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
     defaultValues: { email: "" },
   });
 
- 
-  const handleEmailSubmit = async ({ email }) => {
-    try {
-      const response = await apiForgotPw(email).then();
+  const  handlePhoneSubmit = async ({ phone }) => {
 
+    // try {
+    //   const response = await apiForPwPhone(phone);
+
+    //   if (response.status === 200) {
+    //     toast.success(response.data.message);
+    //     onClose();
+    //   } else toast.error(response.data.message);
+    // } catch (error) {
+    //   toast.error(error.response.data.message);
+    // }
+  };
+  const handleEmailSubmit = async ({ email }) => {
+    setIsLoading(true)
+    try {
+      const response = await apiForgotPwEmail(email);
       if (response.status === 200) {
         toast.success(response.data.message);
         onClose();
       } else toast.error(response.data.message);
     } catch (error) {
       toast.error(error.response.data.message);
+    }finally{
+      setIsLoading(false)
     }
   };
   return (
@@ -58,7 +72,9 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
 
       {step === "phone" ? (
         <Form {...phoneForm}>
-          <form className="py-4 space-y-4">
+          <form className="py-4 space-y-4"
+             onSubmit={emailForm.handleSubmit(handlePhoneSubmit)}
+          >
             <FormInput
               form={phoneForm}
               name="phone"
@@ -86,8 +102,9 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
               type="submit"
               className="w-full"
               onClick={() => setIsotp(true)}
+              disabled={isLoading}
             >
-              Tiếp tục
+             {isLoading? <Loader2 className="animate-spin" />: 'Tiếp tục'}
             </Button>
           </form>
         </Form>

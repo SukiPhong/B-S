@@ -6,16 +6,18 @@ import { Map, MapWithMarkers } from "../map";
 import useMapStore from "@/zustand/useMapStore";
 import { MapComponent } from "../map/MapComponent ";
 import { Footer } from "../footer";
+import useProperty from "@/zustand/useProperty";
 
 const PropertyLayout = ({ children, title }) => {
   const { search } = useSearchStore();
   const { showMap,dataMapsForList  } = useMapStore();
+  const {totalPrototypes} = useProperty()
   return (
    <>
     <div className="container mx-auto px-4 pb-4">
       <div className="grid grid-cols-10 gap-4">
         {!showMap && (
-          <div className="col-span-2  min-h-screen">
+          <div className="col-span-2  h-[calc(100vh-80px)]">
           </div>
         )}
         <div className={`${showMap ? 'col-span-6' : 'col-span-6'}`}>
@@ -29,7 +31,7 @@ const PropertyLayout = ({ children, title }) => {
                 {search.properType || "Tất cả trên toàn quốc"}
               </h1>
               <span className="text-gray-600 block mt-2">
-                Hiện có bất động sản
+             Hiện có {totalPrototypes} bất động sản
               </span>
             </div>
           </div>
@@ -38,7 +40,7 @@ const PropertyLayout = ({ children, title }) => {
           </div>
         </div>
         {!showMap ? (
-          <div className="col-span-2  min-h-screen">
+          <div className="col-span-2  h-[calc(100vh-80px)]">
             {/* Right screen content */}
           </div>
         ) : (

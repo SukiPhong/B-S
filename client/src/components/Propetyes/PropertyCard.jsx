@@ -1,183 +1,189 @@
-import React, { memo } from "react";
-import { Card } from "../ui/card";
-import { Badge } from "../ui/badge";
+"use client";
+
+import { memo } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   ImageIcon,
   MapPin,
   Calendar,
   EllipsisVertical,
   Tag,
-  Heart,
   BadgeCheck,
+  EthernetPort,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { pathnames } from "@/lib/pathname";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { resetOutline } from "@/lib/classname";
-import { ConditionRendering } from "../layouts";
+import { ConditionRendering, Customtooltip } from "../layouts";
 import { formatPrice, getStatusColor } from "@/lib/propertyUtils";
 import { PosterInfoBox } from ".";
 import useMeStore from "@/zustand/useMeStore";
 import { WishListItem } from "../Wishlist";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
+import { description } from "@/lib/fn";
+
 const PropertyCard = ({ property, setLayout, onRemove }) => {
   const { me } = useMeStore();
-  const navigate = useNavigate();
+  const priority = property?.rUser?.rPricing?.priority >= 4;
+
   return (
     <Card
-      className={`${setLayout ? "col-span-5" : "col-span-10"} overflow-hidden bg-slate-100`}
+      className={cn(
+        "overflow-hidden bg-slate-100",
+        setLayout ? "col-span-5" : "col-span-10"
+      )}
     >
-      <div className="grid grid-cols-9 gap-4 w-full h-full">
-        <div className="col-span-3 relative w-full h-full">
+      <div className="grid grid-cols-10 w-full">
+        {/* Image Section - Fixed aspect ratio */}
+        <div className="col-span-4 relative aspect-[4/3]">
           <img
+            loading="lazy"
             src={property.images[0]}
             alt={property.title}
-            className="object-cover w-full h-full"
+            className="absolute inset-0 w-full h-full object-cover transition-transform hover:scale-105"
           />
-
-          <>
-            <Badge
-              className={`absolute top-0 left-0 ${getStatusColor(
-                property.status
-              )} text-white border-none`}
-            >
-              {property.status}
-            </Badge>
-            <Badge className="absolute bottom-2 right-2 bg-black/50 text-white border-none">
-              <ImageIcon className="w-4 h-4 mr-1" />
-              {property.images.length}
-            </Badge>
-          </>
+          <Badge
+            className={cn(
+              "absolute top-2 left-2",
+              getStatusColor(property.status),
+              "text-white border-none"
+            )}
+          >
+            {property.status}
+          </Badge>
+          <Badge className="absolute bottom-2 right-2 bg-black/50 text-white border-none">
+            <ImageIcon className="w-4 h-4 mr-1" />
+            {property.images.length}
+          </Badge>
         </div>
-        <div className="col-span-6 p-4">
-          <span className="flex items-center w-full">
-            <div className="flex-1">
-              <Link
-                to={`${pathnames.public.Property_Detail}/${property.idPost}`}
-              >
-                <h3 className="font-semibold truncate break-words flex-1 hover:underline">
-                  {property.title.length > 30
-                    ? `${property.title?.slice(0, 25)}...`
-                    : property.title}
-                </h3>
-              </Link>
-            </div>
-            <div className="flex">
+
+        {/* Content Section - Fixed height with scroll */}
+        <div className="col-span-6 p-4 flex flex-col h-full">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-3">
+            <Link
+              to={`${pathnames.public.Property_Detail}/${property.idPost}`}
+              className="flex-1 min-w-0"
+            >
+              <h3 className="font-semibold truncate hover:underline">
+                {property.title}
+              </h3>
+            </Link>
+            <div className="flex items-center gap-2 ml-2">
               {!setLayout && <WishListItem id={property.id} />}
               <ConditionRendering show={setLayout || me?.Role === true}>
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <EllipsisVertical
                       size={14}
-                      className={cn(resetOutline, "ml-2 cursor-pointer")}
+                      className={cn(resetOutline, "cursor-pointer")}
                     />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-slate-300 rounded-md">
-                    <DropdownMenuItem
-                      className="text-main"
-                      onClick={() => {
-                        navigate(
-                          `${pathnames.users.layout}${pathnames.users.createPost}`,
-                          {
-                            state: { editMode: true, idPost: property.idPost },
-                          }
-                        );
-                      }}
-                    >
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem className="text-primary">
                       Sửa
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="text-red"
+                      className="text-destructive"
                       onClick={() => onRemove(property?.id)}
                     >
-                      <span>Xóa</span>
+                      Xóa
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </ConditionRendering>
             </div>
-          </span>
-          <div className="mt-2 space-y-2">
-            <div className="flex  gap-10 text-sm">
+          </div>
+
+          {/* Details */}
+          <div className="space-y-3 flex-1">
+            <div className="flex items-center gap-4">
               <span className="font-medium text-primary">
                 {formatPrice(property.price, property.priceUnits)}
               </span>
               <span>{property.size}m²</span>
             </div>
-            <div className="flex items-center   gap-2 text-sm text-muted-foreground">
-              <span className="flex gap-1 mr-4">
-                <MapPin className="w-4 h-4 shrink-0  " />
 
-                <span className="break-words">
-                  {property.district},{property.province}
-                </span>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <MapPin className="w-4 h-4 shrink-0" />
+              <span className="truncate">
+                {property.district}, {property.province}
               </span>
             </div>
 
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span className="flex gap-1">
+              <span className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
                 <span>
-                  {`${new Date(property.createdAt).toLocaleDateString(
-                    "vi-VN"
-                  )}`}
+                  {new Date(property.createdAt).toLocaleDateString("vi-VN")}
                 </span>
               </span>
-              <span className="flex gap-1">
+              <span className="flex items-center gap-1">
                 <Tag className="w-4 h-4 shrink-0" />
                 <span>{property.properType}</span>
               </span>
             </div>
-            <div>
+
+            <div className="flex gap-5 ">
               {property.verified && (
-                <span className="flex items-center gap-2 mb-1 ">
-                  <BadgeCheck color="green" size={14} />
-                  <span className="text-green-900 font-semibold">Xác thực</span>
-                </span>
+                <div className="flex items-center gap-2">
+                  <BadgeCheck className="w-4 h-4 text-green-600" />
+                  <span className="text-green-900 font-medium">Xác thực</span>
+                </div>
+              )}
+              {property.rUser.rPricing.priority >= 3 && (
+                <Customtooltip
+                  trigger={<EthernetPort size={20} color="red" />}
+                  content={
+                    <>
+                      <p className="font-bold text-2xl">Mô tả</p>
+                      <p>
+                        <span>{property.description}</span>
+                      </p>
+                    </>
+                  }
+                />
               )}
             </div>
-            {!setLayout && (
-              <div>
-                <div className="mt-2 text-sm text-gray-600">
-                  {property?.rUser?.rPricing?.priority >= 2 && (
-                    <div>
-                      <p className="font-roboto font-semibold underline">
-                        Mô tả
-                      </p>
-                      <span className="line-clamp-2">
-                        {property.description}
-                      </span>
-                    </div>
-                  )}
-                </div>
+
+            {/* {!setLayout && property?.rUser?.rPricing?.priority >= 2 && (
+              <div className="text-sm text-gray-600">
+                <p className="font-medium mb-1">Mô tả</p>
+                <p className="line-clamp-2">{property.description}</p>
               </div>
-            )}
+            )} */}
           </div>
-          {property?.rUser?.rPricing.priority >= 4 && (
-            <div className="mt-4">
-              <PosterInfoBox
-                fullname={property?.rUser?.fullname}
-                avatar={property?.rUser?.avatar}
-                phone={property?.rUser?.phone}
-                isList={true}
-              />
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Poster Info - Only show if conditions met */}
+      {me.fullname !== property?.rUser?.fullname &&
+        property?.rUser?.rPricing?.priority >= 4 && (
+          <div className="bg-[#2C99AE] mt-auto">
+            <PosterInfoBox
+              fullname={property?.rUser?.fullname}
+              avatar={property?.rUser?.avatar}
+              phone={property?.rUser?.phone}
+              isList={true}
+            />
+          </div>
+        )}
     </Card>
   );
 };
 
-export default memo(PropertyCard);
-PropertyCard.propTypes={
+PropertyCard.propTypes = {
   onRemove: PropTypes.func.isRequired,
-  setLayout:PropTypes.bool,
-  property: PropTypes.object
-}
+  setLayout: PropTypes.bool,
+  property: PropTypes.object.isRequired,
+};
+
+export default memo(PropertyCard);

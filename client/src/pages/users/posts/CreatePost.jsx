@@ -213,7 +213,7 @@ const CreatePost = () => {
             <h2 className="text-2xl font-bold flex justify-center py-2 font-mono">
               {editMode ? "Chỉnh sửa bài đăng" : "Tạo bài đăng mới"}
             </h2>
-            <ScrollArea className="w-auto h-[500px]">
+            <ScrollArea className="w-auto h-[calc(100vh-80px)]">
               <div className="flex flex-col">
                 <div className="flex-1 max-w-3xl mx-auto px-4 py-2 ">
                   <div className="  ">

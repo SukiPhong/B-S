@@ -89,7 +89,7 @@ const ManagerHistoryPaymentPage = () => {
           </Button>
         </div>
       </div>
-      <ScrollArea className="w-full h-[410px]">
+      <ScrollArea className="w-full h-[calc(100vh-280px)]">
         <Table>
           <TableHeader>
             <TableRow>

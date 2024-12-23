@@ -3,7 +3,7 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import PropTypes from "prop-types";
 import { apiGetLongitudeAndLatitudeFromAddress } from "@/apis/external";
 import L from "leaflet";
-import { MessageSquareMore } from "lucide-react";
+import { Loader2,  } from "lucide-react";
 import { Pin } from "../pin";
 const attribution =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -29,7 +29,7 @@ const MapWithMarkers = ({ items, zoom = 10 }) => {
                 address: item.address,
                 title: item.title,
                 priority:item.rUser.rPricing.priority,
-                image:item.images[0],
+                images:item.images,
                 size:item.size,
                 price:item.price,
                 priceUnit:item.priceUnit,
@@ -52,8 +52,6 @@ const MapWithMarkers = ({ items, zoom = 10 }) => {
     const color = priority >= 3 ? "red" : "blue"; // Chọn màu dựa vào `priority`
     return new L.Icon({
       iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-      shadowUrl:
-        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
       iconSize: [25, 41], 
       iconAnchor: [12, 41], 
       popupAnchor: [1, -34],
@@ -62,7 +60,9 @@ const MapWithMarkers = ({ items, zoom = 10 }) => {
   };
 
   if (!locations.length) {
-    return <div>Loading map...</div>;
+    return   <div className="flex justify-center items-center h-full p-1 border-main">
+    <Loader2 size={24}/> 
+  </div>;
   }
 
   return (
@@ -70,7 +70,7 @@ const MapWithMarkers = ({ items, zoom = 10 }) => {
       center={locations[0]?.coordinates || [0, 0]}
       zoom={zoom}
       scrollWheelZoom={false}
-      className="w-full h-full"
+      className="w-full h-full "
     >
       <TileLayer attribution={attribution} url={url} />
       {locations?.map((location) => (
@@ -79,9 +79,8 @@ const MapWithMarkers = ({ items, zoom = 10 }) => {
           position={location.coordinates}
           icon={createCustomIcon(location.priority)}
         >
-         
-           <Pin location={location}/>
-        
+            <Pin location={location}/> 
+          
         </Marker>
       ))}
     </MapContainer>

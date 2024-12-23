@@ -29,10 +29,10 @@ const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
 
   if (isList) {
     return (
-      <div className="flex items-center gap-3 h-full w-full justify-between">
+      <div className="flex items-center gap-3 h-full w-full justify-between text-xs px-2 pb-2 border-t  border-dark/60 pt-1">
         {/* Phần bên trái */}
         <div className="flex items-center gap-3 flex-grow">
-          <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0">
+          <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0">
             <Image
               className="w-full h-full object-cover"
               src={avatar}
@@ -41,10 +41,11 @@ const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
           </div>
           <div className="min-w-0">
             <h2 className="text-sm font-semibold truncate">{fullname}</h2>
-            <p className="text-sm text-gray-600 truncate">
+           
+          </div>
+          <p className="text-sm text-white truncate">
               {formatPhoneNumber(phone, showFullPhone)}
             </p>
-          </div>
         </div>
 
         {/* Nút bên phải */}

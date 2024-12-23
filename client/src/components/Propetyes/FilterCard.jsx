@@ -7,39 +7,38 @@ import {
 } from "react-router-dom";
 import { price, size } from "@/lib/contants";
 import { pathnames } from "@/lib/pathname";
+import useSearchStore from "@/zustand/useSearchStore";
 
 const FilterCard = () => {
   const [selectedPrice, setSelectedPrice] = useState("ALL");
   const [selectedSize, setSelectedSize] = useState("ALL");
-  const location = useLocation();
-  const navigate = useNavigate();
-
-    // useEffect(() => {
-    //   const params = new Object();
-
-    //   if (selectedPrice !== "ALL") {
-    //     params.size = selectedPrice;
-    //   }
-
-    //   if (selectedSize !== "ALL") {
-    //     params.size = selectedSize;
-    //   }
-    //   navigate({
-    //     pathname: `${
-    //       location.pathname === pathnames.public.rentProperty
-    //         ? pathnames.public.rentProperty
-    //         : pathnames.public.soldProperty
-    //     }`,
-    //     search: createSearchParams(params).toString(),
-    //   });
-    // }, [selectedPrice, selectedSize]);
-
+  const {setSearchData} = useSearchStore()
+  
   const handlePriceClick = (value) => {
-    setSelectedPrice(value === "ALL" ? "ALL" : JSON.parse(value));
+    setSelectedPrice(value);
+    const params = {};
+
+    if (value === "ALL") {
+      params["price"] = ["gte", 0]; // Key should be "price"
+    } else {
+      params["price"] = JSON.parse(value); // Assign the value directly
+    }
+
+    setSearchData(params);
   };
 
   const handleSizeClick = (value) => {
-    setSelectedSize(value === "ALL" ? "ALL" : JSON.parse(value));
+    setSelectedSize(value);
+    const params = {};
+
+    if (value === "ALL") {
+      params["size"] = ["gte", 0]; // Key should be "size"
+    } else {
+      params["size"] = JSON.parse(value); // Assign the value directly
+    }
+
+    setSearchData(params)
+
   };
 
   return (

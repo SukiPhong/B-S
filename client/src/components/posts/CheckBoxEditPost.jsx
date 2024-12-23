@@ -29,8 +29,8 @@ const CheckBoxEditPost = ({form}) => {
     <div className="flex items-center">
       <Checkbox
         id="status-delivered"
-        checked={form.watch('status') === 'Đã bàn giao'}
-        onCheckedChange={() => form.setValue('status', 'Đã bàn giao')}
+        checked={form.watch('status') === 'đã bàn giao'}
+        onCheckedChange={() => form.setValue('status', 'đã bàn giao')}
       />
       <label htmlFor="status-delivered" className="ml-2 text-sm font-medium">
         Đã bàn giao

@@ -1,63 +1,73 @@
 import React from "react";
 import { ConditionRendering } from "../layouts";
-import { DollarSign, Grid2x2, LandPlot } from "lucide-react";
+import {
+  DollarSign,
+  Grid2x2,
+  ImageIcon,
+  LandPlot,
+  MapPinHouseIcon,
+  Megaphone,
+} from "lucide-react";
 import { formatPrice } from "@/lib/propertyUtils";
 import { Popup } from "react-leaflet";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
+import { Badge } from "../ui/badge";
 const Pin = ({ location }) => {
-  const priority = location.priority;
+  const priority = location?.priority;
 
   return (
-    <Popup className="w-full   max-w-lg shadow-md rounded-md ">
-      {/* Hiển thị khi priority >= 3 */}
+    <>
       <ConditionRendering show={priority >= 3}>
-        {/* Hình ảnh */}
-        <div className="row-span-1">
-          <img
-            src={location.image}
-            alt="Địa chỉ hình ảnh"
-            className="w-full h-24 object-cover border rounded-md"
-          />
-        </div>
-        {/* Nội dung */}
-        <div className="row-span-1 gap-1">
-          {/* Tiêu đề */}
-          <p className="text-sm font-semibold whitespace-normal max-w-full">
-            {location.title}
-          </p>
-        </div>
-        <div className="row-span-1">
-          <span className="flex items-center gap-2 text-gray-700">
-            <DollarSign size={18} className="text-green-500" />
-            <span className="text-sm font-medium whitespace-nowrap">
-              {formatPrice(location.price, location.priceUnits)}
+        <Popup>
+          <div className=" flex-col justify-center space-y-2 items-center">
+            <span className="flex items-center gap-1">
+              <Megaphone size={16} color="red" />
+              <span className="break-words"> {location.title}</span>
             </span>
-          </span>
-          {/* Kích thước */}
-          <div className="flex items-center gap-2 text-gray-700">
-            <Grid2x2 size={18} className="text-blue-500" />
-            <span className="text-sm font-medium whitespace-nowrap">
+            <span className="flex items-center gap-1">
+              <Grid2x2 size={14} />
               {location.size}m²
             </span>
+            <span className="flex items-center gap-1">
+              <DollarSign size={14} />
+              {formatPrice(location.price, location.priceUnits)}
+            </span>
+            <span className="flex items-center gap-1">
+            <MapPinHouseIcon size={16} className="text-main" />
+            <span className="break-words"> {location.address}</span>
+          </span>
+            <div className="relative overflow-hidden">
+              <img
+                src={location.images[0]}
+                alt="image"
+                className="w-full h-full object-cover rounded-md"
+              />
+              <Badge className="absolute bottom-1 right-0 bg-black/50 text-white border-none">
+                <ImageIcon className="w-4 h-4 mr-1" />
+                {location.images.length}
+              </Badge>
+            </div>
+            
           </div>
-        </div>
-        {/* Giá */}
+        </Popup>
       </ConditionRendering>
-
-      {/* Hiển thị khi priority < 3 */}
       <ConditionRendering show={priority < 3}>
-        <strong className="block text-lg">
-          {location.title.length > 30
-            ? `${location.title.slice(0, 24)}...`
-            : location.title}
-        </strong>
-        <span className="text-sm">{location.address}</span>
+        <Popup>
+          <span className="flex items-center gap-1">
+            <Megaphone size={16} color="red" />
+            <span className="break-words"> {location.title}</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <MapPinHouseIcon size={16} className="text-main" />
+            <span className="break-words"> {location.address}</span>
+          </span>
+        </Popup>
       </ConditionRendering>
-    </Popup>
+    </>
   );
 };
 
 export default Pin;
-Pin.propTypes={
-  location:PropTypes.node
-}
+Pin.propTypes = {
+  location: PropTypes.node,
+};

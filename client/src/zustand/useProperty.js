@@ -1,9 +1,10 @@
 import { apiGetPrototypes } from "@/apis/post";
 import { create } from "zustand";
 
-
-
 const useProperty = create((set, get) => ({
+  totalPrototypes: 0,
+  setTotalPrototypes: (number) => set(() => (
+    {totalPrototypes: number })),
   listPosts: null,
   fetchPosts: async (limit, params) => {
     try {

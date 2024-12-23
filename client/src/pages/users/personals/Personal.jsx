@@ -49,19 +49,19 @@ const Personal = () => {
   });
 
   useEffect(() => {
-    if (!me) {
-      throw new Error("No personal data available");
-    }
+    // Reset form với dữ liệu từ `me`
     form.reset({
       email: me.email || "",
       phone: me.phone || "",
       fullname: me.fullname || "",
-      avatar: me.avatar || null,
+      avatar: me?.avatar || "",
       balance: +me.balance || 0,
       score: +me.score || 0,
     });
-  }, [me, form]);
 
+    // Debug giá trị avatar sau reset
+    
+  }, [me, form]);
   const handleAvatarChange = (files) => {
     if (files && files.length > 0) {
       const file = files[0];
@@ -97,7 +97,7 @@ const Personal = () => {
 
   return (
     <div className="w-[700px] max-w-full m-auto ">
-      <ScrollArea className="w-auto h-[550px]">
+      <ScrollArea className="w-auto h-[calc(100vh-80px)]">
         <Section title="Thông tin cá nhân">
           <Form {...form}>
             <form
@@ -178,13 +178,13 @@ const Personal = () => {
                     className="w-full h-full flex items-center justify-center"
                   ></FileInput>
                   <FileUploaderContent className="absolute inset-0 pointer-events-none">
-                    {(avatarFile || me.avatar) && (
+                    {(avatarFile || me?.avatar) && (
                       <FileUploaderItem className="w-full h-full p-0 overflow-hidden">
                         <img
                           src={
                             avatarFile
                               ? avatarFile.url || avatarFile
-                              : generalDefaultAvatar(me?.fullname)
+                              : me?.avatar ? me?.avatar :generalDefaultAvatar(me?.fullname)
                           }
                           alt="Không ảnh"
                           className="w-full h-full object-cover rounded-full"

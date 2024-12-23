@@ -18,7 +18,7 @@ export const apiLogin = (data) => axios({
     url: endpoints.auth.login,
     data,
 })
-export const apiForgotPw = (email) =>axios({
+export const apiForgotPwEmail = (email) =>axios({
     method:'post',
     url: endpoints.auth.forgotPw + email
     

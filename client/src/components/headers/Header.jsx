@@ -50,6 +50,7 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     setStoreNull()
+    navigate('/')
     toast.info("Logout was successful");
   };
   const handleRedirect = (pathname, subName) => {

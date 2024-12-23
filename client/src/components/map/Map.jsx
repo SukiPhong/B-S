@@ -2,6 +2,7 @@ import { apiGetLongitudeAndLatitudeFromAddress } from "@/apis/external";
 import React, { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import PropTypes from "prop-types";
+import { Loader2 } from "lucide-react";
 const attribution =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 const url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -33,7 +34,11 @@ const Map = ({ address, zoom = 10 }) => {
   }, [address]);
 
   if (!center) {
-    return <div>Loading map...</div>; 
+    return (
+      <div className="flex-col items-center">
+        <Loader2 size={24}/> <span>Vui lòng đợi trong ít phút</span>
+      </div>
+    );
   }
   return (
     <MapContainer
