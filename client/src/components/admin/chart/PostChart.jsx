@@ -59,7 +59,7 @@ const PostChart = () => {
             <XAxis dataKey="label" className="text-xs" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="data" fill="#82ca9d" />  
+            <Bar dataKey="data" fill="#005163" />  
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
