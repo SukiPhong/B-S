@@ -1,25 +1,26 @@
-const  nodemailer =require('nodemailer')
-const  asyncHandler =require ('express-async-handler')
-const sendMail = asyncHandler(async ({ email, html }) => {
-    let transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false, // true for 465, false for other ports
-        auth: {
-            user: process.env.EMAIL_NAME, // generated ethereal user
-            pass: process.env.EMAIL_PASSWORD, // generated ethereal password
-        },
-    });
+const nodemailer = require("nodemailer");
+const asyncHandler = require("express-async-handler");
+const sendMail = asyncHandler(async ({ email, html, isChangeLabel=false }) => {
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_NAME, // generated ethereal user
+      pass: process.env.EMAIL_PASSWORD, // generated ethereal password
+    },
+  });
 
-    // send mail with defined transport object
-    let info = await transporter.sendMail({
-        from: 'BDS-ESTATE" <no-relply@gmail.com>', // sender address
-        to: email, // list of receivers
-        subject: "Forgot password", // Subject line
-        html: html, // html body
-    });
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: 'BDS-ESTATE" <no-relply@gmail.com>', // sender address
+    to: email, // list of receivers
+    subject: `${isChangeLabel ? "Xác thực email" : "Forgot password"}`,
+    // Subject line
+    html: html, // html body
+  });
 
-    return info
-})
+  return info;
+});
 
-module.exports = sendMail
+module.exports = sendMail;

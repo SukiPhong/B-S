@@ -61,7 +61,7 @@ const MapWithMarkers = ({ items, zoom = 10 }) => {
 
   if (!locations.length) {
     return   <div className="flex justify-center items-center h-full p-1 border-main">
-    <Loader2 size={24}/> 
+    <Loader2 size={24}  className="animate-spin"/> 
   </div>;
   }
 

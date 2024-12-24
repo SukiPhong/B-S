@@ -78,5 +78,19 @@ export const apiChartUser = (data)=>{
   })
 }
 
-
+export const apiSenOTPEmail = (params) => {
+  return axios({
+    method: "post",
+    url: endpoints.user.sendOTPEmail,
+    params
+    
+  });
+};
+export const apiVerifyOTPEmail = (data)=>{
+  return  axios({
+    method:'patch',
+    url: endpoints.user.verifyOTPEmail,
+    data
+  })
+}
 

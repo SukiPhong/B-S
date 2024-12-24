@@ -1,12 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const db = require("../models");
 const bcrypt = require("bcryptjs/dist/bcrypt");
-const { Sequelize, Op, BOOLEAN } = require("sequelize");
+const { Sequelize, Op, BOOLEAN, where } = require("sequelize");
 const otpGenerator = require("otp-generator");
 const twilio = require("twilio");
 const redisClient = require("../configs/redis.config");
 const { verify } = require("crypto");
 const { getMonthName } = require("../utils/fn");
+const sendMail = require("../utils/sendMail");
 const UserController = {
   getUser: asyncHandler(async (req, res) => {
     const { userId } = req.user;
@@ -212,47 +213,10 @@ const UserController = {
       message: "cập nhật thông tin thành công",
     });
   }),
-  // updatePricingUser: asyncHandler(async (req, res) => {
-  //   const { userId } = req.user;
-  //   const { idPricing, extendPackage } = req.body;
-  //   const user = await db.User.findByPk(userId);
-  //   if (!user)
-  //     return res
-  //       .status(404)
-  //       .json({ success: false, message: "User not found" });
-
-  //   try {
-  //     if (extendPackage) {
-  //       // Gia hạn gói hiện tại
-  //       user.packageExprideday = user.packageExprideday
-  //         ? new Date(
-  //             user.packageExprideday.getTime() + 30 * 24 * 60 * 60 * 1000
-  //           )
-  //         : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  //     } else if (idPricing) {
-  //       // Nâng cấp lên gói mới
-  //       user.idPricing = idPricing;
-  //       user.packageExprideday = new Date(
-  //         Date.now() + 30 * 24 * 60 * 60 * 1000
-  //       );
-  //     }
-
-  //     await user.save(); // Lưu thông tin người dùng
-  //     return res.json({
-  //       success: true,
-  //       message: "Cập nhật gói thành công!",
-  //     });
-  //   } catch (error) {
-  //     console.error("Error updating pricing:", error);
-  //     return res.status(500).json({
-  //       success: false,
-  //       message: "Có lỗi xảy ra trong quá trình cập nhật.",
-  //     });
-  //   }
-  // }),
   handleSendOTP: asyncHandler(async (req, res) => {
     const { userId } = req.user;
     const { phone } = req.body;
+    console.log(phone)
     const coverPhoneNumber = phone.startsWith("0")
       ? "+84" + phone.slice(1)
       : phone;
@@ -260,16 +224,22 @@ const UserController = {
     const authToken = process.env.TWILIO_AUTH_TOKEN;
     const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
     const client = twilio(accountSid, authToken);
+
     const user = await db.User.findByPk(userId);
     if (!user)
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
-    if (user.phone === phone)
+
+    const exitPhoneUser = await db.User.findOne({ where: {phone:phone} });
+    if (exitPhoneUser && exitPhoneUser.id !== userId)
+      return res.json({ success: false, message: "SĐT này đã được  sử dụng" });
+    if (user.phone === phone && user.phoneVerified)
       return res.json({
         success: false,
-        message: "SĐT này đã có người  sử dụng",
+        message: "SĐT này đã được xác thực ",
       });
+
     const otp = otpGenerator.generate(6, {
       digits: true,
       lowerCaseAlphabets: false,
@@ -277,9 +247,9 @@ const UserController = {
       specialChars: false,
     });
     const lastSendTime = await redisClient.get(`otp_last_send:${phone}`);
-    const cooldown = 5 * 60 * 1000; // 5 minutes (converted to milliseconds)
     const currentTime = Date.now();
 
+    const cooldown = 5 * 60 * 1000;
     if (lastSendTime && currentTime - parseInt(lastSendTime) < cooldown) {
       const remainingTime = Math.ceil(
         (cooldown - (currentTime - parseInt(lastSendTime))) / 1000
@@ -297,7 +267,7 @@ const UserController = {
     }),
       await Promise.all([
         redisClient.setEx(phone, 600, otp.toString()), // OTP hết hạn sau 10 phút
-        redisClient.set(`otp_last_send:${phone}`, currentTime.toString()), // Lưu thời gian gửi OTP
+        redisClient.set(`otp_last_send_Phone:${phone}`, currentTime.toString()), // Lưu thời gian gửi OTP
       ]);
     return res.json({
       success: true,
@@ -307,10 +277,6 @@ const UserController = {
   verifyOTP: asyncHandler(async (req, res) => {
     const { userId } = req.user;
     const { phone, otp } = req.body;
-    console.log(otp);
-    const coverPhoneNumber = phone.startsWith("0")
-      ? "+84" + phone.slice(1)
-      : phone;
     // Validate input
     if (!phone || !otp) {
       return res.status(400).json({ message: "Phone and OTP are required" });
@@ -393,6 +359,101 @@ const UserController = {
       data: registrations,
       year: registrations[0].year,
     });
+  }),
+  sendOTPEmail: asyncHandler(async (req, res) => {
+    const { email } = req.query; // Extract email from query
+    const { userId } = req.user; // Extract userId from authenticated user (req.user)
+    // Check if the user exists
+    const user = await db.User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const existingUser = await db.User.findOne({ where: { email } });
+    if (existingUser && existingUser.id !== userId) {
+      return res.json({
+        success: false,
+        message: "Email này đã được sử dụng bởi một tài khoản khác.",
+      });
+    }
+    if (user.email === email && user.emailVerified) {
+      return res.json({
+        success: false,
+        message: "Email này đã được xác thực",
+      });
+    }
+
+    // Generate a 6-digit OTP
+    const otp = otpGenerator.generate(6, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+    console.log(otp)
+    // OTP cooldown logic
+    const currentTime = Date.now();
+    const lastSendTime = await redisClient.get(`otp_last_send:${email}`);
+    const cooldown = process.env.REDIS_TIME_RESET; // 5 minutes in milliseconds
+
+    if (lastSendTime && currentTime - parseInt(lastSendTime) < cooldown) {
+      const remainingTime = Math.ceil(
+        (cooldown - (currentTime - parseInt(lastSendTime))) / 1000
+      );
+      return res.status(429).json({
+        success: false,
+        message: `Vui lòng đợi ${remainingTime} giây trước khi gửi lại OTP.`,
+      });
+    }
+
+    // Prepare email content
+    const html = `Your OTP is <strong>${otp}</strong>`;
+    const isChangeLabel=true
+    const data = { email, html,isChangeLabel };
+
+    // Send the email
+    const response = await sendMail(data);
+
+    // Store OTP and send time in Redis
+    await Promise.all([
+      redisClient.setEx(email, 300, otp.toString()), // OTP expires in 5 minutes (300 seconds)
+      redisClient.set(`otp_last_send:${email}`, currentTime.toString()), // Save current send time
+    ]);
+
+    // Respond to the client
+    return res.status(200).json({
+      success: !!response, // `true` if email was sent successfully
+      message: response
+        ? "OTP sent. Check your email."
+        : "Failed to send OTP. Please try again.",
+    });
+  }),
+  verifyOTPEmail: asyncHandler(async (req, res) => {
+    const { userId } = req.user;
+    const { email, otp } = req.body;
+    console.log(otp);
+    if (!email || !otp) {
+      return res.status(400).json({ message: "Email and OTP are required" });
+    }
+
+    // Fetch user and stored OTP
+    const user = await db.User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const storedOtp = await redisClient.get(email);
+    // Verify OTP
+    if (storedOtp === otp) {
+      await Promise.all([
+        user.update({ emailVerified: true, email }),
+        redisClient.del(email),
+        redisClient.del(`otp_last_send:${email}`),
+      ]);
+      return res
+        .status(200)
+        .json({ success: true, message: "Email xác thực thành công" });
+    }
+    return res.status(400).json({ message: "Invalid OTP" });
   }),
 };
 module.exports = UserController;

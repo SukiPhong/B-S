@@ -105,7 +105,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
         {Array(+limit)
           .fill(null)
           .map((_, index) => (
-            <SkeletonCard key={index} isHideSub={true} className="w-[70%]" />
+            <SkeletonCard key={index} isHideSub={true} className="w-[50%]" />
           ))}
       </div>
     );
@@ -119,7 +119,9 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
       </div>
     );
   }
-
+  const gridClassName = properties?.rows?.length <= 2 
+  ? 'grid-rows-1 grid-cols-1' 
+  : 'grid-cols-10';
   return (
     <div>
       <div
@@ -192,7 +194,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
                 : "col-span-10 "
               : "col-span-10"
           } 
-          grid grid-cols-10 gap-3 mb-4 mt-2 flex-col h-auto
+          grid  ${gridClassName} gap-3 mb-4 mt-2  h-fit
         `}
         >
           {properties?.rows?.map((property) => (

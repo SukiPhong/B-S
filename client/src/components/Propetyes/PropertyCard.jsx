@@ -43,18 +43,18 @@ const PropertyCard = ({ property, setLayout, onRemove }) => {
     >
       <div className="grid grid-cols-10 w-full">
         {/* Image Section - Fixed aspect ratio */}
-        <div className="col-span-4 relative aspect-[4/3]">
+        <div className="col-span-4 relative aspect ">
           <img
             loading="lazy"
             src={property.images[0]}
             alt={property.title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform hover:scale-105"
+            className="absolute inset-0 w-full h-full rounded-lg p-0 object-cover transition-transform hover:scale-105"
           />
           <Badge
             className={cn(
-              "absolute top-2 left-2",
+              "absolute top-0 left-0 ",
               getStatusColor(property.status),
-              "text-white border-none"
+              "text-white border-none shadow-[0_4px_8px_rgba(0,0,0,0.2)] capitalize"
             )}
           >
             {property.status}
@@ -141,7 +141,7 @@ const PropertyCard = ({ property, setLayout, onRemove }) => {
               )}
               {property.rUser.rPricing.priority >= 3 && (
                 <Customtooltip
-                  trigger={<EthernetPort size={20} color="red" />}
+                  trigger={<EthernetPort size={20} className="text-[#5c64a8]" />}
                   content={
                     <>
                       <p className="font-bold text-2xl">Mô tả</p>

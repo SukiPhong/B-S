@@ -21,7 +21,7 @@ import {
 import CustomOTPInput from "@/hook/useOTPinput";
 import { apiSenOTPPhone, apiVerifyOTP } from "@/apis/user";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { BadgeCheck, Loader2 } from "lucide-react";
 
 const ChangePhone = () => {
   const [otpValue, setOtpValue] = useState("");
@@ -86,6 +86,14 @@ const ChangePhone = () => {
   return (
     <div className="px-24">
       <Section title="Cập nhật số điện thoại ở đây">
+      <div>
+          {me.phoneVerified && (
+            <span className="flex gap-3">
+              <span className="font-roboto">{me.phone}</span>
+              <BadgeCheck className="w-4 h-4 text-green-600" />
+            </span>
+          )}
+        </div>
         <FormProvider {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex gap-4 items-center">

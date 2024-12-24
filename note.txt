@@ -38,3 +38,41 @@
   //   handleSendOTP(data.phone)
 
   // };
+    // updatePricingUser: asyncHandler(async (req, res) => {
+  //   const { userId } = req.user;
+  //   const { idPricing, extendPackage } = req.body;
+  //   const user = await db.User.findByPk(userId);
+  //   if (!user)
+  //     return res
+  //       .status(404)
+  //       .json({ success: false, message: "User not found" });
+
+  //   try {
+  //     if (extendPackage) {
+  //       // Gia hạn gói hiện tại
+  //       user.packageExprideday = user.packageExprideday
+  //         ? new Date(
+  //             user.packageExprideday.getTime() + 30 * 24 * 60 * 60 * 1000
+  //           )
+  //         : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  //     } else if (idPricing) {
+  //       // Nâng cấp lên gói mới
+  //       user.idPricing = idPricing;
+  //       user.packageExprideday = new Date(
+  //         Date.now() + 30 * 24 * 60 * 60 * 1000
+  //       );
+  //     }
+
+  //     await user.save(); // Lưu thông tin người dùng
+  //     return res.json({
+  //       success: true,
+  //       message: "Cập nhật gói thành công!",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error updating pricing:", error);
+  //     return res.status(500).json({
+  //       success: false,
+  //       message: "Có lỗi xảy ra trong quá trình cập nhật.",
+  //     });
+  //   }
+  // }),

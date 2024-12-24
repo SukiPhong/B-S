@@ -10,8 +10,12 @@ export const pathnames = {
     Property_Detail__ID: "/detail/:idPost",
     Property_Edit: "/edit",
     Property_Edit__ID: "/edit/:idPost",
-    Wishlist:'/wishlist'
+    Wishlist:'/wishlist',
+    ListProperty_Of_User:'danh-sach-tin-dang',
+     ListProperty_Of_User__ID:'danh-sach-tin-dang/:id'
+
   },
+
   users: {
     layout: "/thanh-vien/",
     personal: "ca-nhan",

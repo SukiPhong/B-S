@@ -36,7 +36,9 @@ export const endpoints = {
     upUserByAdmin:'/user/upUserByAdmin',
     sendOTP:'/user/sendOTP',
     verifyOTP:'/user/verifyOTP',
-     chartUser:'/user/chartUser'
+     chartUser:'/user/chartUser',
+     sendOTPEmail:'/user/sendOTPEmail',
+     verifyOTPEmail:'/user/verifyOTPEmail'
   },
   pricing:{
     getPricings:'/pricing/',

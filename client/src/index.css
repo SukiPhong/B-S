@@ -6,3 +6,8 @@
     --radius: 0.5rem
   }
 }
+.arizonia-regular {
+  font-family: "Arizonia", serif;
+  font-weight: 400;
+  font-style: normal;
+}

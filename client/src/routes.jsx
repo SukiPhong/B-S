@@ -7,10 +7,12 @@ import {
   RentProperty,
   SoldProperty,
   ResetPassword,
-  PropertyDetail
+  PropertyDetail,
+  ListPropertyOfUser,
+  WishlistPage,
+  Homepage
 } from "./pages/publics";
-import Homepage from "./pages/publics/Homepage";
-import WishlistPage from "./pages/publics/WishlistPage";
+
 import {
   BalanceInfo,
   CreatePost,
@@ -42,7 +44,8 @@ const routes = [
           { path: pathnames.public.soldProperty, element: <SoldProperty /> },
           { path: pathnames.public.Wishlist, element: <WishlistPage /> },
           { path:pathnames.public.resetPassword, element: <ResetPassword/>},
-          {path:pathnames.public.Property_Detail__ID, element:<PropertyDetail/>}
+          {path:pathnames.public.Property_Detail__ID, element:<PropertyDetail/>},
+          {path:pathnames.public.ListProperty_Of_User__ID, element:<ListPropertyOfUser/>}
         ],
       },
       {

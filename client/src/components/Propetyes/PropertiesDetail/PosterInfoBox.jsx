@@ -17,8 +17,9 @@ import { formatPhoneNumber } from "@/lib/fn";
 import useMeStore from "@/zustand/useMeStore";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import PropTypes from 'prop-types'
-const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
+import PropTypes from "prop-types";
+import { pathnames } from '@/lib/pathname';
+const PosterInfoBox = ({ avatar, fullname, phone, isList,id }) => {
   const [showFullPhone, setShowFullPhone] = useState(false);
   const { me } = useMeStore();
 
@@ -41,11 +42,10 @@ const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
           </div>
           <div className="min-w-0">
             <h2 className="text-sm font-semibold truncate">{fullname}</h2>
-           
           </div>
           <p className="text-sm text-white truncate">
-              {formatPhoneNumber(phone, showFullPhone)}
-            </p>
+            {formatPhoneNumber(phone, showFullPhone)}
+          </p>
         </div>
 
         {/* Nút bên phải */}
@@ -63,21 +63,21 @@ const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
   }
 
   return (
-    <div className="w-auto h-auto space-y-4">
+    <div className="w-4/5 h-auto space-y-4">
       <Card>
         <CardContent className="p-2 space-y-4">
-          <div className="flex items-center space-x-4">
-            <div className="relative w-14 h-14 rounded-full overflow-hidden">
+          <Link className="flex flex-col items-center justify-center gap-1 hover:cursor-pointer "
+          to={`/${pathnames.public.ListProperty_Of_User}/${id}`}>
+            <div className="w-14 h-14 rounded-full overflow-hidden">
               <Image
                 className="w-14 h-14 object-cover"
                 src={avatar}
                 fallbackSrc={generalDefaultAvatar(fullname)}
               />
             </div>
-            <div>
-              <h2 className="font-semibold">{fullname}</h2>
-            </div>
-          </div>
+
+            <h2 className="font-semibold text-primary">{fullname}</h2>
+          </Link>
           <div className="flex items-center justify-between">
             <p className="font-semibold">
               {formatPhoneNumber(phone, showFullPhone)}
@@ -115,9 +115,9 @@ const PosterInfoBox = ({ avatar, fullname, phone, isList }) => {
 };
 
 export default PosterInfoBox;
-PosterInfoBox.propTypes ={
+PosterInfoBox.propTypes = {
   avatar: PropTypes.string,
-  fullname:PropTypes.string,
+  fullname: PropTypes.string,
   phone: PropTypes.string,
-  isList:PropTypes.bool
-}
+  isList: PropTypes.bool,
+};

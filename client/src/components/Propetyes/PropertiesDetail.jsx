@@ -174,6 +174,7 @@ const PropertiesDetail = () => {
           fullname={detailPrototypes?.rUser?.fullname}
           avatar={detailPrototypes?.rUser?.avatar}
           phone={detailPrototypes?.rUser?.phone}
+          id={detailPrototypes?.idUser}
         />
       </div>
     </div>

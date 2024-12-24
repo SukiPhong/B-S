@@ -36,7 +36,7 @@ const Map = ({ address, zoom = 10 }) => {
   if (!center) {
     return (
       <div className="flex-col items-center">
-        <Loader2 size={24}/> <span>Vui lòng đợi trong ít phút</span>
+        <Loader2 size={24} className="animate-spin"/> <span>Vui lòng đợi trong ít phút</span>
       </div>
     );
   }
