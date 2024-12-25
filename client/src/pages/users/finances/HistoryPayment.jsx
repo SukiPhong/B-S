@@ -34,7 +34,7 @@ export default function PaymentHistory() {
 
     fetchHistory();
   }, []);
-
+  console.log(history)
   if (loading) {
     return <div className="text-center p-4">Đang tải...</div>;
   }
@@ -62,7 +62,7 @@ export default function PaymentHistory() {
               <TableRow key={item.id}>
                 <TableCell>{item.data.vnp_BankTranNo}</TableCell>
                 <TableCell>
-                  {new Date(item.createdAt).toLocaleDateString("vi-VN")}
+                  {item.TYPE}
                 </TableCell>
                 <TableCell>
                   {item.data.vnp_OrderInfo ? "Nạp tiền" : ""}
@@ -73,15 +73,14 @@ export default function PaymentHistory() {
                   {(+item.data.vnp_Amount).toLocaleString()}{" "}
                 </TableCell>
                 <TableCell>
-                  {item.data.vnp_TransactionStatus === "00"
-                    ? "Thành công"
-                    : "Thất bại"}
+                  {item.status}
                 </TableCell>
                 <TableCell>
                   {new Date(item.createdAt).toLocaleTimeString("vi-VN", {
                     hour: "2-digit",
                     minute: "2-digit",
-                  })}
+                  })+'  '}
+                       {'- '+new Date(item.createdAt).toLocaleDateString("vi-VN")}
                 </TableCell>
               </TableRow>
             ))}

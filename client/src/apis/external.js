@@ -42,7 +42,7 @@ export const apiWriteDescriptionWithChatGPT = (prompt) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${import.meta.env.VITE_API_CHATGPT}`,
     },
-     url: import.meta.env.VITE_URL_CHATGPT,
+    url: import.meta.env.VITE_URL_CHATGPT,
     data: {
       model: "gpt-4o-mini",
       // prompt: prompt,
@@ -50,4 +50,28 @@ export const apiWriteDescriptionWithChatGPT = (prompt) => {
       max_tokens: 200, // Limit response length, adjust as needed
     },
   });
+};
+// Function to check for inappropriate content using ChatGPT API
+export const apiCheckForInappropriateContent = async (text) => {
+  const prompt = `Please analyze the following text for inappropriate or offensive language and return true if it contains any such content, or false if it does not:   
+  "${text}"`;
+
+  const response = await axios({
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.VITE_API_CHATGPT}`,
+    },
+    url: import.meta.env.VITE_URL_CHATGPT,
+    data: {
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 50, // Adjust the response length if necessary
+    },
+  });
+
+  if (response.data.choices && response.data.choices.length > 0) {
+    const contentResponse = response.data.choices[0].message.content;
+    return contentResponse.toLowerCase().includes("true"); // Check if the response indicates inappropriate content
+  }
 };

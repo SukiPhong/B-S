@@ -60,7 +60,7 @@ const Payment = {
     const { vnp_Params } = req.body;
 
     const { userId } = req.user;
-
+    const user = await db.User.findByPk(userId);
     let {
       vnp_TxnRef,
       vnp_Amount,
@@ -98,17 +98,22 @@ const Payment = {
     }
     vnp_Amount = (vnp_Amount * 1) / 100;
     vnp_Params["vnp_Amount"] = vnp_Amount;
+    const status = vnp_ResponseCode === "00" ? "Thành công" : "Thất bại";
 
     // Insert History
     const response = await db.HistoryPayment.create({
-      transactionId: vnp_Params[vnp_BankTranNo],
+      transactionId: vnp_BankTranNo,
       data: vnp_Params,
       TYPE: "VNPAY",
-      idUser: userId,
+      idUser: user.id,
+      fullnameUser: user.fullname,
+      phoneUser: user.phone,
+      status,
     });
     return res.json({
-      success: true,
-      message: "1",
+      success: Boolean(response) ? true : false,
+      message: Boolean(response) ? "Tạo thành công" : "Tạo thất bại",
+      status: response.status,
       amount: vnp_Amount,
     });
   }),
@@ -116,6 +121,9 @@ const Payment = {
     const { userId } = req.user;
     const response = await db.HistoryPayment.findAll({
       where: { idUser: userId },
+      attributes: {
+        exclude: ["phoneUser", "fullnameUser", "updatedAt"],
+      },
     });
     return res.json({
       success: response ? true : false,
@@ -126,29 +134,24 @@ const Payment = {
   getHistorys: asyncHandler(async (req, res) => {
     const { Role } = req.user;
     const { limit, page, fullname } = req.query;
-    console.log(limit, page,fullname);
     if (!Role)
       return res
         .status(400)
         .json({ success: false, message: "Bạn không có quyền truy cập" });
-        const whereCondition = fullname   
-        ? {  
-            '$rUser.fullname$': {  
-                [Op.like]: `%${fullname}%`, // LIKE for partial matches  
-            },  
-        }  
-        : {};
+
+        let fullnameUser
+    if (fullname) {
+       fullnameUser = Sequelize.where(
+        Sequelize.fn("LOWER", Sequelize.col("fullnameUser")),
+        "LIKE",
+        `%${fullnameUser.toLocaleLowerCase()}%`
+      );
+    }
+
     const response = await db.HistoryPayment.findAndCountAll({
       limit: +limit,
       offset: (page && +page > 1 ? +page - 1 : 0) * limit,
-      include: [
-        {
-          model: db.User,
-          as: "rUser",
-          attributes: ["email", "phone", "fullname"],
-        },
-      ],
-      where: whereCondition
+      where: fullnameUser,
     });
     return res.json({
       success: Boolean(response) ? true : false,

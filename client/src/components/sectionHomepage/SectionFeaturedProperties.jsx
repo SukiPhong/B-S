@@ -104,7 +104,7 @@ const SectionFeaturedProperties = () => {
                     <span>{`Đăng ngày ${new Date(
                       el.createdAt
                     ).toLocaleDateString("vi-VN")}`}</span>
-                    <WishListItem />
+                    <WishListItem id={el.id}/>
                   </CardFooter>
                 </Card>
               ))}

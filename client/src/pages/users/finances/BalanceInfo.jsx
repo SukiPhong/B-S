@@ -30,11 +30,12 @@ const BalanceInfo = () => {
   const handleReturnPayment = async (vnp_Params) => {
     const vnp_ResponseCode = vnp_Params["vnp_ResponseCode"];
     if (vnp_ResponseCode !== "00") {
+      await apiVnPayReturn({ vnp_Params });
+      removeUrlParams();
       return toast.error("Nạp tiền thất bại");
     }
     try {
       const response = await apiVnPayReturn({ vnp_Params });
-      console.log(response);
       if (response.data.success === true) {
         const newBalance = response.data.amount + +me.balance;
         await setBalance(newBalance);

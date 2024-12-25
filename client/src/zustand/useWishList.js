@@ -8,7 +8,7 @@ const useWishlistStore = create((set, get) => ({
 
   // Hàm để thay đổi trạng thái của toggle
   setToggleWishlist: () => set((state) => ({ toggleWishlist: !state.toggleWishlist })),
-  setStoreNull: () => set(() => ({ store: [] })),
+  setStoreNull: () => set(() => ({ store: [], wishlistItems: [] })),
   // Function để toggle một wishlist item
   setStoreWishlist: async (idPost) => {  
     try {  

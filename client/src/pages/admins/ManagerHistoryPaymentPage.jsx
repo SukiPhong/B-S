@@ -36,6 +36,7 @@ const ManagerHistoryPaymentPage = () => {
 
     fetchDataPayment();
   }, [searchParams]);
+  console.log(dataPayment);
   const handleSearch = () => {
     navigate(`?${createSearchParams({ ...params, fullname: searchTerm })}`);
   };
@@ -44,8 +45,10 @@ const ManagerHistoryPaymentPage = () => {
     const formattedData = dataPayment.rows.map((payment) => ({
       "Mã giao dịch": payment.data?.vnp_TxnRef,
       Loại: payment.TYPE,
-      "Người dùng": payment.rUser?.fullname || "N/A",
+      "Người dùng": payment.fullname || "N/A",
+      SĐT: payment.phoneUser,
       "Số tiền": payment.data?.vnp_Amount,
+
       "Nội dung":
         decodeURIComponent(payment?.data?.vnp_OrderInfo)
           .replace(/\+/g, " ")
@@ -96,7 +99,9 @@ const ManagerHistoryPaymentPage = () => {
               <TableHead>Mã giao dịch</TableHead>
               <TableHead>Loại</TableHead>
               <TableHead>Người dùng</TableHead>
+              <TableHead>SĐT</TableHead>
               <TableHead>Số tiền</TableHead>
+
               <TableHead>Nội dung</TableHead>
               <TableHead>Ngày</TableHead>
               <TableHead>Trạng thái</TableHead>
@@ -109,7 +114,8 @@ const ManagerHistoryPaymentPage = () => {
                   {payment.data?.vnp_TxnRef}
                 </TableCell>
                 <TableCell>{payment.TYPE}</TableCell>
-                <TableCell>{payment.rUser?.fullname || "N/A"}</TableCell>
+                <TableCell>{payment.fullnameUser || "N/A"}</TableCell>
+                <TableCell>{payment.phoneUser}</TableCell>
                 <TableCell>{payment.data?.vnp_Amount}</TableCell>
                 <TableCell>
                   {decodeURIComponent(payment?.data?.vnp_OrderInfo)
@@ -125,11 +131,7 @@ const ManagerHistoryPaymentPage = () => {
                 <TableCell>
                   {new Date(payment?.createdAt).toLocaleDateString()}
                 </TableCell>
-                <TableCell>
-                  {payment?.data?.vnp_TransactionStatus === "00"
-                    ? "Thành công"
-                    : "Thất bại"}
-                </TableCell>
+                <TableCell>{payment.status}</TableCell>
               </TableRow>
             ))}
           </TableBody>

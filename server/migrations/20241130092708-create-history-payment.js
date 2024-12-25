@@ -14,17 +14,27 @@ module.exports = {
       },
       idUser: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id'
-        }
+        // references: {
+        //   model: 'Users',
+        //   key: 'id'
+        // }
+        allowNull:false
+      },
+      fullnameUser:{
+        type:Sequelize.STRING,
+       allowNull:false
+      },
+      phoneUser:{
+        type:Sequelize.STRING,
+      },
+      status:{
+        type:Sequelize.STRING,
       },
       TYPE:{
         type:Sequelize.STRING,
       },
       data:{
         type: Sequelize.JSONB,
-
       },
       createdAt: {
         allowNull: false,

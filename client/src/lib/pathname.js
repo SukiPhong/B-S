@@ -37,6 +37,7 @@ export const pathnames = {
     managerUsers:'quan-li-nguoi-dung',
     managerPosts:'quan-li-bai-dang',
     historyPayment:'quan-li-lich-su-thanh-toan',
-    Pricing:'quan-li-cac-goi-tin'
+    Pricing:'quan-li-cac-goi-tin',
+    Rating: ' quan-li-danh-gia'
   }
 };

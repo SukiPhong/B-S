@@ -26,7 +26,7 @@ import {
   HistoryPayment,
   ManagerPostDraft
 } from "./pages/users";
-import {  AdminLayout, Dashboard, ManagerHistoryPaymentPage, ManagerPostPage, ManagerPricing, ManagerUsersPage, PendingPostsPage } from "./pages/admins";
+import {  AdminLayout, Dashboard, ManagerHistoryPaymentPage, ManagerPostPage, ManagerPricing, ManagerRatingPage, ManagerUsersPage, PendingPostsPage } from "./pages/admins";
 
 
 const routes = [
@@ -75,7 +75,7 @@ const routes = [
           { path: pathnames.admin.managerPosts, element: <ManagerPostPage /> },
           { path: pathnames.admin.historyPayment, element: <ManagerHistoryPaymentPage /> },
           { path: pathnames.admin.Pricing, element: <ManagerPricing /> },
-       
+          { path: pathnames.admin.Rating, element: <ManagerRatingPage /> },
         ]
       }
     ],

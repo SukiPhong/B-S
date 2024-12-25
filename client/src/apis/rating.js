@@ -12,3 +12,16 @@ export const apiGetRating = (params) => {
       data:data
     });  
   };  
+  export const apiGetRatings = () => {  
+    return axios({  
+      method: "get", 
+      url: endpoints.rating.rating,   
+    });  
+  };  
+  export const apiDeleteRating = (params) => {  
+    return axios({  
+      method: "delete", 
+      url: endpoints.rating.rating+params,
+     
+    });  
+  };  

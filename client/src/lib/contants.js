@@ -320,7 +320,7 @@ export  const quickAmounts = [
   ];
 export const historyPaymentLabel=[
     {label:"Mã giao dịch",id:0},
-    {label:"Ngày", id:1},
+    {label:"Loại", id:1},
     {label:"Mô tả", id:2},
     {label:"Số tiền", id:3},
     {label:"Trạng thái", id:4},
@@ -331,8 +331,9 @@ export const adminPendingTableLabel = [
     { label: "STT", id:0 },
     { label: "Tiêu đề", id: 1 },
     { label: "Loại", id: 2 },
-    { label: "Địa điểm", id: 3 },
+    { label: "Địa điểm", id: 3 },   
     { label: "Mẫu", id: 4 },
+    { label: "Trạng thái", id: 7 },
     { label: "Ngày tạo", id: 5 },
     { label: "Hành động", id: 6 },
   ];

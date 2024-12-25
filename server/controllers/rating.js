@@ -49,15 +49,15 @@ const RatingControllers = {
       .json({success:true, message: "Rating successfully saved", data:rating });
   }),
   deleteRating: asyncHandler(async (req, res) => {
-    const { idRating } = req.params;
-
-    const rating = await db.Rating.findByPk(idRating);
+    const { id } = req.params;
+    const rating = await db.Rating.findByPk(id);
+    console.log(rating)
     if (!rating) {
-      return res.status(404).json({ message: "Rating not found" });
+      return res.status(404).json({success:false, message: "Rating not found" });
     }
 
-    await rating.destroy();
-    return res.status(200).json({ message: "Rating deleted" });
+    // await rating.destroy();
+    return res.status(200).json({success:true, message: "Rating deleted" });
   }),
   getRatingsForPost: async (req, res) => {
     const { idPost } = req.params;
@@ -84,5 +84,34 @@ const RatingControllers = {
       return res.status(500).json({success:false, message: "Server error" });
     }
   },
+  getRatings: asyncHandler(async(req,res)=>{
+    const {Role} = req.user
+  if(!Role) return res.status(403).json({
+    success:false,
+    message:'Bạn không có quyền truy cập'
+  })
+    const response = await db.Rating.findAll(
+      {
+        include:[
+       {
+        model:db.Post,
+        as:'rPost',
+        attributes:['title','ListingType']
+       },
+
+ {
+        model:db.User,
+        as:'rUser',
+        attributes:['fullname','id','email']
+       },
+        ]
+      }
+    )
+    return res.json({
+      success:Boolean(response)?true:false,
+      message :Boolean(response) ?"Lấy dữ liệu thành công":'Lấy dữ liệu thất bại',
+      data: Boolean(response)?response : {}
+    })
+  })
 };
 module.exports = RatingControllers;

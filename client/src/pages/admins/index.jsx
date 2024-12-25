@@ -8,3 +8,4 @@ export { default as ManagerPostPage } from "./ManagerPostPage";
 
 export { default as ManagerHistoryPaymentPage } from "./ManagerHistoryPaymentPage";
 export { default as ManagerPricing } from "./ManagerPricing";
+export { default as ManagerRatingPage } from "./ManagerRatingPage";

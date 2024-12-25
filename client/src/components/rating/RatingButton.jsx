@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Star, User } from "lucide-react";
+import { Loader2, Star, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -16,11 +16,13 @@ import useMeStore from "@/zustand/useMeStore";
 import { toast } from "sonner";
 import { apiCreateRating, apiGetRating } from "@/apis/rating";
 import { generalDefaultAvatar } from "@/lib/utils";
+import { apiCheckForInappropriateContent } from "@/apis/external";
 
 const RatingButton = ({ avgStar, idPost }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [personalRating, setPersonalRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [comment, setComment] = useState("");
   const [ratings, setRatings] = useState([]);
   const { me } = useMeStore();
@@ -34,16 +36,28 @@ const RatingButton = ({ avgStar, idPost }) => {
   };
 
   const handleSubmitRating = async () => {
+    setIsLoading(true);
     if (!me) return toast.error("Bạn cần đăng nhập để  đánh giá");
+    const hasInappropriateContent = await apiCheckForInappropriateContent(
+      comment
+    );
+    if (hasInappropriateContent) {
+      isLoading(false);
+      return toast.error(
+        "Nhận xét của bạn chứa từ ngữ không phù hợp. Vui lòng sửa đổi."
+      );
+    }
     const response = await apiCreateRating({
       idPost,
       start: personalRating,
       content: comment,
     });
     if (response.data.success) {
+      isLoading(false);
       setIsOpen(false);
-      window.location.reload()
+      window.location.reload();
     }
+    isLoading(false);
   };
   useEffect(() => {
     const fetch = async () => {
@@ -81,13 +95,13 @@ const RatingButton = ({ avgStar, idPost }) => {
         </SheetHeader>
         <div className="mt-4 space-y-4">
           <div className="flex items-start space-x-4">
-           <div className="w-14 h-14">
-           <Image
-              src={me?.avatar}
-              alt={"avatar"}
-              fallbackSrc={generalDefaultAvatar(me?.fullname)}
-            />
-           </div>
+            <div className="w-14 h-14">
+              <Image
+                src={me?.avatar}
+                alt={"avatar"}
+                fallbackSrc={generalDefaultAvatar(me?.fullname)}
+              />
+            </div>
             <div className="flex-1 space-y-2">
               <div className="flex justify-between">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -115,7 +129,9 @@ const RatingButton = ({ avgStar, idPost }) => {
                 onChange={(e) => setComment(e.target.value)}
                 className="!h-14 w-full"
               />
-              <Button onClick={handleSubmitRating}>Gửi nhận xét</Button>
+              <Button onClick={handleSubmitRating}>
+                {isLoading ? <Loader2  className="animate-spin" /> : " Gửi nhận xét"}
+              </Button>
             </div>
           </div>
           <div className="space-y-4">

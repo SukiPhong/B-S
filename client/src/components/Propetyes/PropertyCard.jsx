@@ -31,13 +31,14 @@ import PropTypes from "prop-types";
 import { description } from "@/lib/fn";
 
 const PropertyCard = ({ property, setLayout, onRemove }) => {
+  console.log(setLayout)
   const { me } = useMeStore();
   const priority = property?.rUser?.rPricing?.priority >= 4;
 
   return (
     <Card
       className={cn(
-        "overflow-hidden bg-slate-100",
+        "overflow-hidden bg-slate-100 ",
         setLayout ? "col-span-5" : "col-span-10"
       )}
     >
@@ -141,14 +142,14 @@ const PropertyCard = ({ property, setLayout, onRemove }) => {
               )}
               {property.rUser.rPricing.priority >= 3 && (
                 <Customtooltip
-                  trigger={<EthernetPort size={20} className="text-[#5c64a8]" />}
+                  trigger={<EthernetPort size={20} className="text-[#5c64a8] " />}
                   content={
-                    <>
+                    <div className="flex flex-col w-48 h-48">
                       <p className="font-bold text-2xl">Mô tả</p>
                       <p>
-                        <span>{property.description}</span>
+                        <span  >{property.description.slice(0,200)+'...'}</span>
                       </p>
-                    </>
+                    </div>
                   }
                 />
               )}

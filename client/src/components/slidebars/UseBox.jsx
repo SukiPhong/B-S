@@ -21,7 +21,7 @@ const UseBox = () => {
     <div className="p-4 flex flex-col lg:flex-row items-center gap-2">
       <div className="relative">
         <Image
-          className="w-14 h-14 object-cover  "
+          className="w-14 h-14 object-cover   "
           src={me?.avatar}
           fallbackSrc={generalDefaultAvatar(me?.fullname)}
         />

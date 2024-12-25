@@ -25,6 +25,7 @@ const PostController = {
       status,
       price,
       size,
+      title,
       ...query
     } = req.query;
     const options = {};
@@ -40,20 +41,25 @@ const PostController = {
     }
     //Filter by client queries
     if (province) {
-      query.title = Sequelize.where(
+      query.province = Sequelize.where(
         Sequelize.fn("LOWER", Sequelize.col("province")),
         "LIKE",
         `%${province.toLocaleLowerCase()}%`
       );
     }
-   
+    if (title) {
+      query.title = Sequelize.where(
+        Sequelize.fn("LOWER", Sequelize.col("title")),
+        "LIKE",
+        `%${title.toLocaleLowerCase()}%`
+      );
+    }
     if (price) {
       query.price = handleRangeFilter(price);
     }
     if (size) {
       query.size = handleRangeFilter(size);
     }
-    console.log(size)
     if (properType) {
       const types = properType.split(","); // Tách danh sách giá trị bằng dấu phẩy
       query.properType = { [Sequelize.Op.in]: types }; // Sử dụng toán tử IN
@@ -171,16 +177,21 @@ const PostController = {
   DeletePost: asyncHandler(async (req, res) => {
     const { userId, Role } = req.user;
     const { pid } = req.params;
+    console.log(pid,Role,userId)
     const userPost = await db.Post.findOne({
       where: { idUser: userId, id: pid },
     });
     if (userPost) {
+      await db.Wishlist.destroy({ where: { idPost: pid } });
+      await db.Rating.destroy({ where: { idPost: pid } });
       await userPost.destroy();
       return res.json({ success: true, message: "Xóa thành công" });
     }
     if (Role) {
       const response = await db.Post.findByPk(pid);
       if (response) {
+        await db.Wishlist.destroy({ where: { idPost: pid } })
+        await db.Rating.destroy({ where: { idPost: pid } })
         await response.destroy();
         return res.json({ success: true, message: "Xóa thành công" });
       }
@@ -247,7 +258,6 @@ const PostController = {
   PostChartDataToMoths: asyncHandler(async (req, res) => {
     const { Role } = req.user;
     const { period } = req.body;
-    console.log(period)
     // Thời gian: 'month' hoặc '6months'
     // Lấy thời gian hiện tại và tính toán phạm vi thời gian cho query
     const now = new Date();
@@ -341,7 +351,6 @@ const PostController = {
           break;
       }
     });
-    console.log(chartData.pendingData)
     // Trả về kết quả dữ liệu cho biểu đồ
     return res.status(200).json({
       success: chartData ? true : false,

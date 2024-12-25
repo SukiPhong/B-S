@@ -48,8 +48,8 @@ const Header = () => {
     setIsShowDialog(false);
   });
   const handleLogout = () => {
-    logout();
     setStoreNull()
+    logout();
     navigate('/')
     toast.info("Logout was successful");
   };

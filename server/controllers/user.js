@@ -145,11 +145,12 @@ const UserController = {
       return res.json({ success: false, message: "Bạn không có quyền" });
     try {
       // Xóa đồng thời tất cả bài viết và tài khoản liên quan
-      const [deletePosts, deleteUser] = await Promise.all([
+      const [deletePosts, deleteUser, deleteRating, deleteWishlist] = await Promise.all([
         db.Post.destroy({ where: { idUser: uid } }), // Xóa bài viết liên quan
         db.User.destroy({ where: { id: uid } }), // Xóa người dùng
+        db.Rating.destroy({ where: { idUser: uid } }),
+        db.Wishlist.destroy({ where: { idUser: uid } })
       ]);
-
       if (deleteUser) {
         return res.json({
           success: true,

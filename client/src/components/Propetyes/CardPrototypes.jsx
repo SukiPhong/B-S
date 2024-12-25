@@ -119,7 +119,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
       </div>
     );
   }
-  const gridClassName = properties?.rows?.length <= 2 
+  const gridClassName = properties?.rows?.length < 2 
   ? 'grid-rows-1 grid-cols-1' 
   : 'grid-cols-10';
   return (

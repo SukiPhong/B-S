@@ -30,7 +30,7 @@ export const menuAdmin = [
     label: "Users",
   },
   // { path: "/admin/comments", icons: <MessageSquare />, label: "Comments" },
-  // { path: "/admin/ratings", icons: <Star />, label: "Ratings" },
+  { path: pathnames.admin.layout + pathnames.admin.Rating, icons: <Star />, label: "Ratings" },
   // { path: "/admin/wishlists", icons: <Heart />, label: "Wishlists" },
   // { path: "/admin/tags", icons: <Tag />, label: "Tags" },
   { path: pathnames.admin.layout+pathnames.admin.Pricing, icons: <CreditCard />, label: "Thẻ hội viên" },

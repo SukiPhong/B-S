@@ -17,22 +17,21 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { PaginationComponent } from "@/components/pagination";
-import {
-  formatPrice,
-} from "@/lib/propertyUtils";
+import { formatPrice } from "@/lib/propertyUtils";
 import { pathnames } from "@/lib/pathname";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { apiDeletePostId } from "@/apis/post";
 
 const ManagerPostPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { listPosts, fetchPosts } = useProperty();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const limit = import.meta.env.VITE_LIMIT_MANAGER_POST_PAGE;
+  //const limit = 4;
+  const params = Object.fromEntries([...searchParams]);
   useEffect(() => {
-    const limit = import.meta.env.VITE_LIMIT_MANAGER_POST_PAGE;
-    //const limit = 4;
-    const params = Object.fromEntries([...searchParams]);
     params.status = "Chờ duyệt,Nháp";
     const fetchData = async () => {
       await fetchPosts(limit, { ...params });
@@ -43,7 +42,10 @@ const ManagerPostPage = () => {
   const handleSearch = () => {
     navigate(`?${createSearchParams({ title: searchTerm })}`);
   };
-
+const handleReject = async (id) => {
+    const response = await apiDeletePostId(id);
+    if (response.status === 200) return await fetchPosts(limit, {  page: params.page, status });
+  };
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4 ">Quản lý bài đăng</h1>
@@ -72,7 +74,7 @@ const ManagerPostPage = () => {
                 <TableHead>Hành động</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className='font-semibold'>
+            <TableBody className="font-semibold">
               {listPosts?.rows?.map((post, idx) => (
                 <TableRow key={post.id}>
                   <TableCell className="font-bold">{idx + 1}</TableCell>
@@ -89,13 +91,16 @@ const ManagerPostPage = () => {
                     {formatPrice(post.price, post.priceUnits)}
                   </TableCell>
                   <TableCell
-                    className={cn(`${
-                      post.status === "Đang cập nhật"
-                        ? "text-[#0C5776]"
-                        : post.status === "Còn trống"
-                        ? "text-blue-400"
-                        : "text-[#2C99AE]"
-                    }`,'font-bold capitalize')}
+                    className={cn(
+                      `${
+                        post.status === "Đang cập nhật"
+                          ? "text-[#0C5776]"
+                          : post.status === "Còn trống"
+                          ? "text-blue-400"
+                          : "text-[#2C99AE]"
+                      }`,
+                      "font-bold capitalize"
+                    )}
                   >
                     {post.status}
                   </TableCell>
@@ -115,7 +120,11 @@ const ManagerPostPage = () => {
                     >
                       Sửa
                     </Button>
-                    <Button variant="destructive" size="sm">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleReject(post.id)}
+                    >
                       Xóa
                     </Button>
                   </TableCell>
