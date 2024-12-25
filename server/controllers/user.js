@@ -216,7 +216,6 @@ const UserController = {
   handleSendOTP: asyncHandler(async (req, res) => {
     const { userId } = req.user;
     const { phone } = req.body;
-    console.log(phone)
     const coverPhoneNumber = phone.startsWith("0")
       ? "+84" + phone.slice(1)
       : phone;
@@ -231,7 +230,7 @@ const UserController = {
         .status(404)
         .json({ success: false, message: "User not found" });
 
-    const exitPhoneUser = await db.User.findOne({ where: {phone:phone} });
+    const exitPhoneUser = await db.User.findOne({ where: { phone: phone } });
     if (exitPhoneUser && exitPhoneUser.id !== userId)
       return res.json({ success: false, message: "SĐT này đã được  sử dụng" });
     if (user.phone === phone && user.phoneVerified)
@@ -318,6 +317,13 @@ const UserController = {
     // Query to get user registrations
 
     // Query to get user registrations
+    /*  SELECT DATE_PART('month', "createdAt") AS "month",
+         DATE_PART('year', "createdAt") AS "year",
+         COUNT("id") AS "userCount"
+  from "Users"
+  WHERE "createdAt" >= :startDate
+  GROUP BY "year", "month"
+  ORDER BY "year" DESC, "month" DESC */
     const registrations = await db.User.findAll({
       attributes: [
         [
@@ -390,7 +396,7 @@ const UserController = {
       upperCaseAlphabets: false,
       specialChars: false,
     });
-    console.log(otp)
+    console.log(otp);
     // OTP cooldown logic
     const currentTime = Date.now();
     const lastSendTime = await redisClient.get(`otp_last_send:${email}`);
@@ -408,8 +414,8 @@ const UserController = {
 
     // Prepare email content
     const html = `Your OTP is <strong>${otp}</strong>`;
-    const isChangeLabel=true
-    const data = { email, html,isChangeLabel };
+    const isChangeLabel = true;
+    const data = { email, html, isChangeLabel };
 
     // Send the email
     const response = await sendMail(data);

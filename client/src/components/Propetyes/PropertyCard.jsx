@@ -165,7 +165,7 @@ const PropertyCard = ({ property, setLayout, onRemove }) => {
       </div>
 
       {/* Poster Info - Only show if conditions met */}
-      {me.fullname !== property?.rUser?.fullname &&
+      {me?.fullname !== property?.rUser?.fullname &&
         property?.rUser?.rPricing?.priority >= 4 && (
           <div className="bg-[#2C99AE] mt-auto">
             <PosterInfoBox
