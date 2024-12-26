@@ -64,6 +64,15 @@ export const endpoints = {
   rating:{
     rating:'/ratings/',
   },
+  notification: {
+    getNotifications: '/notifications/',
+    markAsRead: '/notifications/',
+    markAllAsRead: '/notifications/mark-all-read',
+    getUnreadCount: '/notifications/unread-count',
+    createNotification:'/notifications/',
+    deleteAllNotification:'/notifications/All',
+    deleteNotification:'/notification/'
+  },
   external: {
     getProvinces:
       "https://vietnam-administrative-division-json-server-swart.vercel.app/province",

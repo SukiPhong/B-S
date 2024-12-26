@@ -90,6 +90,8 @@ const PropertiesDetail = () => {
                     <RatingButton
                       avgStar={detailPrototypes.avgStar}
                       idPost={detailPrototypes.id}
+                      idUserWrite={detailPrototypes?.rUser?.id}
+                      title={detailPrototypes?.title}
                     />
                     <WishListItem id={detailPrototypes.id} />
                   </div>

@@ -32,6 +32,7 @@ import { RefreshCcw } from "lucide-react";
 import { apiApprovePost, apiDeletePostId } from "@/apis/post";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SkeletonCard } from "@/components/layouts";
+import { apiCreateNotification } from "@/apis/notification";
 
 const PendingPostsPage = () => {
   const { fetchPosts, listPosts } = useProperty();
@@ -56,14 +57,25 @@ const PendingPostsPage = () => {
     };
 
     fetchData();
-  }, [fetchPosts, searchParams]);
-  const handleApprove = async (id) => {
-    const response = await apiApprovePost(id);
-    if (response.status === 200) return await fetchPosts(limit, {   page: params.page,status });
+  }, [fetchPosts, limit, params.page, searchParams, searchTerm]);
+  const handleApprove = async ({id, title, idUser}) => {
+     const response = await apiApprovePost(id);
+    if (response.status === 200)
+      await apiCreateNotification({
+        idUser: idUser,
+        idPost: id,
+        content: `Bài viết "${title}" của bạn đã được duyệt.`,
+        type: "post_approval",
+      });
+
+    // Send real-time notification
+
+    return await fetchPosts(limit, { page: params.page, status });
   };
   const handleRemove = async (id) => {
     const response = await apiDeletePostId(id);
-    if (response.status === 200) return await fetchPosts(limit, {  page: params.page, status });
+    if (response.status === 200)
+      return await fetchPosts(limit, { page: params.page, status });
   };
   const handleSearch = () => {
     navigate(`?${createSearchParams({ ...params, title: searchTerm })}`);
@@ -158,7 +170,13 @@ const PendingPostsPage = () => {
                     </SheetContent>
                   </Sheet>
                   <Button
-                    onClick={() => handleApprove(post.id)}
+                    onClick={() =>
+                      handleApprove({
+                        id: post?.id,
+                        title: post?.title,
+                        idUser: post?.idUser,
+                      })
+                    }
                     size="sm"
                     className="mr-2"
                   >

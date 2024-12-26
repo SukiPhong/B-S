@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Loader2, Star, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,8 +17,9 @@ import { toast } from "sonner";
 import { apiCreateRating, apiGetRating } from "@/apis/rating";
 import { generalDefaultAvatar } from "@/lib/utils";
 import { apiCheckForInappropriateContent } from "@/apis/external";
+import { apiCreateNotification } from "@/apis/notification";
 
-const RatingButton = ({ avgStar, idPost }) => {
+const RatingButton = ({ avgStar, idPost, idUserWrite, title }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [personalRating, setPersonalRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -35,30 +36,90 @@ const RatingButton = ({ avgStar, idPost }) => {
     setHoverRating(rating);
   };
 
-  const handleSubmitRating = async () => {
-    setIsLoading(true);
-    if (!me) return toast.error("Bạn cần đăng nhập để  đánh giá");
-    const hasInappropriateContent = await apiCheckForInappropriateContent(
-      comment
-    );
-    if (hasInappropriateContent) {
-      isLoading(false);
-      return toast.error(
-        "Nhận xét của bạn chứa từ ngữ không phù hợp. Vui lòng sửa đổi."
-      );
-    }
-    const response = await apiCreateRating({
-      idPost,
-      start: personalRating,
-      content: comment,
-    });
-    if (response.data.success) {
-      isLoading(false);
-      setIsOpen(false);
-      window.location.reload();
-    }
-    isLoading(false);
-  };
+  // const handleSubmitRating = async () => {
+  //   setIsLoading(true);
+  //   if (!me) return toast.error("Bạn cần đăng nhập để  đánh giá");
+  //   // const hasInappropriateContent = await apiCheckForInappropriateContent(
+  //   //   comment
+  //   // );
+  //   // if (hasInappropriateContent) {
+  //   //   isLoading(false);
+  //   //   return toast.error(
+  //   //     "Nhận xét của bạn chứa từ ngữ không phù hợp. Vui lòng sửa đổi."
+  //   //   );
+  //   // }
+
+  //   const response = await apiCreateRating({
+  //     idPost,
+  //     start: personalRating,
+  //     content: comment,
+  //   });
+  //   if (response.data.success) {
+  //     const response1 = await apiCreateNotification({
+  //       idUser: idUserWrite,
+  //       idPost: idPost,
+  //       content: `Bài viết "${title}" của bạn nhận được đánh giá ${personalRating} sao.`,
+  //       type: "post_rating",
+  //     });
+  //     if (response1.data.success) {
+  //       isLoading(false);
+  //       setIsOpen(false);
+  //       window.location.reload();
+  //     }
+  //   }
+  //   isLoading(false);
+  // };
+  const handleSubmitRating = async () => {  
+    setIsLoading(true);  
+    
+    if (!me) {  
+      toast.error("Bạn cần đăng nhập để đánh giá");  
+      setIsLoading(false); // Set loading state to false before returning  
+      return;  
+    }  
+  
+    try {  
+      // Optional: Check for inappropriate content (comment)  
+      const hasInappropriateContent = await apiCheckForInappropriateContent(comment);  
+      if (hasInappropriateContent) {  
+        toast.error("Nhận xét của bạn chứa từ ngữ không phù hợp. Vui lòng sửa đổi.");  
+        setIsLoading(false);  
+        return;  
+      }  
+  
+      // Create the rating  
+      const response = await apiCreateRating({  
+        idPost,  
+        start: personalRating,  
+        content: comment,  
+      });  
+  
+      if (response.data.success) {  
+        // Create a notification if the rating was successful  
+        const response1 = await apiCreateNotification({  
+          idUser: idUserWrite,  
+          idPost: idPost,  
+          content: `Bài viết "${title}" của bạn nhận được đánh giá ${personalRating} sao.`,  
+          type: "post_rating",  
+        });  
+  
+        if (response1.data.success) {  
+          setIsOpen(false);  
+          window.location.reload();  
+          return; // Exit after reloading  
+        } else {  
+          toast.error("Failed to create notification. Please try again.");  
+        }  
+      } else {  
+        toast.error("Failed to create rating. Please try again.");  
+      }  
+    } catch (error) {  
+      console.error("Error submitting rating:", error);  
+      toast.error("An error occurred. Please try again.");  
+    } finally {  
+      setIsLoading(false); // Ensure loading is set to false in the finally block  
+    }  
+  };  
   useEffect(() => {
     const fetch = async () => {
       try {
@@ -75,7 +136,6 @@ const RatingButton = ({ avgStar, idPost }) => {
     };
     fetch();
   }, []);
-  console.log(ratings);
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -130,7 +190,11 @@ const RatingButton = ({ avgStar, idPost }) => {
                 className="!h-14 w-full"
               />
               <Button onClick={handleSubmitRating}>
-                {isLoading ? <Loader2  className="animate-spin" /> : " Gửi nhận xét"}
+                {isLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  " Gửi nhận xét"
+                )}
               </Button>
             </div>
           </div>
@@ -175,7 +239,7 @@ const RatingButton = ({ avgStar, idPost }) => {
   );
 };
 
-export default RatingButton;
+export default memo(RatingButton);
 RatingButton.propTypes = {
   avgStar: PropTypes.objectOf([PropTypes.string, PropTypes.number]),
   idPost: PropTypes.number.isRequired,

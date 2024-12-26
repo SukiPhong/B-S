@@ -37,6 +37,7 @@ import { WishlistPopover } from "../Wishlist";
 import { pathnames } from "@/lib/pathname";
 import useWishlistStore from "@/zustand/useWishList";
 import { Login } from "../logins";
+import Notifications from "../notification/Notification";
 
 const Header = () => {
   const [isShowDialog, setIsShowDialog] = useState(false);
@@ -116,8 +117,8 @@ const Header = () => {
         </NavigationMenu>
       </div>
       <div className="flex items-center  gap-3">
-       
-          <div>
+          <div className="flex gap-2">
+          <Notifications />
             <WishlistPopover/>
           </div>
         {!me ? (

@@ -43,7 +43,6 @@ const RatingControllers = {
       ratings.reduce((sum, rating) => sum + rating.start, 0) / ratings.length;
 
     await post.update({ avgStar });
-
     return res
       .status(200)
       .json({success:true, message: "Rating successfully saved", data:rating });

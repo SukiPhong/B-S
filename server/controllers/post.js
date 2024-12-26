@@ -85,7 +85,7 @@ const PostController = {
       {
         model: db.User,
         as: "rUser",
-        attributes: ["fullname", "avatar", "phone"],
+        attributes: ["fullname", "avatar", "phone",'id'],
         include: [
           {
             model: db.Pricing,
@@ -130,7 +130,7 @@ const PostController = {
         {
           model: db.User,
           as: "rUser",
-          attributes: ["fullname", "avatar", "phone", "email"],
+          attributes: ["fullname", "avatar", "phone", "email",'id'],
         },
       ],
     });
@@ -211,14 +211,22 @@ const PostController = {
       return res
         .status(403)
         .json({ success: false, message: "Bạn không có quyền" });
-
-    const post = await db.Post.findByPk(pid);
+        const post = await db.Post.findByPk(pid, {
+          include: [
+            {
+              model: db.User,
+              as: "rUser",
+              attributes: ["fullname", "phone", "email", "id"],
+            },
+          ],
+        });
     if (!post) {
       return res
         .status(404)
         .json({ success: false, message: "Bài viết không tồn tại" });
     }
     await post.update({ status: "Còn trống" });
+   
     return res.json({ success: true, message: "Bài viết đã được duyệt" });
   }),
   GetPostFeatured: asyncHandler(async (req, res) => {
@@ -227,12 +235,12 @@ const PostController = {
         {
           model: db.User,
           as: "rUser",
-          attributes: ["fullname"],
+          attributes: ["fullname",'id'],
           include: [
             {
               model: db.Pricing,
               as: "rPricing",
-              attributes: ["name", "priority"],
+              attributes: ["name", "priority",'id'],
               where: {
                 priority: 5,
               },
