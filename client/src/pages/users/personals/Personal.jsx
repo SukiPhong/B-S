@@ -85,7 +85,6 @@ const Personal = () => {
       data.avatar = avatarFile?.url
     }
       const response = await apiUpdatePatchUser(data);
-      console.log(response)
       if (response.status === 200) {
         toast.success("Cập nhật thông tin thành công!"); 
         window.location.reload()

@@ -69,7 +69,6 @@ const UserController = {
   updatePatchUser: asyncHandler(async (req, res) => {
     const { userId } = req.user;
     const { idPricing, ...data } = req.body; // Lấy idPricing và các dữ liệu khác từ req.body
-    console.log(data);
     const user = await db.User.findByPk(userId);
     if (!user)
       return res
@@ -202,7 +201,6 @@ const UserController = {
   updateUserByAdmin: asyncHandler(async (req, res) => {
     const { Role } = req.user;
     const { id, ...payload } = req.body;
-    console.log(id, { ...payload });
     if (!Role)
       return res
         .status(400)
@@ -397,7 +395,6 @@ const UserController = {
       upperCaseAlphabets: false,
       specialChars: false,
     });
-    console.log(otp);
     // OTP cooldown logic
     const currentTime = Date.now();
     const lastSendTime = await redisClient.get(`otp_last_send:${email}`);
@@ -438,7 +435,6 @@ const UserController = {
   verifyOTPEmail: asyncHandler(async (req, res) => {
     const { userId } = req.user;
     const { email, otp } = req.body;
-    console.log(otp);
     if (!email || !otp) {
       return res.status(400).json({ message: "Email and OTP are required" });
     }

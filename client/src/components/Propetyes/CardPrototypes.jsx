@@ -19,7 +19,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
   const { showMap, toggleMap, resetDataMaps, setDataMaps } = useMapStore();
   const { setSearch, resetSearchData } = useSearchStore();
   const { me } = useMeStore();
-  const {setTotalPrototypes} = useProperty()
+  const { setTotalPrototypes } = useProperty();
   const [properties, setProperties] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -41,7 +41,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
         if (response.data.success) {
           setProperties(response.data.data);
           setDataMaps(response.data.data.rows);
-           setTotalPrototypes(response.data.data.count)
+          setTotalPrototypes(response.data.data.count);
         } else {
           toast.error("Không thể lấy dữ liệu.");
         }
@@ -66,7 +66,6 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
     params.soft = selectedValue
       ? (params.soft = selectedValue)
       : (params.soft = "-createdAt");
-      console.log(params.soft)
     params.ListingType = ListingType;
     if (params.price) params.price = searchParams.getAll("price");
     if (params.size) params.size = searchParams.getAll("size");
@@ -75,7 +74,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
     setSearch("properType", properType || "");
     setSearch("rows", properties?.rows.length);
     fetchPrototypes(params);
-  }, [searchParams,selectedValue,]);
+  }, [searchParams, selectedValue]);
   const handleRemove = useCallback(
     async (pid) => {
       try {
@@ -114,14 +113,15 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
     return (
       <div className="flex justify-center">
         <span className="text-xl font-bole font-roboto">
-        {setLayout?'không có bài viết':'  Không tìm thấy thông tin bạn cần vui lòng nhập thông tin khác'}
+          {setLayout
+            ? "không có bài viết"
+            : "  Không tìm thấy thông tin bạn cần vui lòng nhập thông tin khác"}
         </span>
       </div>
     );
   }
-  const gridClassName = properties?.rows?.length < 2 
-  ? 'grid-rows-1 grid-cols-1' 
-  : 'grid-cols-10';
+  const gridClassName =
+    properties?.rows?.length < 2 ? "grid-rows-1 grid-cols-1  !h-44 " : "grid-cols-10  " ;
   return (
     <div>
       <div
@@ -194,7 +194,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
                 : "col-span-10 "
               : "col-span-10"
           } 
-          grid  ${gridClassName} gap-3 mb-4 mt-2  h-fit
+          grid  ${gridClassName} gap-3 mb-4 mt-2  h-fit 
         `}
         >
           {properties?.rows?.map((property) => (
@@ -211,7 +211,6 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
             <FilterCard />
           </div>
         )}
-        
       </div>
       <div className="grid grid-cols-10 gap-3 mb-4">
         <div className="col-span-10">

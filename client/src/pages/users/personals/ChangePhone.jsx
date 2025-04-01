@@ -41,7 +41,7 @@ const ChangePhone = () => {
   const phone = watch("phone");
 
   const handleSendOtp = async (data) => {
-    if (!/^\d{10}$/.test(data.phone)) {
+    if (!/^\d{10}$/.test(data.phone)) { // biểu thức chính quy
       setMessage("Số điện thoại không hợp lệ. Vui lòng nhập đúng 10 chữ số.");
       return;
     }
@@ -53,7 +53,8 @@ const ChangePhone = () => {
         toast.success('OTP đã được gữi',response.data.message);  
         setIsVerifying(false);  
       } else {  
-        toast.error(response.data.message);  
+        console.log(response.data.message)
+        toast.error('Số điện thoại của quý khách chưa được  xác minh !!!');  
       }  
     } catch (error) {  
       setMessage(error.response?.data?.message || "Failed to send OTP");  

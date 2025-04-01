@@ -110,7 +110,7 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
         </Form>
       ) : (
         <div className="flex flex-col space-y-4">
-          <Button
+          {/* <Button
             variant="outline"
             onClick={() => setStep("phone")}
             className="w-full flex justify-start items-center space-x-2"
@@ -118,7 +118,7 @@ const ForgotPassword = ({ onClose, setIsShowForgotPassword }) => {
           >
             <Phone size={20} />
             <span>Sử dụng số điện thoại</span>
-          </Button>
+          </Button> */}
           <Button
             variant="outline"
             onClick={() => setStep("email")}

@@ -215,7 +215,7 @@ const Login = ({ onClose }) => {
             size="lg"
           >
             <img
-              src="./svg/google.svg"
+              src="/svg/google.svg"
               alt="google"
               className="w-5 h-5 object-cover"
             />

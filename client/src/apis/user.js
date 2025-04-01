@@ -13,7 +13,6 @@ export const apiUpdatePassword = (data) => {
   });
 };
 export const apiUpdatePatchUser = (data) => {
-  console.log(data)
   return axios({
     method: "patch",
     url: endpoints.user.updatePatchUser,

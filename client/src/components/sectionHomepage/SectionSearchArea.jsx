@@ -14,9 +14,9 @@ const SectionSearchArea = () => {
     }
   };
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-slate-50 mx-12">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center text-[#001C43]">Tìm kiếm theo khu vực</h2>
+          <h2 className="text-3xl font-extrabold mb-8 text-center text-[#001C43]">Tìm kiếm theo khu vực</h2>
           <div className="relative">
             <div 
               ref={scrollContainerRef}
@@ -26,7 +26,7 @@ const SectionSearchArea = () => {
               {provenPost.map((city) => (
                 <div key={city.id} className="flex-none w-[calc(100%/3)] snap-start px-2">
                   <div className="relative overflow-hidden rounded-lg shadow-md group">
-                    <div className="w-full h-48 overflow-hidden">
+                    <div className="w-full h-60 overflow-hidden">
                       <img 
                         src={city.pathUrl} 
                         alt={city.label}

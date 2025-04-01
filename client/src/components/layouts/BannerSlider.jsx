@@ -14,7 +14,7 @@ const BannerSlider = () => {
   const startAutoScroll = () => {
     intervalRef.current = setInterval(() => {
       api?.scrollNext();
-    }, 3000);
+    }, 10000);
   };
   useEffect(() => {
     if (!api) return;

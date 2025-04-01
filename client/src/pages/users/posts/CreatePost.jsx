@@ -21,7 +21,11 @@ import { formSchema } from "./postSchema";
 import { toast } from "sonner";
 import { pricingOptionsOfPost } from "@/lib/contants";
 
-import { apiCreatePost, apiGetPrototypesDetail } from "@/apis/post";
+import {
+  apiCreatePost,
+  apiGetPrototypesDetail,
+  apiPostLimitInfo,
+} from "@/apis/post";
 import { useLocation, useNavigate } from "react-router-dom";
 import { apiUpdatePatchPost } from "./../../../apis/post";
 import { path } from "path-browserify";
@@ -29,11 +33,13 @@ import { pathnames } from "@/lib/pathname";
 import { Checkbox } from "@/components/ui/checkbox";
 import CheckBoxEditPost from "@/components/posts/CheckBoxEditPost";
 import { Label } from "@radix-ui/react-dropdown-menu";
+import PostLimitInfo from "@/components/posts/PostlimitInfo";
 
 const CreatePost = () => {
   const [valueDay, setValueDay] = useState(0);
   const navigate = useNavigate();
   const { me, setBalance, error } = useMeStore();
+  const [limitInfo, setLimitInfo] = useState(null);
   const [showAddressSelector, setShowAddressSelector] = useState(true);
   const location = useLocation();
   const { editMode = false, idPost = null } = location.state || {};
@@ -72,15 +78,24 @@ const CreatePost = () => {
     },
     mode: "onSubmit",
   });
-   useEffect(() => {  
-        if(me.Role) return
-     
-        if (!me.phone || !me.phoneVerified) {
-      
-          toast.warning('Bạn cần phải xác nhận SĐT trước khi  tạo tin đăng')
-        navigate({ pathname: pathnames.users.layout + pathnames.users.updatePhone });
-        }
-       },[])
+  useEffect(() => {
+    const fetchPostLimitInfo = async () => {
+      const r = await apiPostLimitInfo();
+      if (r.data.success) setLimitInfo(r.data.data);
+    };
+    fetchPostLimitInfo();
+  }, []);
+
+  useEffect(() => {
+    if (me.Role) return;
+
+    if (!me.phone || !me.phoneVerified) {
+      toast.warning("Bạn cần phải xác nhận SĐT trước khi  tạo tin đăng");
+      navigate({
+        pathname: pathnames.users.layout + pathnames.users.updatePhone,
+      });
+    }
+  }, [me.Role, me.phone, me.phoneVerified, navigate]);
   const toggleSection = (section) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
@@ -103,7 +118,6 @@ const CreatePost = () => {
         const response = await apiGetPrototypesDetail(idPost);
         if (response.data.success) {
           const postData = response.data.data;
-          console.log(postData);
           setShowAddressSelector(false);
           form.reset({ ...postData });
           // setValueDay(response.data.data.valueDay || 0);
@@ -114,6 +128,9 @@ const CreatePost = () => {
     fetchPostDetail();
   }, [editMode, idPost, form]);
   const onSubmit = async (data) => {
+    if (limitInfo && limitInfo.remaining === 0) {
+      return toast.error("Bạn đã đạt giới hạn đăng bài hôm nay.");
+    }
     if (!isFormValid(data)) {
       return toast.error(
         "Bạn phải nhập đủ thông tin chính: tiêu đề, mô tả, hình ảnh, nhu cầu."
@@ -135,16 +152,15 @@ const CreatePost = () => {
       // setValue date  if  dont choose options  default   me.rPricing.expiredDay
       form.setValue("expiredDate", calculateNewExpirationDate(0));
       filteredData.expiredDate = calculateNewExpirationDate(0);
-      return  newPost(filteredData);
-      
+      return newPost(filteredData);
     }
     const newBalance = +me.balance - +totalCost;
     newPost(filteredData, newBalance);
   };
 
   const newPost = async (data, newBalance) => {
-   // const { ListingType, ...payload } = data;
-   const {...payload} = data
+    // const { ListingType, ...payload } = data;
+    const { ...payload } = data;
     try {
       await apiCreatePost(payload);
       toast.success("Bài viết đã được tạo thành công!");
@@ -200,11 +216,12 @@ const CreatePost = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="max-w-2xl mx-auto h-auto overflow-auto"
         >
+          {limitInfo && <PostLimitInfo info={limitInfo} />}
           <ConditionRendering show={showAddressSelector}>
             <h2 className="text-2xl font-bold flex justify-center py-2 font-mono">
               Địa chỉ
             </h2>
-            <div className="max-w-xl mx-auto">
+            <div className="max-w-2xl mx-auto">
               <Address onAddressSelect={handleAddressSelect} />
             </div>
           </ConditionRendering>
@@ -275,14 +292,14 @@ const CreatePost = () => {
                           <CheckBoxEditPost form={form} />
                         </div>
                       )}
-                      <div className="w-full h-[400px]"></div>
+                      <div className="w-full h-[200px]"></div>
                     </div>
                   </div>
                 </div>
               </div>
             </ScrollArea>
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t z-10">
-              <div className="max-w-6xl mx-auto px-4 py-4 flex justify-end gap-2">
+              <div className="max-w-6xl mx-auto px-4 py-4 flex justify-end gap-2 z-50">
                 {editMode && (
                   <Button
                     className="w-32 bg-orange-300"
@@ -296,7 +313,10 @@ const CreatePost = () => {
                     Quay lại
                   </Button>
                 )}
-                <Button className="w-32 font-roboto">
+                <Button
+                  className="w-32 font-roboto"
+                  disabled={limitInfo && limitInfo.remaining === 0}
+                >
                   {editMode ? "Cập nhật" : "Tạo bài viết"}
                 </Button>
               </div>

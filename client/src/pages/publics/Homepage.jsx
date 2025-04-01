@@ -14,7 +14,6 @@ const Homepage = () => {
       <Services/>
       <SectionChooseUs/>
       </div>
-      {/* <div className="w-full h-[600px]"></div> */}
       <Footer/>
     </div>
   );

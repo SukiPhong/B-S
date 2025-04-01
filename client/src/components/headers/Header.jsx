@@ -66,7 +66,7 @@ const Header = () => {
     navigate(`${pathname}${searchParams}`);
   };
   return (
-    <div className="h-20 p-4 flex items-center shadow gap-2 justify-between">
+    <div className="h-20 p-4 flex items-center shadow gap-2 justify-between ">
       <div className="flex items-center gap-6">
         <Link
           to="/"
@@ -118,7 +118,7 @@ const Header = () => {
       </div>
       <div className="flex items-center  gap-3">
           <div className="flex gap-2">
-          <Notifications />
+         {me &&  <Notifications />}
             <WishlistPopover/>
           </div>
         {!me ? (

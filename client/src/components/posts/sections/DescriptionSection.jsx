@@ -48,7 +48,7 @@ const DescriptionSection = ({ form, isOpen, onToggle, title }) => {
     Address: ${address}\n
     Area: ${size}\n
     Price: ${price} ${priceUnits}\n
-    Property Type: ${propertyType} with language in Vietnamese At the same time, remember to adjust the form to make it look nice and highlight (such as bolding or adding color to the labels) `;
+    Property Type: ${propertyType} with language in Vietnamese At the same time, remember to adjust the form to make it look nice and highlight (such as bolding or adding color to the labels) add more icon in label At the same time, express the context in a modern style so the label is bold`;
 
     setLoading(true); // Bật trạng thái loading
 

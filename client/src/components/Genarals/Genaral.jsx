@@ -29,12 +29,11 @@ const General = () => {
     };
     fetchData();
   }, []);
-  console.log(pricingData);
 
   const handleUpgradeClick = (tier) => {
     if (!me) return;
     const currentTier = pricingData.find((t) => t.id === me.idPricing);
-    console.log(1)
+    (1)
     if (!currentTier) return;
 
     if (tier.priority < currentTier.priority) {

@@ -42,7 +42,9 @@ const Search = ({ check, noShowSearchProven = false }) => {
     if (searchData.size) {
       params.size = searchData.size;
     }
-
+    if (searchData.province) {
+      params.province = searchData.province;
+    }
     navigate({
       pathname: `${
         activeTab === "Cho thuê"
@@ -96,7 +98,7 @@ const Search = ({ check, noShowSearchProven = false }) => {
                   setIsShowProven((prev) => !prev);
                 }}
                 className={cn(
-                  "flex items-center justify-between bg-slate-50 rounded-md  px-[6px] py-1 relative   ",
+                  "flex items-center justify-between bg-slate-50 rounded-md  px-[6px] py-1 mt-2 relative   ",
                   isShowProven && "rounded-b-none "
                 )}
               >

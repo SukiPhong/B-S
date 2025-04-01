@@ -54,7 +54,8 @@ export const endpoints = {
     Post:'/posts/',// create  get detail delete
     approve:'/posts/approve/',
     getFeature:'/posts/randomPost',
-    chartPost:'/posts/chart'
+    chartPost:'/posts/chart',
+    postLimitInfo:'/posts/limit-info'
   },
   wishlist:{
     get:'/wishlist/',
@@ -72,6 +73,10 @@ export const endpoints = {
     createNotification:'/notifications/',
     deleteAllNotification:'/notifications/All',
     deleteNotification:'/notification/'
+  },
+  analytics: {
+    getRevenue: '/analytics/revenue',
+    getDashboard: '/analytics/dashboard',
   },
   external: {
     getProvinces:

@@ -36,7 +36,6 @@ const ManagerHistoryPaymentPage = () => {
 
     fetchDataPayment();
   }, [searchParams]);
-  console.log(dataPayment);
   const handleSearch = () => {
     navigate(`?${createSearchParams({ ...params, fullname: searchTerm })}`);
   };

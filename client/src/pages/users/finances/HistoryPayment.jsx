@@ -34,7 +34,6 @@ export default function PaymentHistory() {
 
     fetchHistory();
   }, []);
-  console.log(history)
   if (loading) {
     return <div className="text-center p-4">Đang tải...</div>;
   }

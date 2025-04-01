@@ -159,7 +159,6 @@ const Notifications = () => {
     }  
   };  
   const handleDeleteAllNotifications = async () => {  
-    console.log(1)
     try {  
       const response = await apiDeleteAllNotification();  
       if (response.data.success) {  

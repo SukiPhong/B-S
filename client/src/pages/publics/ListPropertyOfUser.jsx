@@ -34,7 +34,6 @@ const ListPropertyOfUser = () => {
           );
 
           setProperties({ rent: rentProperties, sale: saleProperties });
-          console.log(properties)
           // Lấy thông tin người dùng từ bất kỳ bài đăng nào
           if (allProperties.length > 0) {
             const userInfo = allProperties[0].rUser;

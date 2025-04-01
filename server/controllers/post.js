@@ -2,8 +2,9 @@ const { query } = require("express");
 const db = require("../models");
 const asyncHandler = require("express-async-handler");
 const { Op, Sequelize, where } = require("sequelize");
-const { handleRangeFilter } = require("../utils/fn.js");
+const { handleRangeFilter, getDailyPostLimit } = require("../utils/fn.js");
 const { enumData } = require("../utils/Constants");
+const redisClient = require("../configs/redis.config");
 const PostController = {
   CreatePost: asyncHandler(async (req, res) => {
     const { userId } = req.user;
@@ -12,8 +13,38 @@ const PostController = {
     return res.status(200).json({
       success: !!response,
       message: response ? "Post created successfully" : "Post creation failed",
+      limitInfo: req.postLimitInfo,
     });
   }),
+  GetPostLimitInfo: asyncHandler(async (req, res) => {
+    const { userId } = req.user;
+
+    const key = `ratelimit-${userId}`;
+    const client = await redisClient.hGetAll(key);
+
+    const user = await db.User.findByPk(userId, {
+      include: [
+        {
+          model: db.Pricing,
+          as: "rPricing",
+          attributes: ["name"],
+        },
+      ],
+    });
+    const pricingTier = user?.rPricing?.name || "thường";
+    const dailyLimit = getDailyPostLimit(pricingTier);
+    const currentCount = parseInt(client.count || "0");
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        dailyLimit,
+        currentCount,
+        remaining: Math.max(0, dailyLimit - currentCount),
+      },
+    });
+  }),
+
   GetPosts: asyncHandler(async (req, res) => {
     const {
       limit,
@@ -85,7 +116,7 @@ const PostController = {
       {
         model: db.User,
         as: "rUser",
-        attributes: ["fullname", "avatar", "phone",'id'],
+        attributes: ["fullname", "avatar", "phone", "id"],
         include: [
           {
             model: db.Pricing,
@@ -130,7 +161,7 @@ const PostController = {
         {
           model: db.User,
           as: "rUser",
-          attributes: ["fullname", "avatar", "phone", "email",'id'],
+          attributes: ["fullname", "avatar", "phone", "email", "id"],
         },
       ],
     });
@@ -177,7 +208,6 @@ const PostController = {
   DeletePost: asyncHandler(async (req, res) => {
     const { userId, Role } = req.user;
     const { pid } = req.params;
-    console.log(pid,Role,userId)
     const userPost = await db.Post.findOne({
       where: { idUser: userId, id: pid },
     });
@@ -190,8 +220,8 @@ const PostController = {
     if (Role) {
       const response = await db.Post.findByPk(pid);
       if (response) {
-        await db.Wishlist.destroy({ where: { idPost: pid } })
-        await db.Rating.destroy({ where: { idPost: pid } })
+        await db.Wishlist.destroy({ where: { idPost: pid } });
+        await db.Rating.destroy({ where: { idPost: pid } });
         await response.destroy();
         return res.json({ success: true, message: "Xóa thành công" });
       }
@@ -211,22 +241,22 @@ const PostController = {
       return res
         .status(403)
         .json({ success: false, message: "Bạn không có quyền" });
-        const post = await db.Post.findByPk(pid, {
-          include: [
-            {
-              model: db.User,
-              as: "rUser",
-              attributes: ["fullname", "phone", "email", "id"],
-            },
-          ],
-        });
+    const post = await db.Post.findByPk(pid, {
+      include: [
+        {
+          model: db.User,
+          as: "rUser",
+          attributes: ["fullname", "phone", "email", "id"],
+        },
+      ],
+    });
     if (!post) {
       return res
         .status(404)
         .json({ success: false, message: "Bài viết không tồn tại" });
     }
     await post.update({ status: "Còn trống" });
-   
+
     return res.json({ success: true, message: "Bài viết đã được duyệt" });
   }),
   GetPostFeatured: asyncHandler(async (req, res) => {
@@ -235,12 +265,12 @@ const PostController = {
         {
           model: db.User,
           as: "rUser",
-          attributes: ["fullname",'id'],
+          attributes: ["fullname", "id"],
           include: [
             {
               model: db.Pricing,
               as: "rPricing",
-              attributes: ["name", "priority",'id'],
+              attributes: ["name", "priority", "id"],
               where: {
                 priority: 5,
               },
@@ -270,7 +300,7 @@ const PostController = {
     // Lấy thời gian hiện tại và tính toán phạm vi thời gian cho query
     const now = new Date();
     let startDate;
-  
+
     // Xác định ngày bắt đầu tùy thuộc vào 'month' hoặc '6months'
     if (period === "6months") {
       startDate = new Date();
@@ -279,14 +309,14 @@ const PostController = {
       startDate = new Date();
       startDate.setMonth(now.getMonth() - 1); // Lấy 1 tháng trước
     }
-  
+
     // Lọc các bài đăng được tạo trong khoảng thời gian từ startDate trở đi
     const posts = await db.Post.findAll({
       where: {
         createdAt: { [Op.gte]: startDate },
       },
     });
-  
+
     // Tạo đối tượng dữ liệu cho chart
     const chartData = {
       pending: 0,
@@ -299,7 +329,7 @@ const PostController = {
       statusHandedOverData: [],
       statusDaftData: [],
     };
-  
+
     const getMonthName = (monthIndex) => {
       const months = [
         "Jan",
@@ -317,14 +347,14 @@ const PostController = {
       ];
       return months[monthIndex];
     };
-  
+
     // Phân loại bài đăng theo trạng thái và tháng
     posts.forEach((post) => {
       const postMonth = post.createdAt.getMonth(); // Lấy tháng của bài viết
       const postYear = post.createdAt.getFullYear(); // Lấy năm của bài viết
-  
+
       const monthKey = `${getMonthName(postMonth)} ${postYear}`;
-  
+
       // Kiểm tra xem tháng đã có trong chartData.months chưa
       if (!chartData.months.includes(monthKey)) {
         chartData.months.push(monthKey);
@@ -334,9 +364,9 @@ const PostController = {
         chartData.statusHandedOverData.push(0);
         chartData.statusDaftData.push(0);
       }
-  
+
       const index = chartData.months.indexOf(monthKey);
-  
+
       // Sử dụng switch để phân loại theo trạng thái bài viết
       switch (post.status) {
         case enumData.statusPost[0]: // "Chờ duyệt" => pending
@@ -388,6 +418,6 @@ const PostController = {
         ],
       },
     });
-  })
+  }),
 };
 module.exports = PostController;

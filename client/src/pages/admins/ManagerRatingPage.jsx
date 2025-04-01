@@ -41,7 +41,6 @@ const ManagerRatingPage = () => {
   const handleRemove = async (id) => {
     const response = await apiDeleteRating(id);
     if (response.data.success) {
-      console.log(response.data);
       toast.success(response.data.message);
       fetchData();
     } else {

@@ -16,12 +16,11 @@ const UserChart = () => {
         };
         fetchData();
       }, [period]);
-      console.log(data)
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex justify-between">
-          <h1>Xu hướng đăng bài</h1>
+          <h1>Số tài khoản đăng ký</h1>
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}

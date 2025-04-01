@@ -49,11 +49,11 @@ const menu = [
         label: "Danh sách tin đăng",
         path: pathnames.users.layout + pathnames.users.managePost,
       },
-      {
-        id: 33,
-        label: "Danh sách tin nháp",
-        path: pathnames.users.layout + pathnames.users.manageDraft,
-      },
+      // {
+      //   id: 33,
+      //   label: "Danh sách tin nháp",
+      //   path: pathnames.users.layout + pathnames.users.manageDraft,
+      // },
     ],
   },
   {

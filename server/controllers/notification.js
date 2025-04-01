@@ -4,7 +4,6 @@ const db = require("../models");
 const NotificationController = {
   createNotification: asyncHandler(async (req, res) => {
     const { idUser, idPost, content, type } = req.body;
-    console.log(idUser); //10
     const notification = await db.Notification.create({
       idUser,
       idPost,

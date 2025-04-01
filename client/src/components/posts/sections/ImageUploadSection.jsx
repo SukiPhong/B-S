@@ -23,7 +23,7 @@ const ImageUploadSection = ({ form, onToggle, isOpen, title }) => {
   useEffect(() => {
     // Initialize files state with existing images from form
     const existingImages = form.getValues("images") || [];
-    setFiles(existingImages.map(url => ({ url })));
+    setFiles(existingImages.map((url) => ({ url })));
   }, [form]);
   const handleFileChange = (newFiles) => {
     setFiles(newFiles);
@@ -38,7 +38,9 @@ const ImageUploadSection = ({ form, onToggle, isOpen, title }) => {
     console.log(form.watch("images"));
   };
 
-  const handleFileRemove = (index) => {
+  const handleFileRemove = (index, e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setFiles((prevFiles) => {
       // Lọc và loại bỏ file theo chỉ số
       const updatedFiles = prevFiles.filter((_, i) => i !== index);
@@ -78,7 +80,7 @@ const ImageUploadSection = ({ form, onToggle, isOpen, title }) => {
                 className="w-full h-full object-cover"
               />
               <button
-                onClick={() => handleFileRemove(i)}
+                onClick={(e) => handleFileRemove(i,e)}
                 className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
                 aria-label={`Remove ${file.name}`}
               >

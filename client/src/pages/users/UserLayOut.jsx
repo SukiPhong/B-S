@@ -22,7 +22,7 @@ const UserLayOut = () => {
           <UseSlideBar />
         </div>
         <div className="flex-auto ">
-          <ScrollArea className="h-full w-auto lg:h-[400px] ">
+          <ScrollArea className="h-full w-auto overflow-hidden ">
             <Outlet />
           </ScrollArea>
         </div>

@@ -50,7 +50,6 @@ const RatingControllers = {
   deleteRating: asyncHandler(async (req, res) => {
     const { id } = req.params;
     const rating = await db.Rating.findByPk(id);
-    console.log(rating)
     if (!rating) {
       return res.status(404).json({success:false, message: "Rating not found" });
     }
@@ -62,7 +61,7 @@ const RatingControllers = {
     const { idPost } = req.params;
     try {
       const ratings = await db.Rating.findAll({
-        where: { idPost },
+        where: { id:idPost },
         include: [
           {
             model: db.User,

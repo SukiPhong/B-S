@@ -4,17 +4,7 @@ import { Card, CardContent } from "../ui/card";
 import { useParams } from "react-router-dom";
 import { apiGetPrototypesDetail } from "@/apis/post";
 import { changePriceToString, description } from "@/lib/fn";
-import {
-  Bath,
-  Bed,
-  Fence,
-  Flag,
-  Heart,
-  Proportions,
-  Share2,
-  Sofa,
-  Star,
-} from "lucide-react";
+import { Bath, Bed, Fence, Flag, Heart, Proportions, Share2, Sofa, Star } from 'lucide-react';
 import { Button } from "../ui/button";
 import { Map } from "../map";
 import WishListItem from "./../Wishlist/WishListItem";
@@ -43,58 +33,49 @@ const PropertiesDetail = () => {
       </div>
     );
   return (
-    <div className="mx-auto w-[calc(100%-500px)] p-4 flex">
-      <div className="w-[70%] flex-col top-4 bg-slate-100">
+    <div className="mx-auto w-full max-w-5xl p-4 lg:flex lg:space-x-4">
+      <div className="w-full lg:w-[70%] flex-col bg-slate-100">
         <ImagesPropertiesDetail images={detailPrototypes?.images} />
         <div>
           <Card className="border-t-0 border-b-0">
             <CardContent className="p-6">
-              <div className="space-y-4">
-                <h1 className="text-2xl font-semibold ">
-                  {detailPrototypes?.title}
-                </h1>
-                <p className="text-muted-foreground">
-                  <span>Địa chỉ</span>
-                  <span>: {detailPrototypes?.address}</span>
-                </p>
-                <div className="w-full flex">
-                  <div className="flex gap-6 items-center w-3/4  ">
-                    <div>
-                      <p className="text-sm text-muted-foreground">{`Mức giá (${detailPrototypes.priceUnits})`}</p>
+              <div className="space-y-4 sm:space-y-0 sm:flex sm:justify-between sm:items-center">
+                <div className="space-y-2 sm:space-y-0 sm:flex sm:gap-6 sm:items-center">
+                  <div>
+                    <p className="text-sm text-muted-foreground">{`Mức giá (${detailPrototypes.priceUnits})`}</p>
 
-                      <p className="font-semibold">
-                        {detailPrototypes.price === "Thoản thuận"
-                          ? detailPrototypes.price
-                          : changePriceToString(
-                              String(detailPrototypes?.price)
-                            )}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Diện tích</p>
-                      <p className="font-semibold">
-                        {detailPrototypes?.size} m²
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Phòng ngủ</p>
-                      <p className="font-semibold">
-                        {detailPrototypes.bedroom} PN
-                      </p>
-                    </div>
+                    <p className="font-semibold">
+                      {detailPrototypes.price === "Thoản thuận"
+                        ? detailPrototypes.price
+                        : changePriceToString(
+                            String(detailPrototypes?.price)
+                          )}
+                    </p>
                   </div>
-                  <div className="items-center  gap-8 flex w-1/4 mx-auto  justify-end">
-                    <Button variant="ghost" size="icon" className="flex-1">
-                      <Share2 size={20} />
-                    </Button>
-                    <RatingButton
-                      avgStar={detailPrototypes.avgStar}
-                      idPost={detailPrototypes.id}
-                      idUserWrite={detailPrototypes?.rUser?.id}
-                      title={detailPrototypes?.title}
-                    />
-                    <WishListItem id={detailPrototypes.id} />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Diện tích</p>
+                    <p className="font-semibold">
+                      {detailPrototypes?.size} m²
+                    </p>
                   </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Phòng ngủ</p>
+                    <p className="font-semibold">
+                      {detailPrototypes.bedroom} PN
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 sm:gap-2 justify-end mt-4 sm:mt-0">
+                  <Button variant="ghost" size="icon">
+                    <Share2 size={20} />
+                  </Button>
+                  <RatingButton
+                    avgStar={detailPrototypes.avgStar}
+                    idPost={detailPrototypes.id}
+                    idUserWrite={detailPrototypes?.rUser?.id}
+                    title={detailPrototypes?.title}
+                  />
+                  <WishListItem id={detailPrototypes.id} />
                 </div>
               </div>
             </CardContent>
@@ -112,7 +93,7 @@ const PropertiesDetail = () => {
           <Card>
             <CardContent className="p-6 border-t-0 border-b-0">
               <h2 className="text-xl font-semibold mb-4">Thông tin chi tiết</h2>
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4  ">
                 {[
                   {
                     icon: <Proportions />,
@@ -144,7 +125,12 @@ const PropertiesDetail = () => {
                     <DetailItems
                       icon={item.icon}
                       label={item.label}
-                      value={item.value}
+                      value={  
+                        item.label === "Diện tích"   
+                          ? `${item.value} m²`  
+                          : item.value  
+                      }  
+                      className='text-xl font-roboto font-bold'
                     />
                   </div>
                 ))}
@@ -155,13 +141,13 @@ const PropertiesDetail = () => {
           <Card className="border-t-0 border-b-0">
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">Vị trí trên bản đồ</h2>
-              <div className="aspect-video w-full  rounded-lg flex items-center justify-center">
+              <div className="aspect-video w-full rounded-lg flex items-center justify-center relative z-30">
                 <Map address={detailPrototypes.address} />
               </div>
             </CardContent>
           </Card>
         </div>
-        <div className=" w-full h-32 py-4 px-2">
+        <div className=" w-full py-4 px-2">
           <p className="text-xs font-roboto">
             {description(
               detailPrototypes.title,
@@ -171,7 +157,7 @@ const PropertiesDetail = () => {
           </p>
         </div>
       </div>
-      <div className="w-[30%] h-[535px] sticky top-4 p-2">
+      <div className="w-full mt-4 lg:mt-0 lg:w-[30%] lg:sticky lg:top-4 p-2">
         <PosterInfoBox
           fullname={detailPrototypes?.rUser?.fullname}
           avatar={detailPrototypes?.rUser?.avatar}
@@ -184,3 +170,4 @@ const PropertiesDetail = () => {
 };
 
 export default PropertiesDetail;
+

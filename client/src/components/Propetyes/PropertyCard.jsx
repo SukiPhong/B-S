@@ -30,7 +30,7 @@ import { WishListItem } from "../Wishlist";
 import PropTypes from "prop-types";
 import { description } from "@/lib/fn";
 
-const PropertyCard = ({ property, setLayout, onRemove }) => {
+const PropertyCard = ({ property, setLayout, onRemove,isWishlist }) => {
   console.log(setLayout)
   const { me } = useMeStore();
   const priority = property?.rUser?.rPricing?.priority >= 4;
@@ -39,12 +39,14 @@ const PropertyCard = ({ property, setLayout, onRemove }) => {
     <Card
       className={cn(
         "overflow-hidden bg-slate-100 ",
-        setLayout ? "col-span-5" : "col-span-10"
+        setLayout ? "col-span-5" : "col-span-10",
+        'h-full '
       )}
+      
     >
-      <div className="grid grid-cols-10 w-full">
+      <div className={`grid grid-cols-10 w-full ${isWishlist?'h-full':'h-fit'}`}>
         {/* Image Section - Fixed aspect ratio */}
-        <div className="col-span-4 relative aspect ">
+        <div className="col-span-4 relative aspect h-full bg-slate-100 w-full ">
           <img
             loading="lazy"
             src={property.images[0]}
@@ -140,7 +142,7 @@ const PropertyCard = ({ property, setLayout, onRemove }) => {
                   <span className="text-green-900 font-medium">Xác thực</span>
                 </div>
               )}
-              {property.rUser.rPricing.priority >= 3 && (
+              {property?.rUser?.rPricing.priority >= 3 && (
                 <Customtooltip
                   trigger={<EthernetPort size={20} className="text-[#5c64a8] " />}
                   content={
@@ -185,6 +187,7 @@ PropertyCard.propTypes = {
   onRemove: PropTypes.func.isRequired,
   setLayout: PropTypes.bool,
   property: PropTypes.object.isRequired,
+  isWishlist: PropTypes.bool,
 };
 
 export default memo(PropertyCard);

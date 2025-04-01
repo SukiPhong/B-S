@@ -6,6 +6,7 @@ const wishlistRouter = require("./wishlist");
 const pricingRouter = require("./pricing");
 const ratingRouter = require("./rating.js");
 const notificationRouter = require("./notification");
+const analyticsRouter = require('./analytics.js')
 const { notFound, errHandler } = require("../middleware/errorHandler.js")
 const initRouters = (app) => {
     app.use('/api/v1/auth', authRouter)
@@ -16,6 +17,7 @@ const initRouters = (app) => {
     app.use('/api/v1/pricing',pricingRouter)
     app.use('/api/v1/ratings',ratingRouter)
     app.use('/api/v1/notifications', notificationRouter)
+    app.use('/api/v1/analytics', analyticsRouter)
     app.use(notFound);
     app.use(errHandler)
 }
