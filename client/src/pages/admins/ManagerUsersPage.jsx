@@ -14,9 +14,10 @@ import {
 } from "@/components/admin";
 import { useEffect, useState } from "react";
 import { apiDeleteUser, apiGetUsers } from "@/apis/user";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { PaginationComponent } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
+import { pathnames } from "@/lib/pathname";
 
 const ManagerUsersPage = () => {
   const [dataUsers, setDataUsers] = useState("");
@@ -34,15 +35,13 @@ const ManagerUsersPage = () => {
     fetchData();
   }, [searchParams]);
   const handleDeleteUser = async (id) => {
-    
-    const response = await apiDeleteUser(id)
-    if(response.data.success)
-    {
-      const  dataUpdate =await apiGetUsers({limit:import.meta.env.VITE_LIMIT_MANAGER_USER_PAGE});
+    const response = await apiDeleteUser(id);
+    if (response.data.success) {
+      const dataUpdate = await apiGetUsers({
+        limit: import.meta.env.VITE_LIMIT_MANAGER_USER_PAGE,
+      });
       setDataUsers(dataUpdate.data.data);
-   
     }
-
   };
   return (
     <div className="flex flex-col h-full">
@@ -79,7 +78,14 @@ const ManagerUsersPage = () => {
             {dataUsers?.rows?.map((user, idx) => (
               <TableRow key={user.id}>
                 <TableCell>{idx + 1}</TableCell>
-                <TableCell>{user.fullname}</TableCell>
+                <TableCell>
+                  <Link
+                    className="hover:cursor-pointer hover:underline hover:text-main "
+                    to={`/${pathnames.public.ListProperty_Of_User}/${user.id}`}
+                  >
+                    {user.fullname}
+                  </Link>
+                </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
                 <TableCell>{user.Role ? "admin" : "user"}</TableCell>

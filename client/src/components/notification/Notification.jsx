@@ -11,7 +11,7 @@ import {
   apiMarkNotificationAsRead,
 } from "@/apis/notification";
 import useMeStore from "@/zustand/useMeStore";
-
+let IO;
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -55,31 +55,32 @@ const Notifications = () => {
   }, [me]);
 
   useEffect(() => {
-    if (!me) return;
+    if (!me || !token) return;
+
     const newSocket = io("http://localhost:5100", {
       auth: { token },
       transports: ["websocket", "polling"],
       reconnectionAttempts: 1,
       reconnectionDelay: 3000,
     });
+
     newSocket.on("connect", () => {
       console.log("Connected to socket server");
+      fetchNotifications();
+      fetchUnreadCount();
     });
     newSocket.on("newNotification", (notification) => {
-      setNotifications((prev) => [notification, ...prev]);
+      setNotifications((prev) => [...prev, notification]);
       setUnreadCount((prev) => prev + 1);
-      toast.info(notification.content, {
-        icon: getNotificationIcon(notification.type),
-      });
     });
 
     newSocket.on("connect_error", (error) => {
       console.error("Socket connection error:::", error);
       if (error.message === "jwt expired") {
-        // toast.error('Your session has expired. Please log in again.');
+        toast.error("Your session has expired. Please log in again.");
         logout();
       } else {
-        // toast.error('Failed to connect to notification server. Retrying...');
+        toast.error("Failed to connect to notification server. Retrying...");
       }
     });
 
@@ -90,14 +91,10 @@ const Notifications = () => {
       }
     });
 
-    setSocket(newSocket);
-    fetchNotifications();
-    fetchUnreadCount();
-
     return () => {
-      if (newSocket) newSocket.disconnect();
+      newSocket.disconnect();
     };
-  }, [me, token, logout, fetchNotifications, fetchUnreadCount]);
+  }, [me, token, logout]);
 
   const handleMarkAsRead = async (notificationId) => {
     try {
@@ -147,29 +144,29 @@ const Notifications = () => {
         return "🔔";
     }
   };
-  const handleDeleteNotification = async (notificationId) => {  
-    try {  
-      const response = await apiDeleteNotification({ id: notificationId });  
-      if (response.data.success) {  
-        setNotifications(notifications.filter((n) => n.id !== notificationId));  
-      }  
-    } catch (error) {  
-      console.error("Error deleting notification:", error);  
-      toast.error("Failed to delete notification. Please try again.");  
-    }  
-  };  
-  const handleDeleteAllNotifications = async () => {  
-    try {  
-      const response = await apiDeleteAllNotification();  
-      if (response.data.success) {  
-        setNotifications([]);  
-        setUnreadCount(0);  
-      }  
-    } catch (error) {  
-      console.error("Error deleting all notifications:", error);  
-      toast.error("Failed to delete all notifications. Please try again.");  
-    }  
-  };  
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      const response = await apiDeleteNotification({ id: notificationId });
+      if (response.data.success) {
+        setNotifications(notifications.filter((n) => n.id !== notificationId));
+      }
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+      toast.error("Failed to delete notification. Please try again.");
+    }
+  };
+  const handleDeleteAllNotifications = async () => {
+    try {
+      const response = await apiDeleteAllNotification();
+      if (response.data.success) {
+        setNotifications([]);
+        setUnreadCount(0);
+      }
+    } catch (error) {
+      console.error("Error deleting all notifications:", error);
+      toast.error("Failed to delete all notifications. Please try again.");
+    }
+  };
   if (!me) {
     return null; // Don't render the component if the user is not authenticated
   }
@@ -193,15 +190,15 @@ const Notifications = () => {
         <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200">
           <div className="p-4 border-b border-gray-200 flex justify-between items-center gap-2">
             <h3 className="text-lg font-semibold">Thông báo</h3>
-            {notifications.length > 0 && (  
-              <span  
-                onClick={handleDeleteAllNotifications}  
-                className="text-sm text-blue-600 hover:text-blue-800 hover:cursor-pointer"  
-                // Disable if there are unread notifications  
-              >  
-                Xóa tất cả  
-              </span>  
-            )} 
+            {notifications.length > 0 && (
+              <span
+                onClick={handleDeleteAllNotifications}
+                className="text-sm text-blue-600 hover:text-blue-800 hover:cursor-pointer"
+                // Disable if there are unread notifications
+              >
+                Xóa tất cả
+              </span>
+            )}
             {unreadCount > 0 && (
               <span
                 onClick={handleMarkAllAsRead}

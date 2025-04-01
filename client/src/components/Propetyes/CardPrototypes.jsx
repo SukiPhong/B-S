@@ -14,6 +14,7 @@ import { Switch } from "../ui/switch";
 import PropTypes from "prop-types";
 import { SkeletonCard } from "../layouts";
 import useProperty from "@/zustand/useProperty";
+import { cn } from "@/lib/utils";
 
 const CardPrototypes = ({ setLayout, limit, ListingType }) => {
   const { showMap, toggleMap, resetDataMaps, setDataMaps } = useMapStore();
@@ -25,12 +26,14 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedValue, setSelectedValue] = useState("");
   const params = Object.fromEntries([...searchParams]);
+
   useEffect(() => {
     resetSearchData();
     resetDataMaps();
     window.scrollTo({ top: 300, behavior: "smooth" });
+
     const fetchPrototypes = async (params) => {
-      setIsLoading(true); // Start loading before making the API call
+      setIsLoading(true);
       try {
         const response = await apiGetPrototypes({
           idUser: setLayout ? me.id : undefined,
@@ -48,24 +51,12 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
       } catch (error) {
         toast.error(error.response.data.data.message);
       } finally {
-        setIsLoading(false); // Stop loading once the API call is done or if it fails
+        setIsLoading(false);
       }
     };
 
-    // if (searchParams.get("page") > properties?.count) {
-    //   searchParams.set("page", 1);
-    //   setSearchParams(searchParams);
-    // }
-
-    // if (!setLayout) {
-    // }
-    params.status = "Chờ duyệt,Nháp"; //  này là notIn tức là   không có chờ duyệt và nháp
-    // if (selectedValue) {
-    //   params.soft = selectedValue;
-    // }else{}
-    params.soft = selectedValue
-      ? (params.soft = selectedValue)
-      : (params.soft = "-createdAt");
+    params.status = "Chờ duyệt,Nháp";
+    params.soft = selectedValue || "-createdAt";
     params.ListingType = ListingType;
     if (params.price) params.price = searchParams.getAll("price");
     if (params.size) params.size = searchParams.getAll("size");
@@ -84,44 +75,42 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
         if (!confirmDelete) return;
 
         await apiDeletePostId(pid);
-
-        // Gọi lại API để đồng bộ danh sách
         setProperties((prev) => ({
           ...prev,
           rows: prev.rows.filter((item) => item.id !== pid),
         }));
-
         toast.success("Xóa bài viết thành công!");
       } catch (error) {
         toast.error("Xóa bài viết thất bại. Vui lòng thử lại.");
       }
     },
-    [params, setProperties]
+    [setProperties]
   );
+
   if (isLoading) {
     return (
       <div>
-        {Array(+limit)
-          .fill(null)
-          .map((_, index) => (
-            <SkeletonCard key={index} isHideSub={true} className="w-[50%]" />
-          ))}
+        {Array.from({ length: +limit }).map((_, index) => (
+          <SkeletonCard key={index} isHideSub={true} className="w-[50%]" />
+        ))}
       </div>
     );
   }
-  if (properties?.rows?.length <= 0) {
+
+  if (!properties?.rows?.length) {
     return (
       <div className="flex justify-center">
-        <span className="text-xl font-bole font-roboto">
+        <span className="text-xl font-bold font-roboto">
           {setLayout
             ? "không có bài viết"
-            : "  Không tìm thấy thông tin bạn cần vui lòng nhập thông tin khác"}
+            : "Không tìm thấy thông tin bạn cần vui lòng nhập thông tin khác"}
         </span>
       </div>
     );
   }
+
   const gridClassName =
-    properties?.rows?.length < 2 ? "grid-rows-1 grid-cols-1  !h-44 " : "grid-cols-10  " ;
+    properties?.rows?.length < 2 ? "grid-cols-2" : "grid-cols-10";
   return (
     <div>
       <div
@@ -134,7 +123,7 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
             <Button
               variant={showMap ? "destructive" : "default"}
               onClick={toggleMap}
-              className=" whitespace-nowrap flex-shrink-0"
+              className="whitespace-nowrap flex-shrink-0"
             >
               {showMap ? (
                 <X className="w-4 h-4 mr-2" />
@@ -184,18 +173,17 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
         </div>
       </div>
 
-      <div className={`${!setLayout && "grid grid-cols-10"}  `}>
+      <div className={`${!setLayout && "grid grid-cols-10"}`}>
         <div
-          className={`
-          ${
+          className={cn(
             !setLayout
               ? !showMap
                 ? "col-span-7"
-                : "col-span-10 "
-              : "col-span-10"
-          } 
-          grid  ${gridClassName} gap-3 mb-4 mt-2  h-fit 
-        `}
+                : "col-span-10"
+              : "col-span-10",
+            gridClassName,
+            "grid  gap-3 mb-4 mt-2 h-fit "
+          )}
         >
           {properties?.rows?.map((property) => (
             <PropertyCard
@@ -203,8 +191,12 @@ const CardPrototypes = ({ setLayout, limit, ListingType }) => {
               property={property}
               setLayout={setLayout}
               onRemove={handleRemove}
+              length={properties?.rows?.length}
             />
           ))}
+          {properties?.rows?.length < 2 && (
+            <div className="opacity-0 w-full h-full col-span-1"></div>
+          )}
         </div>
         {!setLayout && !showMap && (
           <div className="col-span-3 pl-2">
@@ -231,5 +223,5 @@ export default CardPrototypes;
 CardPrototypes.propTypes = {
   setLayout: PropTypes.bool,
   limit: PropTypes.string.isRequired,
-  ListingType: PropTypes.string.isRequired,
+  ListingType: PropTypes.string,
 };

@@ -6,9 +6,11 @@ import React from "react";
 const ManagerPost = () => {
   return (
     <div className="mx-12 h-full  my-4">
-      <Section title="Quản lí tin đăng của bạn" >
-        <CardPrototypes setLayout={true} limit={import.meta.env.VITE_LIMIT_OF_USER}  />
-        <div className="w-full "></div>
+      <Section title="Quản lí tin đăng của bạn">
+        <CardPrototypes
+          setLayout={true}
+          limit={import.meta.env.VITE_LIMIT_OF_USER}
+        />
       </Section>
     </div>
   );

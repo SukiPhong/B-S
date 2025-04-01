@@ -69,69 +69,70 @@ const RatingButton = ({ avgStar, idPost, idUserWrite, title }) => {
   //   }
   //   isLoading(false);
   // };
-  const handleSubmitRating = async () => {  
-    setIsLoading(true);  
-    
-    if (!me) {  
-      toast.error("Bạn cần đăng nhập để đánh giá");  
-      setIsLoading(false); // Set loading state to false before returning  
-      return;  
-    }  
-  
-    try {  
-      // Optional: Check for inappropriate content (comment)  
-      const hasInappropriateContent = await apiCheckForInappropriateContent(comment);  
-      if (hasInappropriateContent) {  
-        toast.error("Nhận xét của bạn chứa từ ngữ không phù hợp. Vui lòng sửa đổi.");  
-        setIsLoading(false);  
-        return;  
-      }  
-  
-      // Create the rating  
-      const response = await apiCreateRating({  
-        idPost,  
-        start: personalRating,  
-        content: comment,  
-      });  
-  
-      if (response.data.success) {  
-        // Create a notification if the rating was successful  
-        const response1 = await apiCreateNotification({  
-          idUser: idUserWrite,  
-          idPost: idPost,  
-          content: `Bài viết "${title}" của bạn nhận được đánh giá ${personalRating} sao.`,  
-          type: "post_rating",  
-        });  
-  
-        if (response1.data.success) {  
-          setIsOpen(false);  
-          window.location.reload();  
-          return; // Exit after reloading  
-        } else {  
-          toast.error("Failed to create notification. Please try again.");  
-        }  
-      } else {  
-        toast.error("Failed to create rating. Please try again.");  
-      }  
-    } catch (error) {  
-      console.error("Error submitting rating:", error);  
-      toast.error("An error occurred. Please try again.");  
-    } finally {  
-      setIsLoading(false); // Ensure loading is set to false in the finally block  
-    }  
-  };  
+  const handleSubmitRating = async () => {
+    setIsLoading(true);
+
+    if (!me) {
+      toast.error("Bạn cần đăng nhập để đánh giá");
+      setIsLoading(false); // Set loading state to false before returning
+      return;
+    }
+
+    try {
+      // Optional: Check for inappropriate content (comment)
+
+      // const hasInappropriateContent = await apiCheckForInappropriateContent(comment);
+      // if (hasInappropriateContent) {
+      //   toast.error("Nhận xét của bạn chứa từ ngữ không phù hợp. Vui lòng sửa đổi.");
+      //   setIsLoading(false);
+      //   return;
+      // }
+
+      // Create the rating
+      const response = await apiCreateRating({
+        idPost,
+        start: personalRating,
+        content: comment,
+      });
+
+      if (response.data.success) {
+        // Create a notification if the rating was successful
+        const response1 = await apiCreateNotification({
+          idUser: idUserWrite,
+          idPost: idPost,
+          content: `Bài viết "${title}" của bạn nhận được đánh giá ${personalRating} sao.`,
+          type: "post_rating",
+        });
+
+        if (response1.data.success) {
+          setIsOpen(false);
+          window.location.reload();
+          return; // Exit after reloading
+        } else {
+          toast.error("Failed to create notification. Please try again.");
+        }
+      } else {
+        toast.error("Failed to create rating. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false); // Ensure loading is set to false in the finally block
+    }
+  };
   useEffect(() => {
     const fetch = async () => {
       try {
         const r = await apiGetRating(idPost);
         if (r.data.success) {
-          setRatings(r.data.data);
+          setRatings(r?.data?.data);
         } else {
           // Handle the case where success is false
           toast.error(r.data.message || "Failed to fetch ratings");
         }
       } catch (error) {
-        toast.error(error.r.message);
+        toast.error(error?.r?.message);
       }
     };
     fetch();

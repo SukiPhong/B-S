@@ -12,7 +12,7 @@ import {
   BadgeCheck,
   EthernetPort,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { pathnames } from "@/lib/pathname";
 import {
   DropdownMenu,
@@ -30,8 +30,14 @@ import { WishListItem } from "../Wishlist";
 import PropTypes from "prop-types";
 import { description } from "@/lib/fn";
 
-const PropertyCard = ({ property, setLayout, onRemove,isWishlist }) => {
-  console.log(setLayout)
+const PropertyCard = ({
+  property,
+  setLayout,
+  onRemove,
+  isWishlist,
+  length,
+}) => {
+  const navigate = useNavigate();
   const { me } = useMeStore();
   const priority = property?.rUser?.rPricing?.priority >= 4;
 
@@ -39,14 +45,17 @@ const PropertyCard = ({ property, setLayout, onRemove,isWishlist }) => {
     <Card
       className={cn(
         "overflow-hidden bg-slate-100 ",
-        setLayout ? "col-span-5" : "col-span-10",
-        'h-full '
+        setLayout ? (length < 2 ? "col-span-1" : "col-span-5") : "col-span-10",
+        "h-full "
       )}
-      
     >
-      <div className={`grid grid-cols-10 w-full ${isWishlist?'h-full':'h-fit'}`}>
+      <div
+        className={`grid grid-cols-10 w-full  ${
+          isWishlist ? "h-full" : "h-fit "
+        }`}
+      >
         {/* Image Section - Fixed aspect ratio */}
-        <div className="col-span-4 relative aspect h-full bg-slate-100 w-full ">
+        <div className="col-span-4 relative aspect h-full bg-slate-100 w-full  overflow-hidden">
           <img
             loading="lazy"
             src={property.images[0]}
@@ -91,7 +100,17 @@ const PropertyCard = ({ property, setLayout, onRemove,isWishlist }) => {
                     />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem className="text-primary">
+                    <DropdownMenuItem
+                      className="text-primary"
+                      onClick={() => {
+                        navigate(
+                          `${pathnames.users.layout}${pathnames.users.createPost}`,
+                          {
+                            state: { editMode: true, idPost: property?.idPost },
+                          }
+                        );
+                      }}
+                    >
                       Sửa
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -144,12 +163,16 @@ const PropertyCard = ({ property, setLayout, onRemove,isWishlist }) => {
               )}
               {property?.rUser?.rPricing.priority >= 3 && (
                 <Customtooltip
-                  trigger={<EthernetPort size={20} className="text-[#5c64a8] " />}
+                  trigger={
+                    <EthernetPort size={20} className="text-[#5c64a8] " />
+                  }
                   content={
                     <div className="flex flex-col w-48 h-48">
                       <p className="font-bold text-2xl">Mô tả</p>
                       <p>
-                        <span  >{property.description.slice(0,200)+'...'}</span>
+                        <span>
+                          {property.description.slice(0, 200) + "..."}
+                        </span>
                       </p>
                     </div>
                   }
@@ -188,6 +211,7 @@ PropertyCard.propTypes = {
   setLayout: PropTypes.bool,
   property: PropTypes.object.isRequired,
   isWishlist: PropTypes.bool,
+  length: PropTypes.number,
 };
 
 export default memo(PropertyCard);

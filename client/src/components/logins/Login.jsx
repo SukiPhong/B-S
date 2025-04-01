@@ -82,6 +82,7 @@ const Login = ({ onClose }) => {
           emailVerified: response.data.verified_email,
         });
         const user = await apiCheckNewUser(response.data.email);
+        console.log(user);
         if (user.data.hashUser) {
           setToken(user.data.accessToken);
           toast.success(user.data.message);
