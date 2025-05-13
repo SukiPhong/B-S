@@ -6,3 +6,14 @@ node_modules/
 
 # dotenv environment variables file
 .env
+# Bỏ qua mọi file log
+*.log
+
+# Bỏ qua mọi file co' duoi .tmp
+*.tmp
+
+# Bỏ qua thư mục build (thường là kết quả của việc biên dịch)
+build/
+
+# Theo dõi một file cụ thể trong thư mục bị bỏ qua
+!build/important.js
